@@ -1,4 +1,10 @@
+Oppgaver
 
+John Tore:
+    - lage Debugger klasse + gui
 
-Gjer resten. Sa presten.
-I Kyrkjo.
+Rune:
+    - Implementere resten av klassene fra bugga versjon
+
+Begge:
+    - Få spelet til å fungere bug-fritt
