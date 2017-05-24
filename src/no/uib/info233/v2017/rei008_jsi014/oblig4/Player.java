@@ -32,6 +32,7 @@ public abstract class Player {
         this.name = name;
         this.currentEnergy = 100;
         makePlayerID();
+        hasPulse = false;
     }
 
     /**

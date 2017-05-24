@@ -1,6 +1,7 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4.connections;
 
 import no.uib.info233.v2017.rei008_jsi014.oblig4.GameMaster;
+import no.uib.info233.v2017.rei008_jsi014.oblig4.HumanPlayer;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.Player;
 
 import java.sql.Connection;
