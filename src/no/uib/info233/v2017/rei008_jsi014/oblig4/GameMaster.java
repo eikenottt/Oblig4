@@ -62,7 +62,7 @@ public class GameMaster {
      */
     public void startGame(){
         setGameOver(false);
-        System.out.println(player1Name + " vs " + player1Name + "\n"); // TODO Place in GUI and Debugger
+        System.out.println(player1Name + " vs " + player2Name + "\n"); // TODO Place in GUI and Debugger
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
         player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
     }
@@ -109,6 +109,8 @@ public class GameMaster {
 
         gameRounds++; // Increase the number of rounds played
 
+        gameOver = isGameOver();
+
         if(!gameOver) {
 
 
@@ -127,19 +129,24 @@ public class GameMaster {
                 output = -1; // Signals the victory of player 2
             }
 
+
+            // TODO Message for Debugger
+            System.out.println(player1Name + " used " + getP1_energyUse() + " energy and has "+player1.getCurrentEnergy()+" left.");
+            System.out.println(player2Name + " used " + getP2_energyUse() + " energy and has "+player2.getCurrentEnergy()+" left.");
+            System.out.println("Games Played: " + gameRounds + ", Game Position: " + gamePosition);
+
             // Reset the energy usage and prepare for a new round
             this.p1_energyUse = -1;
             this.p2_energyUse = -1;
 
-            // TODO Message for Debugger
-            System.out.println(player1.getCurrentEnergy());
-            System.out.println(player2.getCurrentEnergy());
-            System.out.println("Games Played: " + gameRounds + ", Game Position: " + gamePosition);
-
-            // Players makes their next move
-            player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
-            player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
-
+            if(!isGameOver()) {
+                // Players makes their next move
+                player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
+                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
+            }
+            else {
+                updateRanking();
+            }
         }
         else {
             updateRanking(); // Update the database
@@ -202,6 +209,17 @@ public class GameMaster {
 
         System.out.println("There have been played " + gameRounds + " games!"); // TODO Debugger food
 
+        if(pointsPlayer1 > pointsPlayer2) {
+            System.out.println(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2);
+        }
+        else if(pointsPlayer2 > pointsPlayer1) {
+            System.out.println(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1);
+        }
+        else {
+            System.out.println("The game ended in a draw");
+        }
+
+
         boolean isUpdatedP1 = Queries.updateRanking(player1, pointsPlayer1);
         boolean isUpdatedP2 = Queries.updateRanking(player2, pointsPlayer2);
 
@@ -237,7 +255,7 @@ public class GameMaster {
         this.player1 = player1;
         this.player2 = player2;
         player1Name = player1.getName();
-        player1Name = player2.getName();
+        player2Name = player2.getName();
         player1.registerGameMaster(this);
         player2.registerGameMaster(this);
         setGameID();

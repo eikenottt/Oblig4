@@ -64,10 +64,10 @@ public final class Queries {
                     score += prevScore;
                 }
 
-                statement = conn.prepareStatement("DELETE FROM oblig4.ranking WHERE player = ? AND score = ?");
+                statement = conn.prepareStatement("DELETE FROM oblig4.ranking WHERE player = ? AND score = ? LIMIT 1");
                 statement.setString(1, player.getName());
-                statement.setFloat(1, score);
-                statement.executeQuery();
+                statement.setFloat(2, score);
+                statement.executeUpdate();
 
                 // Replace into is used for replacing old values in tables with primary keys
                 statement = conn.prepareStatement("REPLACE INTO ranking(player, score) VALUES (?, ?)");
@@ -102,13 +102,13 @@ public final class Queries {
             Connection conn = Connector.getConnection();
 
             // Remove old values
-            statement = conn.prepareStatement("DELETE FROM oblig4.ranking WHERE game_id = ? AND game_position = ?");
+            statement = conn.prepareStatement("DELETE FROM oblig4.saved_games WHERE game_id = ? AND game_position = ?");
             statement.setString(1, gameMaster.getGameID());
             statement.setInt(2, gameMaster.getGamePosition());
-            statement.executeQuery();
+            statement.executeUpdate();
 
             // Insert new
-            statement = conn.prepareStatement( "REPLACE INTO saved_games (game_id, player_1, player_2, game_position, player_1_energy, player_2_energy) VALUES (?, ?, ?, ?, ?, ?)");
+            statement = conn.prepareStatement( "REPLACE INTO oblig4.saved_games (game_id, player_1, player_2, game_position, player_1_energy, player_2_energy) VALUES (?, ?, ?, ?, ?, ?)");
             statement.setString(1,gameMaster.getGameID());
             statement.setString(2,player1.getName());
             statement.setString(3,player2.getName());
@@ -123,8 +123,10 @@ public final class Queries {
 
             updated = true; // Success
 
+        } catch (SQLException e) {
+            e.getErrorCode();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.getMessage();
         }
 
         return updated;
@@ -144,7 +146,7 @@ public final class Queries {
             Connection conn = Connector.getConnection(); // Make connection
 
             // Execute query
-            statement = conn.prepareStatement("SELECT * FROM saved_games WHERE game_id = ?");
+            statement = conn.prepareStatement("SELECT * FROM oblig4.saved_games WHERE game_id = ?");
             statement.setString(1, gameID);
             ResultSet rs = statement.executeQuery();
 
