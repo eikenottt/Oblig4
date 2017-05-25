@@ -2,7 +2,6 @@ package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -37,8 +36,6 @@ public class GameMaster {
     private boolean gameOver;
     private int gameRounds;
 
-    private final int gameOverInt = -13;
-
 
     /**
      * Constructor for GameMaster
@@ -60,7 +57,7 @@ public class GameMaster {
     /**
      * Tells the players to make their first move
      */
-    public void startGame(){
+    void startGame(){
         setGameOver(false);
         System.out.println(player1Name + " vs " + player2Name + "\n"); // TODO Place in GUI and Debugger
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
@@ -73,7 +70,7 @@ public class GameMaster {
      * @param player player
      * @param energyUse energyUse
      */
-    public boolean listenToPlayerMove(Player player, int energyUse) {
+    void listenToPlayerMove(Player player, int energyUse) {
 
         boolean bothPlayersMoved = false;
 
@@ -91,7 +88,6 @@ public class GameMaster {
             evaluateTurn();
         }
 
-        return bothPlayersMoved;
     }
 
 
@@ -101,32 +97,22 @@ public class GameMaster {
      * listenToPlayerMove() to figure out who won the round.
      * When game is over, it runs the updateRanking method
      */
-    private int evaluateTurn() {
+    private void evaluateTurn() {
 
         //TODO insert isGameOver somewhere
 
-        int output = gameOverInt; // Starts as gameOver
-
         gameRounds++; // Increase the number of rounds played
 
-        gameOver = isGameOver();
+        setGameOver(isGameOver());
 
         if(!gameOver) {
 
 
             if(getP1_energyUse() > getP2_energyUse()) { // if player 1 use more energy
-
                 gamePosition++; // Move game one step closer toward player 1's goal
 
-                output = 1; // Signals the victory of player 1
-
-            }else if(getP1_energyUse() == getP2_energyUse()) { // if energy usage is equal
-                output = 0; // Signals a draw
-            }
-            else { // if player 2 use more energy
+            }else if(getP1_energyUse() < getP2_energyUse()) { // if energy usage is equal
                 gamePosition--; // Move game one step closer toward player 2's goal
-
-                output = -1; // Signals the victory of player 2
             }
 
 
@@ -152,19 +138,17 @@ public class GameMaster {
             updateRanking(); // Update the database
         }
 
-        return output;
     }
 
 
-    public boolean isGameOver() {
+    private boolean isGameOver() {
         // if the current gamePosition lays in the GOAL array or both players energy is at zero
         return (GOAL.contains(gamePosition) || (player1.getCurrentEnergy() == 0 && player2.getCurrentEnergy() == 0));
     }
 
     private int fetchIntInString(String string) {
         String d = string.substring(string.indexOf("¿")+1, string.indexOf("|"));
-        int number = Integer.parseInt(d);
-        return number;
+        return Integer.parseInt(d);
     }
 
     // ----------- Manipulate game data ---------- //
@@ -202,7 +186,7 @@ public class GameMaster {
      * Runs when the game is over and updates the database
      * @return True if the database was updated
      */
-    private boolean updateRanking() {
+    private void updateRanking() {
 
         float pointsPlayer1 = getPointsFromPosition(gamePosition);
         float pointsPlayer2 = getPointsFromPosition(gamePosition*-1);
@@ -220,10 +204,9 @@ public class GameMaster {
         }
 
 
-        boolean isUpdatedP1 = Queries.updateRanking(player1, pointsPlayer1);
-        boolean isUpdatedP2 = Queries.updateRanking(player2, pointsPlayer2);
+        Queries.updateRanking(player1, pointsPlayer1);
+        Queries.updateRanking(player2, pointsPlayer2);
 
-        return isUpdatedP1 || isUpdatedP2;
     }
 
     /**
@@ -318,7 +301,7 @@ public class GameMaster {
      * @param currentPosition position of the player
      * @return a float value with the player score
      */
-    public float getPointsFromPosition(int currentPosition) {
+    private float getPointsFromPosition(int currentPosition) {
         float points;
         switch (currentPosition) {
             case -3:
