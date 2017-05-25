@@ -4,7 +4,7 @@ John Tore:
     - lage Debugger klasse + gui
 
 Rune:
-    - Implementere resten av klassene fra bugga versjon
+    - Implementere resten av klassene fra bugga versjon //DONE
 
 Begge:
     - Få spelet til å fungere bug-fritt
