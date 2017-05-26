@@ -18,33 +18,36 @@ public class Application {
 
 
 
-//        SwingUtilities.invokeLater(() -> {
-//            String player1Name = "Svæla";
-//            long time = System.currentTimeMillis();
-//
-//            Player player1 = new HumanPlayer(player1Name);
-//
-//            MainFrame mainFrame = new MainFrame("Game");
-//
-//            ButtonPanel buttonPanel = new ButtonPanel("Singleplayer", "Multiplayer", "Quit Game");
-//
-//            MenuPanel menuPanel = new MenuPanel(player1Name, Queries.getScore(player1Name), buttonPanel);
-//
-//            mainFrame.add(menuPanel);
-//
-//            System.out.println(System.currentTimeMillis() - time);
-//
-//            Debugger debugger = new Debugger();
-//            for(int i = 0; i <500; i++){
-//                debugger.print("This is a test, to check if it prints out a number:  " + i + "\n" );
-//            }
-//
-//
-//
-//        });
+        SwingUtilities.invokeLater(() -> {
+            String player1Name = "Svæla";
+            long time = System.currentTimeMillis();
 
-        GameMaster gameMaster = Queries.loadSaved("kall_d0b73¿3|CPU_6739a1");
-        gameMaster.startGame();
+            Player player1 = new HumanPlayer(player1Name);
+
+            MainFrame mainFrame = new MainFrame("Game");
+
+            ButtonPanel buttonPanel = new ButtonPanel("Singleplayer", "Multiplayer", "Quit Game");
+
+            MenuPanel menuPanel = new MenuPanel(player1Name, Queries.getScore(player1Name), buttonPanel);
+
+            mainFrame.add(menuPanel);
+
+            System.out.println(System.currentTimeMillis() - time);
+
+
+            for(int i = 0; i <500; i++){
+                Debugger.print("This is a test, to check if it prints out a number:  " + i + "\n" );
+            }
+
+
+
+        });
+
+        /*GameMaster gameMaster = new GameMaster();
+        Player player1 = new AggressivePlayer("Finne");
+        Player player2 = new HumanPlayer("Svæla");
+        gameMaster.setPlayers(player1, player2);
+        gameMaster.startGame();*/
     }
 
 }

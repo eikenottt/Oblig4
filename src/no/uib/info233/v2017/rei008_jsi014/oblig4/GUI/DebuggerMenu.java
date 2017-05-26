@@ -40,7 +40,13 @@ public class DebuggerMenu extends JMenuBar implements ActionListener, KeyListene
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == dmShowDebugger){
-            debugFrame = new DebugFrame("Debugger");
+
+
+            if(Debugger.getDebugFrame().isVisible()){
+                Debugger.getDebugFrame().setVisible(false);
+            }else {
+                Debugger.getDebugFrame().setVisible(true);
+            }
         }
         if(e.getSource() == dmFrameSize) {
             System.out.println();

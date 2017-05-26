@@ -12,24 +12,33 @@ import javax.swing.*;
  * Debugger class handles the communications between the program and the Debugging console.
  * Created by John Tore on 25.05.2017.
  */
-public class Debugger {
+public final class Debugger {
 
-    DebugFrame debugFrame;
+    static DebugFrame debugFrame;
+    static Debugger debugger;
 
     public Debugger(){
-        this.debugFrame = new DebugFrame("Debugger");
+        debugFrame = new DebugFrame("Debugger");
+    }
+
+    static{
+        try{
+            debugger = new Debugger();
+        }catch(Exception e){
+            throw new RuntimeException("Exception in creating Debugger singleton instance");
+        }
     }
 
 
     //Sends strings to the debugger
-    public void print(String outstream){
+    public static void print(String outstream){
 
         debugFrame.debugOut(outstream + "\n");
 
     }
 
 
-    public DebugFrame getDebugFrame() {
+    public static DebugFrame getDebugFrame() {
         return debugFrame;
     }
 }
