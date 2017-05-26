@@ -1,0 +1,136 @@
+package no.uib.info233.v2017.rei008_jsi014.oblig4.GUI;
+
+import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+
+/**
+ * Created by John Tore on 26.05.2017.
+ */
+public class DebugFrame extends JFrame {
+
+    JButton closeDebugger;
+    TextArea debugStream;
+    DebugFrame debugFrame = this;
+
+    public DebugFrame(String title) {
+        super(title);
+        setUI();
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        setSize(500, 500);
+        setPreferredSize(new Dimension(500, 500));
+
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation(dim.width/4-getSize().width/4, dim.height/2-getSize().height/2);
+
+        // FileMenu
+
+        //New panel with BorderLayout
+        JPanel content = new JPanel(new BorderLayout());
+
+        //Configurations for the debugging stream TextArea
+        debugStream = new TextArea(15, 30);
+        debugStream.setEditable(false);
+        debugStream.setText("");
+        debugStream.setBackground(Color.BLACK);
+
+        // Close button - closes the Debugging console
+        closeDebugger = new JButton("Close Debugger");
+
+        //Create a new listener for the closeDebugger button
+        ListenForButton listenForButton = new ListenForButton();
+        closeDebugger.addActionListener(listenForButton);
+
+        //Adding Jcomponents to the content panel
+        content.add(debugStream,BorderLayout.CENTER);
+        content.add(closeDebugger, BorderLayout.PAGE_END);
+
+        //add content panel
+        this.add(content);
+
+
+
+        setVisible(true);
+
+    }
+
+
+    // Imported from Main-Frame, might have to make a couple of changes
+    private void setUI() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
+        FontUIResource f = new FontUIResource("Calibri", Font.PLAIN, 22);
+        ColorUIResource bg = new ColorUIResource(70,70,70);
+        ColorUIResource fg = new ColorUIResource(255,255,255);
+        Color buttonBG = new Color(120,120,120);
+        Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            String keyLower = key.toString().toLowerCase();
+            Object value = UIManager.get(key);
+            if(value != null) {
+                if (value instanceof FontUIResource) {
+                    UIManager.put(key, f);
+                }
+                if (value instanceof ColorUIResource) {
+                    if(keyLower.contains("background"))
+                        UIManager.put(key, bg);
+                    if(keyLower.toString().contains("foreground"))
+                        UIManager.put(key, fg);
+                    if(keyLower.toString().contains("button.background"))
+                        UIManager.put(key, buttonBG);
+                    if(keyLower.toString().contains("button.foreground"))
+                        UIManager.put(key, fg);
+                    if(keyLower.toString().contains("button.select"))
+                        UIManager.put(key, bg);
+                    if(keyLower.toString().contains("button.focus"))
+                        UIManager.put(key, buttonBG);
+                    if(keyLower.toString().contains("textfield.background"))
+                        UIManager.put(key, fg);
+                    if(keyLower.toString().contains("textfield.foreground"))
+                        UIManager.put(key, bg);
+                    if(keyLower.toString().contains("list.background"))
+                        UIManager.put(key, buttonBG);
+                    if(keyLower.toString().contains("optionpane.messageforeground")) {
+                        UIManager.put(key, fg);
+                    }
+                    if(keyLower.toString().contains("progressbar.foreground")) {
+                        UIManager.put(key, ColorUIResource.RED);
+                    }
+                    if(keyLower.toString().contains("menu.foreground")) {
+                        UIManager.put(key, fg);
+                    }
+                }
+            }
+        }
+    }
+
+    public DebugFrame getFrame() {
+        return this;
+    }
+
+    // Adds a new string to the debug-console
+    public void debugOut(String out) {
+        debugStream.append(out);
+    }
+
+    private class ListenForButton implements ActionListener{
+
+        //Closes the debugger window
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == closeDebugger){
+               debugFrame.dispose();
+            }
+        }
+    }
+}
+
+

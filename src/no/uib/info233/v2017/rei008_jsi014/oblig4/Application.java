@@ -1,6 +1,7 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
 import no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.ButtonPanel;
+import no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.DebugFrame;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.MainFrame;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.MenuPanel;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
@@ -13,6 +14,9 @@ import javax.swing.*;
 public class Application {
 
     public static void main(String[] args) {
+
+
+
 
         SwingUtilities.invokeLater(() -> {
             String player1Name = "Svæla";
@@ -27,7 +31,15 @@ public class Application {
             MenuPanel menuPanel = new MenuPanel(player1Name, Queries.getScore(player1Name), buttonPanel);
 
             mainFrame.add(menuPanel);
+
             System.out.println(System.currentTimeMillis() - time);
+
+            Debugger debugger = new Debugger();
+            for(int i = 0; i <500; i++){
+                debugger.print("This is a test, to check if it prints out a number:  " + i + "\n" );
+            }
+
+
 
         });
 

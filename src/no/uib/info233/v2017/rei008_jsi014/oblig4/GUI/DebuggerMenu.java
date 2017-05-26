@@ -1,5 +1,7 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4.GUI;
 
+import no.uib.info233.v2017.rei008_jsi014.oblig4.Debugger;
+
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicMenuBarUI;
 import java.awt.*;
@@ -15,6 +17,7 @@ public class DebuggerMenu extends JMenuBar implements ActionListener, KeyListene
 
     JMenu debuggerMenu;
     JMenuItem dmShowDebugger;
+    DebugFrame debugFrame;
 
     public DebuggerMenu() {
 
@@ -38,7 +41,10 @@ public class DebuggerMenu extends JMenuBar implements ActionListener, KeyListene
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println();
+        if(e.getSource() == dmShowDebugger){
+            debugFrame = new DebugFrame("Debugger");
+        }
+
     }
 
     @Override

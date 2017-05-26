@@ -1,7 +1,7 @@
 Oppgaver
 
 John Tore:
-    - lage Debugger klasse + gui
+    - lage Debugger klasse + gui //Done-ish //TODO fikse at det kun refereres til det samme debuggervinduet
 
 Rune:
     - Implementere resten av klassene fra bugga versjon //DONE
