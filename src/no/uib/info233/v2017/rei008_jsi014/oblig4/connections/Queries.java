@@ -1,8 +1,6 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4.connections;
 
-import no.uib.info233.v2017.rei008_jsi014.oblig4.GameMaster;
-import no.uib.info233.v2017.rei008_jsi014.oblig4.HumanPlayer;
-import no.uib.info233.v2017.rei008_jsi014.oblig4.Player;
+import no.uib.info233.v2017.rei008_jsi014.oblig4.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,7 +49,7 @@ public final class Queries {
      * @param score player score
      */
     public static boolean updateRanking(Player player, float score) {
-        float prevScore;
+        float prevScore = 0f;
         boolean updated = false;
         if(player.getPulse()) {
             try {
@@ -64,9 +62,10 @@ public final class Queries {
                     score += prevScore;
                 }
 
+                // Deletes the player row if it exists
                 statement = conn.prepareStatement("DELETE FROM oblig4.ranking WHERE player = ? AND score = ? LIMIT 1");
                 statement.setString(1, player.getName());
-                statement.setFloat(2, score);
+                statement.setFloat(2, prevScore);
                 statement.executeUpdate();
 
                 // Replace into is used for replacing old values in tables with primary keys
@@ -166,7 +165,14 @@ public final class Queries {
 
             // Set players based on information from saved_games table
             Player player1 = new HumanPlayer(p1);
-            Player player2 = new HumanPlayer(p2); //TODO generate computerplayer based on last digit in game_id
+            Player player2;
+
+            if(id.substring(id.length()).equals('1')) {
+                player2 = new PassivePlayer(p2);
+            }
+            else {
+                player2 = new AggressivePlayer(p2);
+            }
 
             player1.setCurrentEnergy(p1Energy);
             player2.setCurrentEnergy(p2Energy);
@@ -179,8 +185,6 @@ public final class Queries {
             gameMaster.setPlayers(player1, player2);
 
 
-        } catch (SQLException e) { // TODO make ready for Debugger
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

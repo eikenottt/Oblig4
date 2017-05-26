@@ -13,7 +13,7 @@ public class AggressivePlayer extends Player {
      * @param name name
      */
     public AggressivePlayer(String name) {
-        super(name);
+        super(name + "Aggressive");
     }
 
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
@@ -54,6 +54,14 @@ public class AggressivePlayer extends Player {
         }
         this.updateEnergy(-useEnergy);
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
+    }
+
+    @Override
+    protected String makePlayerID() {
+        String aggID = super.makePlayerID();
+        char last = aggID.charAt(aggID.length()-1);
+        aggID = aggID.replace(last, '0');
+        return aggID;
     }
 
     /**

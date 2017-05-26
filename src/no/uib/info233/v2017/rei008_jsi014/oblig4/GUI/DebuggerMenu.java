@@ -5,19 +5,16 @@ import no.uib.info233.v2017.rei008_jsi014.oblig4.Debugger;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicMenuBarUI;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 /**
  * Created by Rune on 25.05.2017.
  */
 public class DebuggerMenu extends JMenuBar implements ActionListener, KeyListener {
 
-    JMenu debuggerMenu;
-    JMenuItem dmShowDebugger;
-    DebugFrame debugFrame;
+    private JMenu debuggerMenu;
+    private JMenuItem dmShowDebugger, dmFrameSize;
+    private DebugFrame debugFrame;
 
     public DebuggerMenu() {
 
@@ -31,7 +28,8 @@ public class DebuggerMenu extends JMenuBar implements ActionListener, KeyListene
         debuggerMenu = new JMenu("Debugger");
 
         dmShowDebugger = new JMenuItem("Show Debugger");
-        dmShowDebugger.setMnemonic(KeyEvent.VK_D);
+        dmFrameSize = new JMenuItem("Show Frame Height");
+        dmShowDebugger.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.SHIFT_MASK));
         dmShowDebugger.addActionListener(this);
 
         debuggerMenu.add(dmShowDebugger);
@@ -43,6 +41,9 @@ public class DebuggerMenu extends JMenuBar implements ActionListener, KeyListene
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == dmShowDebugger){
             debugFrame = new DebugFrame("Debugger");
+        }
+        if(e.getSource() == dmFrameSize) {
+            System.out.println();
         }
 
     }

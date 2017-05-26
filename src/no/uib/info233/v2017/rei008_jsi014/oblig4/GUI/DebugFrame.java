@@ -37,7 +37,7 @@ public class DebugFrame extends JFrame {
         debugStream = new TextArea(15, 30);
         debugStream.setEditable(false);
         debugStream.setText("");
-        debugStream.setBackground(Color.BLACK);
+        debugStream.setBackground(new Color(50,50,50));
 
         // Close button - closes the Debugging console
         closeDebugger = new JButton("Close Debugger");
@@ -108,6 +108,9 @@ public class DebugFrame extends JFrame {
                     if(keyLower.toString().contains("menu.foreground")) {
                         UIManager.put(key, fg);
                     }
+                    if(keyLower.contains("textarea.")) {
+                        UIManager.put(key, buttonBG);
+                    }
                 }
             }
         }
@@ -127,7 +130,7 @@ public class DebugFrame extends JFrame {
         //Closes the debugger window
         public void actionPerformed(ActionEvent e) {
             if(e.getSource() == closeDebugger){
-               debugFrame.dispose();
+               debugFrame.setVisible(false);
             }
         }
     }
