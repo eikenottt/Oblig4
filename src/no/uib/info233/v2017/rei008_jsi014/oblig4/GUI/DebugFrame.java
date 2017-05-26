@@ -3,6 +3,7 @@ package no.uib.info233.v2017.rei008_jsi014.oblig4.GUI;
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +21,7 @@ public class DebugFrame extends JFrame {
     public DebugFrame(String title) {
         super(title);
         setUI();
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setSize(550, 600);
         setPreferredSize(new Dimension(550, 600));
@@ -31,14 +32,17 @@ public class DebugFrame extends JFrame {
         // FileMenu
 
         //New panel with BorderLayout
-        JPanel content = new JPanel(new BorderLayout());
+        JPanel container = new JPanel(new BorderLayout());
+
+        JScrollPane stream = new JScrollPane();
 
         //Configurations for the debugging stream TextArea
         debugStream = new TextArea(15, 30);
         debugStream.setEditable(false);
         debugStream.setText("");
         debugStream.setBackground(Color.BLACK);
-
+        debugStream.setCaretPosition(debugStream.getHeight());
+        debugStream.setCaretPosition(debugStream.getSelectionEnd());
         // Close button - closes the Debugging console
         closeDebugger = new JButton("Close Debugger");
 
@@ -47,15 +51,15 @@ public class DebugFrame extends JFrame {
         closeDebugger.addActionListener(listenForButton);
 
         //Adding Jcomponents to the content panel
-        content.add(debugStream,BorderLayout.CENTER);
-        content.add(closeDebugger, BorderLayout.PAGE_END);
+        container.add(debugStream,BorderLayout.CENTER);
+        container.add(closeDebugger, BorderLayout.PAGE_END);
 
         //add content panel
-        this.add(content);
+        this.add(container);
 
 
-
-        setVisible(true);
+        //makes it invisible by default
+        setVisible(false);
 
     }
 

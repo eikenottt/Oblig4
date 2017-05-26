@@ -34,9 +34,9 @@ public class Application {
 
             System.out.println(System.currentTimeMillis() - time);
 
-            Debugger debugger = new Debugger();
+
             for(int i = 0; i <500; i++){
-                debugger.print("This is a test, to check if it prints out a number:  " + i + "\n" );
+                Debugger.print("This is a test, to check if it prints out a number:  " + i + "\n" );
             }
 
 
