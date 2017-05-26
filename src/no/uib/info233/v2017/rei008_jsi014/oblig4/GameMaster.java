@@ -59,7 +59,7 @@ public class GameMaster {
      */
     void startGame(){
         setGameOver(false);
-        System.out.println(player1Name + " vs " + player2Name + "\n"); // TODO Place in GUI and Debugger
+        Debugger.print(player1Name + " vs " + player2Name + "\n");
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
         player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
     }
@@ -116,10 +116,15 @@ public class GameMaster {
             }
 
 
-            // TODO Message for Debugger
+
             System.out.println(player1Name + " used " + getP1_energyUse() + " energy and has "+player1.getCurrentEnergy()+" left.");
             System.out.println(player2Name + " used " + getP2_energyUse() + " energy and has "+player2.getCurrentEnergy()+" left.");
             System.out.println("Games Played: " + gameRounds + ", Game Position: " + gamePosition);
+
+            // Prints out messages to the debugging console
+            Debugger.print(player1Name + " used " + getP1_energyUse() + " energy and has "+player1.getCurrentEnergy()+" left.");
+            Debugger.print(player2Name + " used " + getP2_energyUse() + " energy and has "+player2.getCurrentEnergy()+" left.");
+            Debugger.print("Round: " + gameRounds + ", Game Position: " + gamePosition);
 
             // Reset the energy usage and prepare for a new round
             this.p1_energyUse = -1;
@@ -176,9 +181,14 @@ public class GameMaster {
 
             // TODO Debugger
             System.out.println("Loaded:  \n ID: " + gameID + " \n Player 1: " + player1.getName() + " With " +player1.getCurrentEnergy()+ " Energy." +"\n Player 2: " +player2.getName()+ " With " + player2.getCurrentEnergy() + " Energy. Game Position is " + gamePosition + "\n Round: " + gameRounds);
+
+            Debugger.print("Loaded:  \n ID: " + gameID + " \n Player 1: " + player1.getName() + " With " +player1.getCurrentEnergy()+ " Energy." +"\n Player 2: " +player2.getName()+ " With " + player2.getCurrentEnergy() + " Energy. Game Position is " + gamePosition + "\n Round: " + gameRounds);
+        }
+        if(!gameLoaded){
+            Debugger.print("There was an error loading the game.");
         }
 
-        return gameLoaded; // TODO if game doesn't load, Debugger
+        return gameLoaded;
     }
 
 
@@ -191,16 +201,21 @@ public class GameMaster {
         float pointsPlayer1 = getPointsFromPosition(gamePosition);
         float pointsPlayer2 = getPointsFromPosition(gamePosition*-1);
 
-        System.out.println("There have been played " + gameRounds + " games!"); // TODO Debugger food
+        System.out.println("There have been played " + gameRounds + " rounds!");
+
+        Debugger.print("There have been played " + gameRounds + " rounds!");
 
         if(pointsPlayer1 > pointsPlayer2) {
             System.out.println(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2);
+            Debugger.print(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2);
         }
         else if(pointsPlayer2 > pointsPlayer1) {
             System.out.println(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1);
+            Debugger.print(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1);
         }
         else {
             System.out.println("The game ended in a draw");
+            Debugger.print("Nice Tie - The game ended in a draw");
         }
 
 
