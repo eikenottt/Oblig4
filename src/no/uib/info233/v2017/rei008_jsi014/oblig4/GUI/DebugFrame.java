@@ -21,6 +21,7 @@ public class DebugFrame extends JFrame {
     public DebugFrame(String title) {
         super(title);
         setUI();
+        setUndecorated(true);
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setSize(550, 600);

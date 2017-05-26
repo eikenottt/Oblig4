@@ -240,6 +240,11 @@ public class GameMaster {
         //TODO displays the available games that players can join in the multiplayer section.
     }
 
+    public void joinGame(String player1, Player player2){
+        //TODO Whe the player joins the game, a new game should start with the host as player one
+        Queries.joinGame(player1, player2);
+    }
+
 
 
     // --------- Getters And Setters ---------- //

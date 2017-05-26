@@ -41,6 +41,9 @@ public class Application {
 
 
 
+
+
+
         });
 
         /*GameMaster gameMaster = new GameMaster();
@@ -48,6 +51,11 @@ public class Application {
         Player player2 = new HumanPlayer("Svæla");
         gameMaster.setPlayers(player1, player2);
         gameMaster.startGame();*/
+
+        Player p2 = new HumanPlayer("TestJohn");
+        String gameToJoin = Queries.getPlayerRandom("TestRune");
+        System.out.println("no string? - " + gameToJoin);
+        Queries.joinGame(gameToJoin, p2);
     }
 
 }

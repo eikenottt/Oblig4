@@ -44,6 +44,29 @@ public final class Queries {
         return tableUpdated;
     }
 
+    public static boolean joinGame(String p1_random, Player player2) {
+
+        boolean tableUpdated = false;
+
+        try {
+            Connection conn = Connector.getConnection();
+
+            statement = conn.prepareStatement("UPDATE oblig4.open_games SET player_2 = ?, player_2_random = ? WHERE  player_1_random = ?");
+            statement.setString(1, player2.getName());
+            statement.setString(2, player2.getRandom());
+            statement.setString(3, p1_random);
+            int rowCount = statement.executeUpdate();
+            if(rowCount > 0) {
+                tableUpdated = true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
+        }
+
+        return tableUpdated;
+    }
     /**
      * Handles the SQL-queries and manipulations in the database
      * @param player the player to be updated
@@ -280,5 +303,31 @@ public final class Queries {
         return score;
 
     }
+
+    public static String getPlayerRandom(String playerName){
+
+        String pRandom = "";
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT player_1_random FROM oblig4.open_games WHERE player_1 = ?");
+            statement.setString(1, playerName);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) ;
+            pRandom = resultSet.getString(1);
+
+            conn.close(); // Close connection
+
+        } catch (Exception e) {
+
+        }
+
+        return pRandom;
+
+        }
+
+
 
 }
