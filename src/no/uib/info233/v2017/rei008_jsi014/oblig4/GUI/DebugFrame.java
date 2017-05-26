@@ -22,11 +22,11 @@ public class DebugFrame extends JFrame {
         setUI();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        setSize(500, 500);
-        setPreferredSize(new Dimension(500, 500));
+        setSize(600, 800);
+        setPreferredSize(new Dimension(600, 800));
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(dim.width/4-getSize().width/4, dim.height/2-getSize().height/2);
+        setLocation(dim.width-600, dim.height-800);
 
         // FileMenu
 
