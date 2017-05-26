@@ -34,21 +34,18 @@ public class DebugFrame extends JFrame {
         //New panel with BorderLayout
         JPanel container = new JPanel(new BorderLayout());
 
-        JScrollPane stream = new JScrollPane();
-
         //Configurations for the debugging stream TextArea
         debugStream = new TextArea(15, 30);
         debugStream.setEditable(false);
         debugStream.setText("");
         debugStream.setBackground(new Color(50,50,50));
-        debugStream.setCaretPosition(debugStream.getHeight());
-        debugStream.setCaretPosition(debugStream.getSelectionEnd());
         // Close button - closes the Debugging console
         closeDebugger = new JButton("Close Debugger");
 
         //Create a new listener for the closeDebugger button
         ListenForButton listenForButton = new ListenForButton();
         closeDebugger.addActionListener(listenForButton);
+
 
         //Adding Jcomponents to the content panel
         container.add(debugStream,BorderLayout.CENTER);

@@ -38,6 +38,7 @@ public final class Queries {
 
         } catch (Exception e) {
             e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
         }
 
         return tableUpdated;
@@ -77,8 +78,12 @@ public final class Queries {
                 conn.close(); // Close connection
 
                 updated = true; // Success
+                if(updated){
+                    Debugger.print("Success: " + player + "'s rank has been updated!");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+                Debugger.print("EXCEPTION: " + e.getMessage());
             }
         }
 
@@ -121,11 +126,16 @@ public final class Queries {
             conn.close(); // Close connection
 
             updated = true; // Success
+            if (updated){
+                Debugger.print("Success: Game has been saved");
+            }
 
         } catch (SQLException e) {
             e.getErrorCode();
+            Debugger.print("EXCEPTION: " + e.getMessage() + e.getErrorCode());
         } catch (Exception e) {
             e.getMessage();
+            Debugger.print("EXCEPTION: " + e.getMessage());
         }
 
         return updated;
@@ -141,6 +151,7 @@ public final class Queries {
     public static GameMaster loadSaved(String gameID) {
 
         GameMaster gameMaster = null;
+        boolean loaded = false;
         try {
             Connection conn = Connector.getConnection(); // Make connection
 
@@ -184,13 +195,18 @@ public final class Queries {
 
             gameMaster.setPlayers(player1, player2);
 
+            loaded = true;//Successful load
+            if(loaded){
+                Debugger.print("Success: The game has been successfully loaded!");
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if(gameMaster == null) {
-            // TODO Debugger message gamemaster is null, break method
+            Debugger.print("Error:  gameMater == null - The game was not loaded.");
         }
         return gameMaster;
 
@@ -225,8 +241,10 @@ public final class Queries {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
         }
 
         // TODO if Map is Empty

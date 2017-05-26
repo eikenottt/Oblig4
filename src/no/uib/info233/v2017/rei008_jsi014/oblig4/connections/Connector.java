@@ -1,5 +1,7 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4.connections;
 
+import no.uib.info233.v2017.rei008_jsi014.oblig4.Debugger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -25,7 +27,8 @@ public final class Connector {
 
             return conn;
         } catch (Exception e) {
-            System.out.println(e); //TODO print with Debugger class
+            System.out.println(e);
+            Debugger.print("EXCEPTION: " + e.getMessage());
         }
         return null;
     }
