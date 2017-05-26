@@ -146,7 +146,7 @@ public final class Queries {
             Connection conn = Connector.getConnection(); // Make connection
 
             // Execute query
-            statement = conn.prepareStatement("SELECT * FROM oblig4.saved_games WHERE game_id = ?");
+            statement = conn != null ? conn.prepareStatement("SELECT * FROM oblig4.saved_games WHERE game_id = ?") : null;
             statement.setString(1, gameID);
             ResultSet rs = statement.executeQuery();
 

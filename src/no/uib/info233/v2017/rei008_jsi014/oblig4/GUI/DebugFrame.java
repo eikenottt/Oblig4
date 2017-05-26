@@ -19,7 +19,7 @@ public class DebugFrame extends JFrame {
 
     public DebugFrame(String title) {
         super(title);
-        setUI();
+        //DarkUI.setUI();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         setSize(550, 600);
@@ -37,7 +37,7 @@ public class DebugFrame extends JFrame {
         debugStream = new TextArea(15, 30);
         debugStream.setEditable(false);
         debugStream.setText("");
-        debugStream.setBackground(Color.BLACK);
+        debugStream.setBackground(new Color(70,70,70));
 
         // Close button - closes the Debugging console
         closeDebugger = new JButton("Close Debugger");
@@ -60,7 +60,7 @@ public class DebugFrame extends JFrame {
     }
 
 
-    // Imported from Main-Frame, might have to make a couple of changes
+    /*// Imported from Main-Frame, might have to make a couple of changes
     private void setUI() {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -111,7 +111,7 @@ public class DebugFrame extends JFrame {
                 }
             }
         }
-    }
+    }*/
 
     public DebugFrame getFrame() {
         return this;

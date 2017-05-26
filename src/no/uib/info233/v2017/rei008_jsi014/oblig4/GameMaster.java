@@ -57,11 +57,13 @@ public class GameMaster {
     /**
      * Tells the players to make their first move
      */
-    void startGame(){
+    String startGame(){
         setGameOver(false);
-        System.out.println(player1Name + " vs " + player2Name + "\n"); // TODO Place in GUI and Debugger
+        String playerVsPlayer = player1Name + " vs " + player2Name + "\n";
+        System.out.println(playerVsPlayer); // TODO Place in GUI and Debugger
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
         player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
+        return playerVsPlayer;
     }
 
     /**
