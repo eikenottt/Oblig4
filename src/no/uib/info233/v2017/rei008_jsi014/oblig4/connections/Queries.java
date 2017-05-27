@@ -174,7 +174,6 @@ public final class Queries {
     public static GameMaster loadSaved(String gameID) {
 
         GameMaster gameMaster = null;
-        boolean loaded = false;
         try {
             Connection conn = Connector.getConnection(); // Make connection
 
@@ -218,14 +217,11 @@ public final class Queries {
 
             gameMaster.setPlayers(player1, player2);
 
-            loaded = true;//Successful load
-            if(loaded){
-                Debugger.print("Success: The game has been successfully loaded!");
-            }
+            Debugger.print("Success: The game has been successfully loaded!");
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Debugger.print("EXEPTION: " + e.getMessage());
         }
 
         if(gameMaster == null) {
@@ -253,7 +249,8 @@ public final class Queries {
             while(result.next()){
                 ArrayList<String> score = new ArrayList<>();
                 // Player score
-                score.add(result.getString(4));
+                Float playerScore = result.getFloat(4);
+                score.add(playerScore.toString());
                 // Player Name code
                 score.add(result.getString(1));
                 // Player Random and everything else
@@ -274,6 +271,38 @@ public final class Queries {
 
         return playersMap;
     }
+
+    public static TreeMap<String, ArrayList<String>> getGameMap(TreeMap<String, ArrayList<String>> playersMap){
+        try {
+
+            Connection conn = Connector.getConnection(); // Make connection
+            statement = conn.prepareStatement("SELECT * FROM oblig4.saved_games");
+            ResultSet result = statement.executeQuery();
+
+            while(result.next()){
+                ArrayList<String> score = new ArrayList<>();
+                // Player 1 name
+                score.add(result.getString(2));
+                // Player 2 name
+                score.add(result.getString(3));
+                // Game Position
+                score.add(result.getString(4));
+                // Player 1 Energy
+                score.add(result.getString(5));
+                // Player 2 Energy
+                score.add(result.getString(6));
+                // Game ID and everything else
+                playersMap.put(result.getString(1), score);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return playersMap;
+    }
+
 
     /**
      * Gets the score of a specified player
@@ -326,7 +355,18 @@ public final class Queries {
 
         return pRandom;
 
+    }
+
+    public static boolean hasConnection() {
+        boolean hasConnection = false;
+        try {
+            Connector.getConnection();
+            hasConnection = Connector.hasConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return hasConnection;
+    }
 
 
 
