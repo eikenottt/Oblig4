@@ -57,7 +57,7 @@ public class GameMaster {
     /**
      * Tells the players to make their first move
      */
-    void startGame(){
+    public void startGame(){
         setGameOver(false);
         Debugger.print(player1Name + " vs " + player2Name + "\n");
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
@@ -152,6 +152,8 @@ public class GameMaster {
     }
 
     private int fetchIntInString(String string) {
+        //TODO feilmelding på fetchIntInString  - StringIndexOutOfBoundsException
+        //TODO return -1 if gameID don't contain ¿ and |
         String d = string.substring(string.indexOf("¿")+1, string.indexOf("|"));
         return Integer.parseInt(d);
     }
@@ -314,6 +316,14 @@ public class GameMaster {
 
     public void setGamePosition(int gamePosition){
         this.gamePosition = gamePosition;
+    }
+
+    public int getGameRounds() {
+        return gameRounds;
+    }
+
+    public void setGameRounds(int gameRounds) {
+        this.gameRounds = gameRounds;
     }
 
     /**
