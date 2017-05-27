@@ -1,8 +1,6 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4.connections;
 
-import no.uib.info233.v2017.rei008_jsi014.oblig4.GameMaster;
-import no.uib.info233.v2017.rei008_jsi014.oblig4.HumanPlayer;
-import no.uib.info233.v2017.rei008_jsi014.oblig4.Player;
+import no.uib.info233.v2017.rei008_jsi014.oblig4.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,18 +38,42 @@ public final class Queries {
 
         } catch (Exception e) {
             e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
         }
 
         return tableUpdated;
     }
 
+    public static boolean joinGame(String p1_random, Player player2) {
+
+        boolean tableUpdated = false;
+
+        try {
+            Connection conn = Connector.getConnection();
+
+            statement = conn.prepareStatement("UPDATE oblig4.open_games SET player_2 = ?, player_2_random = ? WHERE  player_1_random = ?");
+            statement.setString(1, player2.getName());
+            statement.setString(2, player2.getRandom());
+            statement.setString(3, p1_random);
+            int rowCount = statement.executeUpdate();
+            if(rowCount > 0) {
+                tableUpdated = true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
+        }
+
+        return tableUpdated;
+    }
     /**
      * Handles the SQL-queries and manipulations in the database
      * @param player the player to be updated
      * @param score player score
      */
     public static boolean updateRanking(Player player, float score) {
-        float prevScore;
+        float prevScore = 0f;
         boolean updated = false;
         if(player.getPulse()) {
             try {
@@ -64,9 +86,10 @@ public final class Queries {
                     score += prevScore;
                 }
 
+                // Deletes the player row if it exists
                 statement = conn.prepareStatement("DELETE FROM oblig4.ranking WHERE player = ? AND score = ? LIMIT 1");
                 statement.setString(1, player.getName());
-                statement.setFloat(2, score);
+                statement.setFloat(2, prevScore);
                 statement.executeUpdate();
 
                 // Replace into is used for replacing old values in tables with primary keys
@@ -78,8 +101,12 @@ public final class Queries {
                 conn.close(); // Close connection
 
                 updated = true; // Success
+                if(updated){
+                    Debugger.print("Success: " + player + "'s rank has been updated!");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+                Debugger.print("EXCEPTION: " + e.getMessage());
             }
         }
 
@@ -122,11 +149,16 @@ public final class Queries {
             conn.close(); // Close connection
 
             updated = true; // Success
+            if (updated){
+                Debugger.print("Success: Game has been saved");
+            }
 
         } catch (SQLException e) {
             e.getErrorCode();
+            Debugger.print("EXCEPTION: " + e.getMessage() + e.getErrorCode());
         } catch (Exception e) {
             e.getMessage();
+            Debugger.print("EXCEPTION: " + e.getMessage());
         }
 
         return updated;
@@ -142,6 +174,7 @@ public final class Queries {
     public static GameMaster loadSaved(String gameID) {
 
         GameMaster gameMaster = null;
+        boolean loaded = false;
         try {
             Connection conn = Connector.getConnection(); // Make connection
 
@@ -166,7 +199,14 @@ public final class Queries {
 
             // Set players based on information from saved_games table
             Player player1 = new HumanPlayer(p1);
-            Player player2 = new HumanPlayer(p2); //TODO generate computerplayer based on last digit in game_id
+            Player player2;
+
+            if(id.substring(id.length()).equals('1')) {
+                player2 = new PassivePlayer(p2);
+            }
+            else {
+                player2 = new AggressivePlayer(p2);
+            }
 
             player1.setCurrentEnergy(p1Energy);
             player2.setCurrentEnergy(p2Energy);
@@ -178,15 +218,18 @@ public final class Queries {
 
             gameMaster.setPlayers(player1, player2);
 
+            loaded = true;//Successful load
+            if(loaded){
+                Debugger.print("Success: The game has been successfully loaded!");
+            }
 
-        } catch (SQLException e) { // TODO make ready for Debugger
-            e.printStackTrace();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if(gameMaster == null) {
-            // TODO Debugger message gamemaster is null, break method
+            Debugger.print("Error:  gameMater == null - The game was not loaded.");
         }
         return gameMaster;
 
@@ -221,8 +264,10 @@ public final class Queries {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
         }
 
         // TODO if Map is Empty
@@ -258,5 +303,31 @@ public final class Queries {
         return score;
 
     }
+
+    public static String getPlayerRandom(String playerName){
+
+        String pRandom = "";
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT player_1_random FROM oblig4.open_games WHERE player_1 = ?");
+            statement.setString(1, playerName);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) ;
+            pRandom = resultSet.getString(1);
+
+            conn.close(); // Close connection
+
+        } catch (Exception e) {
+
+        }
+
+        return pRandom;
+
+        }
+
+
 
 }

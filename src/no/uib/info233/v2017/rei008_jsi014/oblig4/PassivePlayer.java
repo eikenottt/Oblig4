@@ -12,7 +12,7 @@ public class PassivePlayer extends Player{
      * @param name name
      */
     public PassivePlayer(String name) {
-        super(name);
+        super(name + "Passive");
     }
 
     @Override
@@ -47,6 +47,14 @@ public class PassivePlayer extends Player{
         }
         this.updateEnergy(-useEnergy);
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
+    }
+
+    @Override
+    protected String makePlayerID() {
+        String pasID = super.makePlayerID();
+        char last = pasID.charAt(pasID.length()-1);
+        pasID = pasID.replace(last, '1');
+        return pasID;
     }
 
     /**

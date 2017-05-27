@@ -34,10 +34,13 @@ public class Application {
 
             System.out.println(System.currentTimeMillis() - time);
 
-            Debugger debugger = new Debugger();
+
             for(int i = 0; i <500; i++){
-                debugger.print("This is a test, to check if it prints out a number:  " + i + "\n" );
+                Debugger.print("This is a test, to check if it prints out a number:  " + i + "\n" );
             }
+
+
+
 
 
 
@@ -48,6 +51,11 @@ public class Application {
         Player player2 = new HumanPlayer("Svæla");
         gameMaster.setPlayers(player1, player2);
         gameMaster.startGame();*/
+
+        Player p2 = new HumanPlayer("TestJohn");
+        String gameToJoin = Queries.getPlayerRandom("TestRune");
+        System.out.println("no string? - " + gameToJoin);
+        Queries.joinGame(gameToJoin, p2);
     }
 
 }

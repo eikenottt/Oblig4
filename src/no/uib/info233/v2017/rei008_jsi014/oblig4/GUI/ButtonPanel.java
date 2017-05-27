@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
  */
 public class ButtonPanel extends JPanel {
 
+
     private JButton button1, button2, button3;
 
     public ButtonPanel(String firstBtn, String sndBtn, String trdBtn) {
