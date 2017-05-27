@@ -3,7 +3,6 @@ package no.uib.info233.v2017.rei008_jsi014.oblig4.GUI;
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +20,6 @@ public class DebugFrame extends JFrame {
     public DebugFrame(String title) {
         super(title);
         setUI();
-        setUndecorated(true);
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setSize(550, 600);
@@ -47,14 +45,12 @@ public class DebugFrame extends JFrame {
         ListenForButton listenForButton = new ListenForButton();
         closeDebugger.addActionListener(listenForButton);
 
-
         //Adding Jcomponents to the content panel
         container.add(debugStream,BorderLayout.CENTER);
         container.add(closeDebugger, BorderLayout.PAGE_END);
 
         //add content panel
         this.add(container);
-
 
         //makes it invisible by default
         setVisible(false);

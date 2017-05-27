@@ -154,7 +154,6 @@ public final class Queries {
             }
 
         } catch (SQLException e) {
-            e.getErrorCode();
             Debugger.print("EXCEPTION: " + e.getMessage() + e.getErrorCode());
         } catch (Exception e) {
             e.getMessage();

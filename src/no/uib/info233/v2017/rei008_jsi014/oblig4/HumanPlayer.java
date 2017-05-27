@@ -38,4 +38,43 @@ public class HumanPlayer extends Player {
         updateEnergy(-energyUse);
         getGameMaster().listenToPlayerMove(this, energyUse);
     }
+
+    public boolean useOverheadSwing(int yourEnergy){
+        boolean available = false;
+        if (this.currentEnergy > 0){
+            available = true;
+            this.overheadSwing(yourEnergy);
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy!");
+        }
+
+        return available;
+    }
+
+    public boolean useStab(int yourEnergy){
+        boolean available = false;
+        if (yourEnergy >= 1){
+            available = true;
+            this.stab(yourEnergy);
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy!");
+        }
+
+        return available;
+    }
+
+    public boolean useSlash(int yourEnergy){
+        boolean available = false;
+        if(yourEnergy>5){
+            available = true;
+            this.slash(yourEnergy);
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy!");
+        }
+
+        return available;
+    }
 }

@@ -16,7 +16,7 @@ public abstract class Player {
 
     private String name;
     protected String playerID;
-    private int currentEnergy;
+    protected int currentEnergy;
     protected Random rand = new Random();
     protected boolean hasPulse;
 
@@ -134,7 +134,8 @@ public abstract class Player {
 
     /**
      * A high energy usage basic attack all players can perform.
-     * implements some randomness
+     * implements some randomness, if the player have less than 36 energy,
+     * this attack will drain all energy which is left
      * @param yourEnergy - the energy the player has available
      * @return int energy to spend
      */
@@ -142,7 +143,7 @@ public abstract class Player {
         int randNumber;
         randNumber = rand.nextInt(15);
 
-        if(yourEnergy > 35){
+        if(yourEnergy > 36){
             return 20 + randNumber;
         }else {
             return getCurrentEnergy();
@@ -150,22 +151,24 @@ public abstract class Player {
     }
 
     /**
-     * Low predictability attack, implements a lot of randomness
+     * Low energy attack, implements a lot of randomness
      * @param yourEnergy - the energy the player has available
      * @return int energy to spend
      */
     public int stab(int yourEnergy){
 
         int randNumber;
-        randNumber = this.rand.nextInt(50);
+        int energyUsage = 1;
+        randNumber = this.rand.nextInt(15);
 
-        if (yourEnergy > 50){
-            return randNumber;
-        }else if(yourEnergy>11){
-            return randNumber/10 + 1;
-        }else{
-            return 0;
+        if (yourEnergy > 15){
+            energyUsage += randNumber;
+        }else if(yourEnergy > 5 && yourEnergy <= 15){
+            energyUsage = 5;
         }
+        Debugger.print(this.name + " uses stab, with a force of " + energyUsage + " energy!"); // Sends message to debugger
+
+        return energyUsage;
     }
 
     /**
@@ -176,13 +179,14 @@ public abstract class Player {
      */
     public int slash(int yourEnergy){
 
+        int energyUsage = 5;
         int randNumber = this.rand.nextInt(15);
-        if (yourEnergy > 20) {
-            return 5 + randNumber;
-        }else if( yourEnergy >= 5){
-            return 5;
-        }else return 0;
 
+        if (yourEnergy >= 20) {
+            return energyUsage + randNumber;
+        }
+            Debugger.print(this.name + " uses slash, with a force of " + 5 + " energy!");
+            return energyUsage;
     }
 
 
