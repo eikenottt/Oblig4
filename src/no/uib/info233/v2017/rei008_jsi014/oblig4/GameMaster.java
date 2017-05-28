@@ -278,7 +278,7 @@ public class GameMaster {
 
         final boolean[] hasFoundOpponent = {false};
         Timer t = new Timer(2000, e -> {
-            hasFoundOpponent[0] = Queries.hasJoined(player1);
+            hasFoundOpponent[0] = Queries.hasJoined(player1.getRandom());
             System.out.println("hasFoundOpponent - " + hasFoundOpponent[0]);//SOUT
             if (hasFoundOpponent[0]){
                 ((Timer) e.getSource()).stop();

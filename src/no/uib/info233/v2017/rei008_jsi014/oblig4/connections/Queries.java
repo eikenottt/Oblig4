@@ -453,7 +453,7 @@ public final class Queries {
         return playerMoves;
     }
 
-    public static boolean hasJoined(Player playerHost){
+    public static boolean hasJoined(String hostID){
 
         boolean hasJoined = false;
 
@@ -461,7 +461,7 @@ public final class Queries {
             Connection conn = Connector.getConnection(); // Make connection
 
             statement = conn.prepareStatement("SELECT player_2, player_2_random FROM oblig4.open_games WHERE player_1_random= ?");
-            statement.setString(1, playerHost.getRandom());
+            statement.setString(1, hostID);
 
             ResultSet resultSet;
             resultSet = statement.executeQuery();

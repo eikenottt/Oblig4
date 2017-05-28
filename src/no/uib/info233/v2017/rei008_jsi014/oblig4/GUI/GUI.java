@@ -85,7 +85,7 @@ public class GUI{
     }
 
     private JPanel loadList(String playerType) {
-        if (Queries.hasConnection()) {
+        if (Queries.hasConnection()) { //Fixme gameMaster .hasConnection
             listPanel = new ListPanel(playerType);
             JPanel panel;
             if(playerType.equals("Singleplayer")){
@@ -313,8 +313,6 @@ public class GUI{
 
             Player player1 = gameMaster.getSpecificPlayer(1);
             Player player2 = gameMaster.getSpecificPlayer(2);
-            System.out.println(player1); //SOUT
-            System.out.println(player2); //SOUT
 
             setLayout(new GridBagLayout());
 
@@ -521,6 +519,10 @@ public class GUI{
                         menuPanel.updateSection(loadList("Singleplayer"),2);
                         mainFrame.updateFrame();
                         break;
+                    case "Refreash":
+                        menuPanel.updateSection(loadList("Multiplayer"), 2);
+                        mainFrame.updateFrame();
+                        break;
                     case "Stab":
                         doRound(player.stab(player.getCurrentEnergy()));
                         break;
@@ -662,19 +664,23 @@ public class GUI{
                             loading.dispose();
                             mainFrame.setVisible(true);*/
                             final boolean[] hasJoined = new boolean[1];
+                            gameMaster.joinGame(id, player);
                             Timer timer = new Timer(2000, evt -> {
-                                hasJoined[0] = gameMaster.joinGame(id, player);
+                                hasJoined[0] = Queries.hasJoined(id); //FIXME gameMaster.hasJoined
+                                Debugger.print("Trying To Connect");
                                 if(hasJoined[0]) {
+                                    String gameId = id + player.getRandom();
+                                    gameMaster = gameMaster.getGameInProgress(gameId);
+                                    gamePanel.setGame(gameMaster, gameButtonsMultiplayer);
+                                    restrictor(gameButtonsMultiplayer);
+                                    mainFrame.remove(listPanel);
+                                    mainFrame.changePanel(gamePanel);
                                     ((Timer)evt.getSource()).stop();
+                                    Debugger.print("Success");
                                 }
                             });
                             timer.start();
-                            String gameId = id + player.getRandom();
-                            gameMaster = gameMaster.getGameInProgress(gameId);
-                            gamePanel.setGame(gameMaster, gameButtonsMultiplayer);
-                            restrictor(gameButtonsMultiplayer);
-                            mainFrame.remove(listPanel);
-                            mainFrame.changePanel(gamePanel);
+
                         }
                         else {
                             gameMaster = new GameMaster();
