@@ -107,6 +107,10 @@ public abstract class Player {
         return playerID;
     }
 
+    public void setPlayerID(String playerID){
+        this.playerID = playerID;
+    }
+
     public int getCurrentEnergy() {
         return currentEnergy;
     }

@@ -301,6 +301,8 @@ public class GUI{
 
             Player player1 = gameMaster.getSpecificPlayer(1);
             Player player2 = gameMaster.getSpecificPlayer(2);
+            System.out.println(player1); //SOUT
+            System.out.println(player2); //SOUT
 
             setLayout(new GridBagLayout());
 
