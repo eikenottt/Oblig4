@@ -64,6 +64,11 @@ public class GameMaster {
         setGameOver(false);
         Debugger.print(player1Name + " vs " + player2Name + "\n");
         //TODO change makeNextMove with listenToPlayerMove ?
+        /*while (!gameOver){
+            //TODO refresh every 2 seconds
+            //TODO run listenToPlayerMove
+            //TODO Update Table after every move
+        }*/
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
     }
 
@@ -73,9 +78,18 @@ public class GameMaster {
      * @param player player
      * @param energyUse energyUse
      */
-    public boolean listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
+    public void listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
 
-        boolean bothHasMoved = false;
+
+
+        if(player1.hasPulse && player2.hasPulse) {
+            int[] playerMoves = Queries.getPlayerMove(gameID);
+            int player1Move = playerMoves[0], player2Move = playerMoves[1];
+            if(player1Move > player2Move){
+            }
+
+
+        }
 
         if(!gameOver) { // Game Not Over
 
@@ -87,10 +101,8 @@ public class GameMaster {
         }
 
         if(this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
-            bothHasMoved = true;
             evaluateTurn();
         }
-        return bothHasMoved;
 
     }
 
@@ -134,14 +146,14 @@ public class GameMaster {
             this.p1_energyUse = -1;
             this.p2_energyUse = -1;
 
-            if(!isGameOver()) {
+            /*if(!isGameOver()) {
                 // Players makes their next move
-                /*player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
-                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());*/
+                *//*player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
+                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());*//*
             }
             else {
                 updateRanking();
-            }
+            }*/
         }
         else {
             updateRanking(); // Update the database
@@ -167,9 +179,8 @@ public class GameMaster {
     /**
      * Loads the state of the saved game into the gameMaster
      * @param gameID the id of the game
-     * @return True if the game loads successfully
      */
-    public boolean loadGame(String gameID){
+    public void loadGame(String gameID){
 
         GameMaster loadedGameMaster = Queries.loadSaved(gameID);
 
@@ -194,7 +205,6 @@ public class GameMaster {
             Debugger.print("There was an error loading the game.");
         }
 
-        return gameLoaded;
     }
 
     public void startMultiplayerGame(String player2Name, String player2ID){
@@ -221,7 +231,6 @@ public class GameMaster {
 
     /**
      * Runs when the game is over and updates the database
-     * @return True if the database was updated
      */
     private void updateRanking() {
 
@@ -287,13 +296,30 @@ public class GameMaster {
 
     public void joinGame(String player1_random, Player player2){
         //TODO Whe the player joins the game, a new game should start with the host as player one
-        if(Queries.joinGame(player1_random, player2)){
-            Queries.createGame(this, player2, player1_random);
+        if(!Queries.joinGame(player1_random, player2)){
 
-        }else {
             Debugger.print("Could not join game");
         }
 
+    }
+
+
+    public void updateMove(Player player) {
+        Queries.updateMove(this, player);
+    }
+
+    public void resign(Player player1) {
+        int gamePos;
+        if(player1.equals(this.player1)){
+            gamePos = -3;
+        }
+        else {
+            gamePos = 3;
+        }
+        setGamePosition(gamePos);
+        setGameOver(true);
+        updateRanking();
+        Debugger.print("Player Resigned");
     }
 
 
@@ -347,7 +373,7 @@ public class GameMaster {
 
 
 
-    private void setGameOver(boolean gameOver) {
+    public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
     }
 
