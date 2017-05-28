@@ -266,7 +266,7 @@ public final class Queries {
 
             Debugger.print("Success: The game has been successfully loaded!");
 
-
+            conn.close();
         } catch (Exception e) {
             Debugger.print("EXEPTION: " + e.getMessage());
         }
@@ -341,6 +341,7 @@ public final class Queries {
                 // Game ID and everything else
                 playersMap.put(result.getString(1), score);
             }
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -411,8 +412,9 @@ public final class Queries {
     public static boolean hasConnection() {
         boolean hasConnection = false;
         try {
-            Connector.getConnection();
+            Connection conn = Connector.getConnection();
             hasConnection = Connector.hasConnection();
+            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -440,7 +442,7 @@ public final class Queries {
                  playerMoves[0] = player1Move;
                  playerMoves[1] = player2Move;
             }
-
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             Debugger.print("EXCEPTION: " + e.getMessage());
@@ -475,7 +477,7 @@ public final class Queries {
                 }
                 System.out.println(player2);//SOUT
             }
-
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             Debugger.print("EXCEPTION: " + e.getMessage());
@@ -511,6 +513,8 @@ public final class Queries {
             statement.setInt(1, player.getPlayerMove());
             statement.setString(2, gameMaster.getGameID());
             statement.executeUpdate();
+
+            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -555,6 +559,8 @@ public final class Queries {
                 return gameMaster;
 
             }
+
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             Debugger.print("EXCEPTION: " + e.getMessage());

@@ -652,7 +652,7 @@ public class GUI{
                     public void actionPerformed(ActionEvent e) {
                         if(join.equals("Join")){
                             gameMaster = new GameMaster();
-                            JFrame loading = new JFrame("Loading");
+/*                            JFrame loading = new JFrame("Loading");
                             loading.add(new LoadingPanel("Joining Game ..."));
                             loading.setPreferredSize(new Dimension(300, 300));
                             loading.setSize(500, 300);
@@ -660,14 +660,15 @@ public class GUI{
                             loading.setVisible(true);
                             mainFrame.setVisible(false);
                             loading.dispose();
-                            mainFrame.setVisible(true);
-
+                            mainFrame.setVisible(true);*/
+                            final boolean[] hasJoined = new boolean[1];
                             Timer timer = new Timer(2000, evt -> {
-                                boolean hasJoined = gameMaster.joinGame(id, player);
-                                if(hasJoined) {
+                                hasJoined[0] = gameMaster.joinGame(id, player);
+                                if(hasJoined[0]) {
                                     ((Timer)evt.getSource()).stop();
                                 }
                             });
+                            timer.start();
                             String gameId = id + player.getRandom();
                             gameMaster = gameMaster.getGameInProgress(gameId);
                             gamePanel.setGame(gameMaster, gameButtonsMultiplayer);
