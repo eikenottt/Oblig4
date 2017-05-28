@@ -297,7 +297,7 @@ public class GameMaster {
 
     }
     //DELETE TABLE
-    public Boolean hasConnection(){
+    public static Boolean hasConnection(){
         return Queries.hasConnection();
     }
 

@@ -85,7 +85,7 @@ public class GUI{
     }
 
     private JPanel loadList(String playerType) {
-        if (Queries.hasConnection()) { //Fixme gameMaster .hasConnection
+        if (GameMaster.hasConnection()) { //Fixme gameMaster .hasConnection
             listPanel = new ListPanel(playerType);
             JPanel panel;
             if(playerType.equals("Singleplayer")){
@@ -666,7 +666,7 @@ public class GUI{
                             final boolean[] hasJoined = new boolean[1];
                             gameMaster.joinGame(id, player);
                             Timer timer = new Timer(2000, evt -> {
-                                hasJoined[0] = Queries.hasJoined(id); //FIXME gameMaster.hasJoined
+                                hasJoined[0] = gameMaster.hasJoined(id); //FIXME gameMaster.hasJoined
                                 Debugger.print("Trying To Connect");
                                 if(hasJoined[0]) {
                                     String gameId = id + player.getRandom();
