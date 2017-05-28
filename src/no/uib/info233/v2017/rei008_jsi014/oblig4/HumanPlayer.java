@@ -35,6 +35,7 @@ public class HumanPlayer extends Player {
                 break;
         }
 
+        playerMove = energyUse;
         updateEnergy(-energyUse);
         getGameMaster().listenToPlayerMove(this, energyUse);
     }

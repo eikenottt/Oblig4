@@ -59,7 +59,9 @@ public final class Queries {
             if(rowCount > 0) {
                 tableUpdated = true;
             }
+            Debugger.print("Open_Games Table was updated");
 
+            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
             Debugger.print("EXCEPTION: " + e.getMessage());
@@ -67,6 +69,55 @@ public final class Queries {
 
         return tableUpdated;
     }
+
+
+    public static void createGame(GameMaster gameMaster, Player player2, String p1_random) {
+        Connection conn = null;
+        try {
+            conn = Connector.getConnection();
+            statement = conn.prepareStatement("SELECT * FROM oblig4.open_games WHERE player_2_random = ? AND player_1_random = ?");
+            statement.setString(1, player2.getRandom());
+            statement.setString(2, p1_random);
+            ResultSet result = statement.executeQuery();
+            if(result.next()) {
+                Player player1 = new HumanPlayer(result.getString(1));
+                Debugger.print("Joined a game with " + player1.getName());
+                gameMaster.setPlayers(player1, player2);
+                statement = conn.prepareStatement(
+                        "INSERT INTO oblig4.game_in_progress(game_id, player_1, player_2, game_position, player_1_energy, player_2_energy, player_1_move, player_2_move, move_number) " +
+                                "VALUES (?,?,?,?,?,?,?,?,?)");
+                statement.setString(1, gameMaster.getGameID());
+                statement.setString(2, player1.getName());
+                statement.setString(3, player2.getName());
+                statement.setInt(4, gameMaster.getGamePosition());
+                statement.setInt(5, player1.getCurrentEnergy());
+                statement.setInt(6, player2.getCurrentEnergy());
+                statement.setInt(7, player1.getPlayerMove());
+                statement.setInt(8, player2.getPlayerMove());
+                statement.setInt(9, gameMaster.getGameRounds());
+                statement.executeUpdate();
+
+
+                statement = conn.prepareStatement("DELETE FROM oblig4.open_games WHERE player_1_random = ? AND player_2_random = ?");
+                statement.setString(1, p1_random);
+                statement.setString(2, player2.getRandom());
+                statement.executeUpdate();
+
+                gameMaster.startGame();
+
+            }else {
+                Debugger.print("Failed to load the game");
+
+                Debugger.print("Game inserted in game_in_progress table");
+            }
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
+        }
+
+    }
+
     /**
      * Handles the SQL-queries and manipulations in the database
      * @param player the player to be updated

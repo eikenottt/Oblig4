@@ -4,6 +4,7 @@ import no.uib.info233.v2017.rei008_jsi014.oblig4.*;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
@@ -31,7 +32,8 @@ public class GUI{
 
     private ButtonPanel menuButtons = new ButtonPanel("Singleplayer", "Multiplayer", "Quit Game"),
                 singleplayerButtons = new ButtonPanel("New Game", "Load Game", "Back To Menu"),
-                attackButtons = new ButtonPanel("Stab", "Slash", "Overhead Swing", "Save Game", "Quit To Menu");
+                gameButtonsSingleplayer = new ButtonPanel("Stab", "Slash", "Overhead Swing", "Save Game", "Quit To Menu"),
+                gameButtonsMultiplayer = new ButtonPanel("Stab", "Slash", "Overhead Swing", "Resign");
 
     private GamePanel gamePanel = new GamePanel();
 
@@ -49,10 +51,10 @@ public class GUI{
         JButton[] buttons = buttonPanell.getButtons();
 
         JOptionPane optionPane = new JOptionPane();
-        System.out.println(optionPane.getInputValue());
 
         player1Name = optionPane.showInputDialog("Player Name:");
-        player1Name = (!Objects.equals(player1Name, "")) ? player1Name : "Player 1";
+        player1Name = (player1Name != null && !player1Name.equals("")) ? player1Name : "Player 1";
+        player1 = new HumanPlayer(player1Name);
         menuPanel.setPlayerName(player1Name);
 
         /*for (int i = 0; i < 500; i++) {
@@ -77,6 +79,25 @@ public class GUI{
         }
     }
 
+    private void loadList(String playerType) {
+        if (Queries.hasConnection()) {
+            listPanel = new ListPanel(playerType);
+            mainFrame.remove(menuPanel);
+            JPanel panel;
+            if(playerType.equals("Singleplayer")){
+                panel = listPanel.getPanel("Load");
+            }
+            else {
+                panel = listPanel.getPanel("Join");
+            }
+            mainFrame.changePanel(panel);
+            Debugger.print("Saved games successfully retrieved");
+        } else {
+            JOptionPane.showMessageDialog(mainFrame, "You are not connected to Wildboy", "Connection error", JOptionPane.ERROR_MESSAGE);
+            Debugger.print("There was a problem loading the saved games");
+        }
+    }
+
     private class MainFrame extends JFrame {
 
         String playerName, fstBtn, sndBtn, trdBtn;
@@ -85,6 +106,7 @@ public class GUI{
         public MainFrame(String title) {
             super(title);
             setUI();
+            setResizable(false);
             setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
             setSize(1000, 500);
@@ -361,11 +383,11 @@ public class GUI{
 
         }
 
-        public JPanel setGame(GameMaster gameMaster) {
+        public JPanel setGame(GameMaster gameMaster, ButtonPanel buttonPanel) {
             removeAll();
             add(new LabelPanel(gameMaster));
 
-            add(attackButtons);
+            add(buttonPanel);
 
             return this;
         }
@@ -400,14 +422,23 @@ public class GUI{
                     x=0;
                     y++;
                 }
-                if((i%3)+1 == 2) {
-                    System.out.println(button1.getText()); //SOUT
-                }
                 gbc.weighty=10;
                 gbc.gridx = x;
                 gbc.gridy = y;
                 add(button1, gbc);
                 x++;
+            }
+        }
+
+        void makeClickable(String buttonName) {
+            for (int i = 0; i < buttons.length; i++) {
+                if (buttons[i].getText().equals(buttonName)) {
+                    if(buttons[i].isEnabled()) {
+                        buttons[i].setEnabled(false);
+                    }else {
+                        buttons[i].setEnabled(true);
+                    }
+                }
             }
         }
 
@@ -426,20 +457,24 @@ public class GUI{
                         menuPanel.updateButtons(singleplayerButtons);
                         mainFrame.updateFrame();
                         break;
+                    case "Multiplayer":
+                        loadList("Multiplayer");
+                        break;
                     case "New Game":
                         player1 = new HumanPlayer(player1Name);
                         player2 = new AggressivePlayer("CPU");
                         gameMaster = new GameMaster();
                         gameMaster.setPlayers(player1, player2);
                         mainFrame.remove(menuPanel);
-                        mainFrame.changePanel(gamePanel.setGame(gameMaster));
+                        mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsSingleplayer));
                         break;
                     case "Back To Menu":
                         menuPanel.updateButtons(menuButtons);
                         mainFrame.updateFrame();
                         break;
-                    case "OK":
-
+                    case "Host Game":
+                        gameMaster = new GameMaster();
+                        gameMaster.hostGame(player1);
                         break;
                     case "Save Game":
                         if(gameMaster != null) {
@@ -449,16 +484,7 @@ public class GUI{
                         }
                         break;
                     case "Load Game":
-                        if(Queries.hasConnection()) {
-                            listPanel = new ListPanel("Singleplayer");
-                            mainFrame.remove(menuPanel);
-                            mainFrame.changePanel(listPanel.getPanel("Load"));
-                            Debugger.print("Saved games successfully retrieved");
-                        }
-                        else {
-                            JOptionPane.showMessageDialog(mainFrame, "You are not connected to Wildboy", "Connection error", JOptionPane.ERROR_MESSAGE);
-                            Debugger.print("There was a problem loading the saved games");
-                        }
+                        loadList("Singleplayer");
                         break;
                     case "Stab":
                         break;
@@ -490,10 +516,24 @@ public class GUI{
         JPanel getPanel(String join) {
             JPanel m = new JPanel();
             ArrayList<JComponent> arr = new ArrayList<>();
+
             arr.add(new JLabel("Playername"));
             arr.add(new JLabel("Highscore", JLabel.CENTER));
             arr.add(new JLabel(join +" Game"));
-            array.add(arr);
+            ArrayList<ArrayList<JComponent>> arrayList = new ArrayList<>();
+            arrayList.add(arr);
+
+            ArrayList<JComponent> fred = new ArrayList<>();
+            JLabel tom = new JLabel("");
+            tom.setPreferredSize(new Dimension(0,20));
+            fred.add(new JLabel(""));
+            fred.add(tom);
+            fred.add(new JLabel(""));
+            array.add(fred);
+
+            JPanel k = new JPanel(new BorderLayout());
+            k.setPreferredSize(new Dimension(1000, 50));
+            amount(k, arrayList);
             getFromStuff(join);
 
             m.setLayout(new BoxLayout(m, BoxLayout.Y_AXIS));
@@ -501,7 +541,7 @@ public class GUI{
 
             JScrollPane scrollPane = new JScrollPane(m);
             //scrollPane.setForeground(new Color(70, 70, 70));
-
+            add(k, BorderLayout.NORTH);
             add(scrollPane, BorderLayout.CENTER);
 
             return this;
@@ -544,7 +584,6 @@ public class GUI{
         void getFromStuff(String join) {
             for (String id : playerMap.keySet()) {
                 String hostName = playerMap.get(id).get(1);
-                System.out.println(id);
                 ArrayList<JComponent> array2 = new ArrayList<>();
                 array2.add(new JLabel(hostName));
                 array2.add(new JLabel(playerMap.get(id).get(0), JLabel.CENTER));
@@ -552,12 +591,16 @@ public class GUI{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if(join.equals("Join")){
-                            gameMaster.joinGame(hostName, player1);
+                            gameMaster = new GameMaster();
+                            gameMaster.joinGame(id, player1);
+                            gamePanel.setGame(gameMaster, gameButtonsMultiplayer);
+                            mainFrame.remove(listPanel);
+                            mainFrame.changePanel(gamePanel);
                         }
                         else {
                             gameMaster = new GameMaster();
                             gameMaster.loadGame(id);
-                            gamePanel.setGame(gameMaster);
+                            gamePanel.setGame(gameMaster, gameButtonsSingleplayer);
                             mainFrame.remove(listPanel);
                             mainFrame.changePanel(gamePanel);
                             }

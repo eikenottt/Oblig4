@@ -60,6 +60,7 @@ public class GameMaster {
     public void startGame(){
         setGameOver(false);
         Debugger.print(player1Name + " vs " + player2Name + "\n");
+        //TODO change makeNextMove with listenToPlayerMove ?
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
         player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
     }
@@ -70,9 +71,7 @@ public class GameMaster {
      * @param player player
      * @param energyUse energyUse
      */
-    void listenToPlayerMove(Player player, int energyUse) {
-
-        boolean bothPlayersMoved = false;
+    void listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
 
         if(!gameOver) { // Game Not Over
 
@@ -84,7 +83,6 @@ public class GameMaster {
         }
 
         if(this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
-            bothPlayersMoved = true;
             evaluateTurn();
         }
 
@@ -203,20 +201,20 @@ public class GameMaster {
         float pointsPlayer1 = getPointsFromPosition(gamePosition);
         float pointsPlayer2 = getPointsFromPosition(gamePosition*-1);
 
-        System.out.println("There have been played " + gameRounds + " rounds!");
+        System.out.println("There have been played " + gameRounds + " rounds!"); //SOUT
 
         Debugger.print("There have been played " + gameRounds + " rounds!");
 
         if(pointsPlayer1 > pointsPlayer2) {
-            System.out.println(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2);
+            System.out.println(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2); //SOUT
             Debugger.print(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2);
         }
         else if(pointsPlayer2 > pointsPlayer1) {
-            System.out.println(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1);
+            System.out.println(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1); //SOUT
             Debugger.print(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1);
         }
         else {
-            System.out.println("The game ended in a draw");
+            System.out.println("The game ended in a draw"); //SOUT
             Debugger.print("Nice Tie - The game ended in a draw");
         }
 
@@ -233,7 +231,7 @@ public class GameMaster {
         Queries.updateSavedGame(this);
     }
 
-    public void hostGame(){
+    public void hostGame(Player player1){
         //TODO When a HumanPlayer creates a new multiplayer game, he is "hosting" the game.
         Queries.openGame(player1);
     }
@@ -242,9 +240,14 @@ public class GameMaster {
         //TODO displays the available games that players can join in the multiplayer section.
     }
 
-    public void joinGame(String player1, Player player2){
+    public void joinGame(String player1_random, Player player2){
         //TODO Whe the player joins the game, a new game should start with the host as player one
-        Queries.joinGame(player1, player2);
+        if(Queries.joinGame(player1_random, player2)){
+            Queries.createGame(this, player2, player1_random);
+        }else {
+            Debugger.print("Could not join game");
+        }
+
     }
 
 
@@ -269,8 +272,12 @@ public class GameMaster {
     public Player getSpecificPlayer(int playerNumber){
         if(playerNumber == 2){
             return this.player2;
-        }else{
+        }else if(playerNumber == 1){
             return this.player1;
+        }
+        else {
+            Debugger.print("There is no such player");
+            return null;
         }
     }
 
@@ -302,6 +309,7 @@ public class GameMaster {
         return gameID;
     }
 
+    // TODO GameID må ikkje være lenger enn 20 på game_in_progress
     private void setGameID() {
         gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
     }
@@ -320,10 +328,6 @@ public class GameMaster {
 
     public int getGameRounds() {
         return gameRounds;
-    }
-
-    public void setGameRounds(int gameRounds) {
-        this.gameRounds = gameRounds;
     }
 
     /**

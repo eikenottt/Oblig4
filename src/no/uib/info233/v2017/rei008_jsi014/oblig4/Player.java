@@ -19,6 +19,7 @@ public abstract class Player {
     protected int currentEnergy;
     protected Random rand = new Random();
     protected boolean hasPulse;
+    protected int playerMove;
 
     private GameMaster gameMaster;
 
@@ -126,6 +127,10 @@ public abstract class Player {
 
     public boolean getPulse() {
         return hasPulse;
+    }
+
+    public int getPlayerMove() {
+        return playerMove;
     }
 
 
