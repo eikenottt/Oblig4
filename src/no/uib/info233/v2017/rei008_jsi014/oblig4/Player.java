@@ -202,11 +202,11 @@ public abstract class Player {
 
     public boolean useOverheadSwing(){
         boolean available = false;
-        if (currentEnergy > 0){
+        if (currentEnergy > 15){
             available = true;
         }
         if (!available){
-            Debugger.print("You don't have enough energy!");
+            Debugger.print("You don't have enough energy to use overhead swing!");
         }
 
         return available;
@@ -218,7 +218,7 @@ public abstract class Player {
             available = true;
         }
         if (!available){
-            Debugger.print("You don't have enough energy!");
+            Debugger.print("You don't have enough energy to use stab!");
         }
 
         return available;
@@ -230,7 +230,7 @@ public abstract class Player {
             available = true;
         }
         if (!available){
-            Debugger.print("You don't have enough energy!");
+            Debugger.print("You don't have enough energy to use slash!");
         }
 
         return available;

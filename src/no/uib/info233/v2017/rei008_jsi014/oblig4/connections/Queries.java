@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 /**
@@ -413,5 +414,36 @@ public final class Queries {
     }
 
 
+    public static int[] getPlayerMove(String gameID) {
 
+        int[] playerMoves = new int[2];
+
+        try {
+
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT player_1_move, player_2_move FROM oblig4.game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameID);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if(resultSet.next()){
+                int player1Move = resultSet.getInt(1);
+                int player2Move = resultSet.getInt(2);
+
+                 playerMoves[0] = player1Move;
+                 playerMoves[1] = player2Move;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
+        } catch (Exception e){
+            Debugger.print("EXCEPTION: " +e.getMessage());
+        }
+
+        return playerMoves;
+
+
+    }
 }
