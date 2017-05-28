@@ -197,6 +197,27 @@ public class GameMaster {
         return gameLoaded;
     }
 
+    public void startMultiplayerGame(String player2Name, String player2ID){
+
+
+        //add joinedPlayer
+        Player player2 = new HumanPlayer(player2Name);
+        player2.setRandom(player2ID);
+        setPlayers(this.getSpecificPlayer(1), player2);
+        this.player2Name = player2Name;
+
+        //reset the GameMaster
+        gamePosition = 0;
+        gameOver = false;
+        p1_energyUse = -1;
+        p2_energyUse = -1;
+        gameRounds = 0;
+
+
+
+
+    }
+
 
     /**
      * Runs when the game is over and updates the database
@@ -257,6 +278,7 @@ public class GameMaster {
         //TODO create new MULTIPLAYER game here
 
 
+
     }
 
     public void listGames(){
@@ -267,6 +289,7 @@ public class GameMaster {
         //TODO Whe the player joins the game, a new game should start with the host as player one
         if(Queries.joinGame(player1_random, player2)){
             Queries.createGame(this, player2, player1_random);
+
         }else {
             Debugger.print("Could not join game");
         }
