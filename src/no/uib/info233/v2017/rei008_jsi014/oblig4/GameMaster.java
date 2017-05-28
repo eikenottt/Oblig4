@@ -62,7 +62,6 @@ public class GameMaster {
         Debugger.print(player1Name + " vs " + player2Name + "\n");
         //TODO change makeNextMove with listenToPlayerMove ?
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
-        player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
     }
 
     /**
@@ -71,7 +70,9 @@ public class GameMaster {
      * @param player player
      * @param energyUse energyUse
      */
-    void listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
+    public boolean listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
+
+        boolean bothHasMoved = false;
 
         if(!gameOver) { // Game Not Over
 
@@ -83,8 +84,10 @@ public class GameMaster {
         }
 
         if(this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
+            bothHasMoved = true;
             evaluateTurn();
         }
+        return bothHasMoved;
 
     }
 
@@ -130,8 +133,8 @@ public class GameMaster {
 
             if(!isGameOver()) {
                 // Players makes their next move
-                player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
-                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
+                /*player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
+                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());*/
             }
             else {
                 updateRanking();
@@ -311,7 +314,11 @@ public class GameMaster {
 
     // TODO GameID må ikkje være lenger enn 20 på game_in_progress
     private void setGameID() {
-        gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
+        if(player1.hasPulse && player2.hasPulse) {
+            gameID = player1.getRandom() + player2.getRandom();
+        } else {
+            gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
+        }
     }
 
     public void setGameID(String gameID) {

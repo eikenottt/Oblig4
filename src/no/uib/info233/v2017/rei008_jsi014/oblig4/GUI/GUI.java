@@ -4,7 +4,6 @@ import no.uib.info233.v2017.rei008_jsi014.oblig4.*;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
@@ -14,7 +13,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Objects;
 import java.util.TreeMap;
 
 /**
@@ -38,6 +36,8 @@ public class GUI{
     private GamePanel gamePanel = new GamePanel();
 
     private ListPanel listPanel;
+
+    private LabelPanel labelPanel;
 
     private MenuPanel menuPanel = new MenuPanel(player1Name, Queries.getScore(player1Name), menuButtons);
 
@@ -70,12 +70,13 @@ public class GUI{
 
     }
 
-    private void quitToMenu() {
+    private void quitToMenu(ButtonPanel buttonPanel) {
         int choice = JOptionPane.showOptionDialog(mainFrame, "Are you sure you want to quit the current game?", "Quit Current Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         if(choice == JOptionPane.YES_OPTION) {
             menuPanel.updateButtons(menuButtons);
             mainFrame.remove(gamePanel);
             mainFrame.changePanel(menuPanel);
+            buttonPanel.makeClickable();
         }
     }
 
@@ -272,6 +273,8 @@ public class GUI{
     private class LabelPanel extends JPanel {
 
         GridBagConstraints gbc = new GridBagConstraints();
+        JProgressBar player1EnergyBar, player2EnergyBar;
+        GameMaster gameMaster;
 
         public LabelPanel(String playerName, Float score) {
             setLayout(new GridBagLayout());
@@ -308,8 +311,8 @@ public class GUI{
             JLabel numRoundsLabel = new JLabel("Round " + gameMaster.getGameRounds(), JLabel.CENTER);
 
             // EnergyBars
-            JProgressBar player1EnergyBar = new JProgressBar(0,100);
-            JProgressBar player2EnergyBar = new JProgressBar(0,100);
+            player1EnergyBar = new JProgressBar(0,100);
+            player2EnergyBar = new JProgressBar(0,100);
             player1EnergyBar.setForeground(Color.RED);
             player2EnergyBar.setBackground(Color.BLUE);
             player2EnergyBar.setForeground(new Color(70,70,70));
@@ -350,6 +353,17 @@ public class GUI{
             add(numRoundsLabel, gbc);
 
         }
+
+        public void setProgressbarEnergy(int player1energy, int player2energy) {
+            player1EnergyBar.setValue(player1energy);
+            player1EnergyBar.setString(player1energy+"");
+            player2EnergyBar.setValue(100- player2energy);
+            player2EnergyBar.setString(player2energy+"");
+        }
+
+        public void setGameMaster(GameMaster gameMaster) {
+            this.gameMaster = gameMaster;
+        }
     }
 
     private class ImagePanel extends JPanel {
@@ -385,7 +399,8 @@ public class GUI{
 
         public JPanel setGame(GameMaster gameMaster, ButtonPanel buttonPanel) {
             removeAll();
-            add(new LabelPanel(gameMaster));
+            labelPanel = new LabelPanel(gameMaster);
+            add(labelPanel);
 
             add(buttonPanel);
 
@@ -430,17 +445,19 @@ public class GUI{
             }
         }
 
-        void makeClickable(String buttonName) {
+        void makeUnclickable(String buttonName) {
             for (int i = 0; i < buttons.length; i++) {
                 if (buttons[i].getText().equals(buttonName)) {
-                    if(buttons[i].isEnabled()) {
-                        buttons[i].setEnabled(false);
-                    }else {
-                        buttons[i].setEnabled(true);
-                    }
+                    buttons[i].setEnabled(false);
                 }
             }
         }
+        void makeClickable() {
+            for (int i = 0; i < buttons.length; i++) {
+                buttons[i].setEnabled(true);
+            }
+        }
+
 
         public JButton[] getButtons() {
             return buttons;
@@ -467,6 +484,7 @@ public class GUI{
                         gameMaster.setPlayers(player1, player2);
                         mainFrame.remove(menuPanel);
                         mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsSingleplayer));
+                        gameMaster.startGame();
                         break;
                     case "Back To Menu":
                         menuPanel.updateButtons(menuButtons);
@@ -487,9 +505,16 @@ public class GUI{
                         loadList("Singleplayer");
                         break;
                     case "Stab":
+                        doRound(player1.stab(player1.getCurrentEnergy()));
+                        break;
+                    case "Slash":
+                        doRound(player1.slash(player1.getCurrentEnergy()));
+                        break;
+                    case "Overhead Swing":
+                        doRound(player1.overheadSwing(player1.getCurrentEnergy()));
                         break;
                     case "Quit To Menu":
-                        quitToMenu();
+                        quitToMenu(ButtonPanel.this);
                         break;
 
                     case "Quit Game":
@@ -499,6 +524,24 @@ public class GUI{
 
                 }
             }
+        }
+
+        private void doRound(int energyUsed) {
+            int currentEnergy = player1.getCurrentEnergy();
+            if(!player1.useStab()){
+                makeUnclickable("Stab");
+            }
+            if(!player1.useOverheadSwing()) {
+                makeUnclickable("Overhead Swing");
+            }
+            if(!player1.useSlash()){
+                makeUnclickable("Slash");
+            }
+            player1.updateEnergy(-energyUsed);
+            gameMaster.listenToPlayerMove(player1, energyUsed);
+            labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
+            mainFrame.validate();
+            mainFrame.repaint();
         }
     }
 

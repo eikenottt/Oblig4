@@ -53,7 +53,7 @@ public abstract class Player {
      * @param yourEnergy player energy
      * @param opponentEnergy opponent energy
      */
-    public abstract void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy);
+    public abstract boolean makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy);
 
     /**
      * Updates the energy value for player
@@ -192,6 +192,46 @@ public abstract class Player {
         }
             Debugger.print(this.name + " uses slash, with a force of " + 5 + " energy!");
             return energyUsage;
+    }
+
+    public boolean useOverheadSwing(){
+        boolean available = false;
+        if (currentEnergy > 0){
+            available = true;
+            this.overheadSwing(currentEnergy);
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy!");
+        }
+
+        return available;
+    }
+
+    public boolean useStab(){
+        boolean available = false;
+        if (currentEnergy >= 1){
+            available = true;
+            this.stab(currentEnergy);
+            System.out.println("Avalibility: " + available);//Sout
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy!");
+        }
+
+        return available;
+    }
+
+    public boolean useSlash(){
+        boolean available = false;
+        if(currentEnergy>5){
+            available = true;
+            this.slash(currentEnergy);
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy!");
+        }
+
+        return available;
     }
 
 

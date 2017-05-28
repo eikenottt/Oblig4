@@ -97,12 +97,6 @@ public final class Queries {
                 statement.setInt(9, gameMaster.getGameRounds());
                 statement.executeUpdate();
 
-
-                statement = conn.prepareStatement("DELETE FROM oblig4.open_games WHERE player_1_random = ? AND player_2_random = ?");
-                statement.setString(1, p1_random);
-                statement.setString(2, player2.getRandom());
-                statement.executeUpdate();
-
                 gameMaster.startGame();
 
             }else {
