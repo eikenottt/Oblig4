@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TreeMap;
 
-/**
- * Created by runeeikemo on 27.05.2017.
- */
+
 public class GUI{
     private String player1Name = "Player 1";
     private long time = System.currentTimeMillis();
@@ -537,7 +535,6 @@ public class GUI{
             if(!player1.useSlash()){
                 makeUnclickable("Slash");
             }
-            player1.updateEnergy(-energyUsed);
             gameMaster.listenToPlayerMove(player1, energyUsed);
             labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
             mainFrame.validate();

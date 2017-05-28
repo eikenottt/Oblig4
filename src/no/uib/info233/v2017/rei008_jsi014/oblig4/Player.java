@@ -15,11 +15,11 @@ import java.util.UUID;
 public abstract class Player {
 
     private String name;
-    protected String playerID;
-    protected int currentEnergy;
-    protected Random rand = new Random();
-    protected boolean hasPulse;
-    protected int playerMove;
+    private String playerID;
+    private int currentEnergy;
+    Random rand = new Random();
+    boolean hasPulse;
+    int playerMove;
 
     private GameMaster gameMaster;
 
@@ -29,7 +29,7 @@ public abstract class Player {
      * sets currentEnergy as 100 by default
      * @param name name
      */
-    public Player(String name) {
+    Player(String name) {
         this.name = name;
         this.currentEnergy = 100;
         makePlayerID();
@@ -38,9 +38,9 @@ public abstract class Player {
 
     /**
      * Sets the gameMaster
-     * @param gameMaster
+     * @param gameMaster the game to register for
      */
-    public void registerGameMaster(GameMaster gameMaster) {
+    void registerGameMaster(GameMaster gameMaster) {
         this.gameMaster = gameMaster;
     }
 
@@ -53,13 +53,13 @@ public abstract class Player {
      * @param yourEnergy player energy
      * @param opponentEnergy opponent energy
      */
-    public abstract boolean makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy);
+    public abstract void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy);
 
     /**
      * Updates the energy value for player
      * @param value - adds value to the currentEnergy
      */
-    public void updateEnergy(int value) {
+    void updateEnergy(int value) {
         this.currentEnergy += value;
         if (currentEnergy < 0) {
             currentEnergy = 0;
@@ -121,7 +121,7 @@ public abstract class Player {
         this.currentEnergy = currentEnergy;
     }
 
-    public GameMaster getGameMaster() {
+    GameMaster getGameMaster() {
         return gameMaster;
     }
 
@@ -147,12 +147,16 @@ public abstract class Player {
     public int overheadSwing(int yourEnergy){
         int randNumber;
         randNumber = rand.nextInt(15);
+        int energyUsage;
 
         if(yourEnergy > 36){
-            return 20 + randNumber;
+            energyUsage = 20 + randNumber;
         }else {
-            return getCurrentEnergy();
+            energyUsage =  getCurrentEnergy();
         }
+        updateEnergy(-energyUsage);
+        Debugger.print(this.name + " uses stab, with a force of " + energyUsage + " energy!"); // Sends message to debugger
+        return energyUsage;
     }
 
     /**
@@ -171,6 +175,7 @@ public abstract class Player {
         }else if(yourEnergy > 5 && yourEnergy <= 15){
             energyUsage = 5;
         }
+        updateEnergy(-energyUsage);
         Debugger.print(this.name + " uses stab, with a force of " + energyUsage + " energy!"); // Sends message to debugger
 
         return energyUsage;
@@ -188,17 +193,17 @@ public abstract class Player {
         int randNumber = this.rand.nextInt(15);
 
         if (yourEnergy >= 20) {
-            return energyUsage + randNumber;
+            energyUsage = energyUsage + randNumber;
         }
-            Debugger.print(this.name + " uses slash, with a force of " + 5 + " energy!");
-            return energyUsage;
+        updateEnergy(-energyUsage);
+        Debugger.print(this.name + " uses slash, with a force of " + energyUsage + " energy! " + currentEnergy);
+        return energyUsage;
     }
 
     public boolean useOverheadSwing(){
         boolean available = false;
         if (currentEnergy > 0){
             available = true;
-            this.overheadSwing(currentEnergy);
         }
         if (!available){
             Debugger.print("You don't have enough energy!");
@@ -211,8 +216,6 @@ public abstract class Player {
         boolean available = false;
         if (currentEnergy >= 1){
             available = true;
-            this.stab(currentEnergy);
-            System.out.println("Avalibility: " + available);//Sout
         }
         if (!available){
             Debugger.print("You don't have enough energy!");
@@ -225,7 +228,6 @@ public abstract class Player {
         boolean available = false;
         if(currentEnergy>5){
             available = true;
-            this.slash(currentEnergy);
         }
         if (!available){
             Debugger.print("You don't have enough energy!");

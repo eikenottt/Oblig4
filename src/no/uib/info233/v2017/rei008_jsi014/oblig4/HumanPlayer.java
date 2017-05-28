@@ -1,8 +1,6 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
 
-import java.util.Scanner;
-
 public class HumanPlayer extends Player {
 
     /**
@@ -18,9 +16,9 @@ public class HumanPlayer extends Player {
     }
 
     @Override
-    public boolean makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
+    public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
         updateEnergy(-playerMove);
-        return getGameMaster().listenToPlayerMove(this, playerMove);
+        getGameMaster().listenToPlayerMove(this, playerMove);
 
     }
 
