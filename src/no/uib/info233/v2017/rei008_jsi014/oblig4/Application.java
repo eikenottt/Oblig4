@@ -12,21 +12,22 @@ import java.util.Objects;
 public class Application {
 
     public static void main(String[] args) {
+//
+//        Player pTest = new HumanPlayer("Player 1");
+//
+//    pTest.setPlayerID(Queries.getPlayerRandom("Player 1"));
+//
+//        Player p2 = new HumanPlayer("HoggiMcLoggi");
+//        GameMaster gm = new GameMaster();
+//        gm.setPlayers(pTest, p2);
+//        Queries.createGame(gm);
 
-        Player pTest = new HumanPlayer("Player 1");
-
-    pTest.setRandom(Queries.getPlayerRandom("Player 1"));
-
-        Player p2 = new HumanPlayer("Hoggi");
-        GameMaster gm = new GameMaster();
-        gm.setPlayers(pTest, p2);
-        gm.hostGame(gm.getSpecificPlayer(1));
 
 
 
-//        SwingUtilities.invokeLater(() -> {
-//            new GUI();
-//        });
+        SwingUtilities.invokeLater(() -> {
+            new GUI();
+        });
 
         /*GameMaster gameMaster = new GameMaster();
         Player player1 = new AggressivePlayer("Finne");

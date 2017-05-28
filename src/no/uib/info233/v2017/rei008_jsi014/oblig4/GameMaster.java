@@ -207,14 +207,13 @@ public class GameMaster {
 
     }
 
-    public void startMultiplayerGame(String player2Name, String player2ID){
+    public void startMultiplayerGame(Player player1, String player2Name, String player2ID){
 
 
         //add joinedPlayer
         Player player2 = new HumanPlayer(player2Name);
-        player2.setRandom(player2ID);
-        setPlayers(this.getSpecificPlayer(1), player2);
-        this.player2Name = player2Name;
+        player2.setPlayerID(player2ID);
+        setPlayers(player1, player2);
 
         //reset the GameMaster
         gamePosition = 0;
@@ -222,6 +221,9 @@ public class GameMaster {
         p1_energyUse = -1;
         p2_energyUse = -1;
         gameRounds = 0;
+
+        //Creates a new game
+        Queries.createGame(this);
 
 
 
@@ -278,16 +280,13 @@ public class GameMaster {
         Timer t = new Timer(2000, e -> {
             hasFoundOpponent[0] = Queries.hasJoined(player1);
             System.out.println("hasFoundOpponent - " + hasFoundOpponent[0]);//SOUT
-
+            if (hasFoundOpponent[0]){
+                ((Timer) e.getSource()).stop();
+                String[] p2 = Queries.getPlayerValues();
+                this.startMultiplayerGame(player1, p2[0], p2[1]);
+            }
         });
-        while(!hasFoundOpponent[0]){
-
-            t.start();
-        }
-        //TODO create new MULTIPLAYER game here
-
-
-
+        t.start();
     }
 
     public void listGames(){
