@@ -371,6 +371,28 @@ public class GameMaster {
         return points;
     }
 
+    /**
+     * A Bolean test to check if both players has made a move in the current
+     * round of the game.
+     * @return True if both players have made move this round.
+     */
+    public boolean moveChecker(){
+
+       int playerMoves[] = Queries.getPlayerMove(gameID); //Gather fresh info of the current moves
+
+       int player1Move = playerMoves[0];
+       int player2Move = playerMoves[1];
+
+       boolean isNewRound = false;
+       if (player1Move == player2Move){ // Checks if both players has made a move, this round.
+           isNewRound = true;
+       }
+
+       return isNewRound;
+    }
+
+    //TODO updateMove --> Sende informasjon om ()
+
 
 
 }
