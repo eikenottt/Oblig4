@@ -22,7 +22,7 @@ public class GUI{
 
     private GameMaster gameMaster;
 
-    private Player player1, player2;
+    private Player player, player2;
 
     private MainFrame mainFrame = new MainFrame("Game");
 
@@ -56,7 +56,7 @@ public class GUI{
 
         player1Name = optionPane.showInputDialog("Player Name:");
         player1Name = (player1Name != null && !player1Name.equals("")) ? player1Name : "Player 1";
-        player1 = new HumanPlayer(player1Name);
+        player = new HumanPlayer(player1Name);
         menuPanel.setPlayerName(player1Name);
 
         /*for (int i = 0; i < 500; i++) {
@@ -104,9 +104,21 @@ public class GUI{
         return null;
     }
 
-    private class MainFrame extends JFrame {
+    private void restrictor(ButtonPanel buttonPanel) {
+        if(player.useStab()){
+            buttonPanel.makeUnclickable("Stab");
+        }
+        if(player.useOverheadSwing()) {
+            buttonPanel.makeUnclickable("Overhead Swing");
+        }
+        if(player.useSlash()){
+            buttonPanel.makeUnclickable("Slash");
+        }
+    }
 
+    private class MainFrame extends JFrame {
         String playerName, fstBtn, sndBtn, trdBtn;
+
         Float score;
 
         public MainFrame(String title) {
@@ -225,16 +237,16 @@ public class GUI{
             revalidate();
             repaint();
         }
-
         public MainFrame getFrame() {
             return this;
         }
+
     }
 
     private class MenuPanel extends JPanel {
-
         String playerName;
         Float score;
+
         ButtonPanel buttonPanel;
 
         public MenuPanel(String playerName, Float score, ButtonPanel buttonPanel) {
@@ -251,12 +263,12 @@ public class GUI{
             add(imagePanel);
         }
 
+
+
         public void updateSection(JPanel panel, int sectionNr) {
             remove(sectionNr);
             add(panel, sectionNr);
         }
-
-
 
         public void setPlayerName(String playerName) {
             this.playerName = playerName;
@@ -271,9 +283,9 @@ public class GUI{
     }
 
     private class LabelPanel extends JPanel {
-
         GridBagConstraints gbc = new GridBagConstraints();
         JProgressBar player1EnergyBar, player2EnergyBar;
+
         GameMaster gameMaster;
 
         public LabelPanel(String playerName, Float score) {
@@ -362,15 +374,15 @@ public class GUI{
             player2EnergyBar.setValue(100- player2energy);
             player2EnergyBar.setString(player2energy+"");
         }
-
         public void setGameMaster(GameMaster gameMaster) {
             this.gameMaster = gameMaster;
         }
+
     }
 
     private class ImagePanel extends JPanel {
-
         GridBagConstraints gbc;
+
         ImageIcon imageIcon;
 
         public ImagePanel(String imgPath) {
@@ -385,14 +397,13 @@ public class GUI{
             add(imageIconLabel, gbc);
 
         }
-
         public ImageIcon getImage() {
             return imageIcon;
         }
+
     }
 
     private class GamePanel extends JPanel{
-
 
         public GamePanel() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -446,7 +457,6 @@ public class GUI{
                 x++;
             }
         }
-
         void makeUnclickable(String buttonName) {
             for (int i = 0; i < buttons.length; i++) {
                 if (buttons[i].getText().equals(buttonName)) {
@@ -454,17 +464,17 @@ public class GUI{
                 }
             }
         }
+
+
         void makeClickable() {
             for (int i = 0; i < buttons.length; i++) {
                 buttons[i].setEnabled(true);
             }
         }
 
-
         public JButton[] getButtons() {
             return buttons;
         }
-
         private class ButtonListener extends Component implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -482,10 +492,10 @@ public class GUI{
                         mainFrame.updateFrame();
                         break;
                     case "New Game":
-                        player1 = new HumanPlayer(player1Name);
+                        player = new HumanPlayer(player1Name);
                         player2 = new AggressivePlayer("CPU");
                         gameMaster = new GameMaster();
-                        gameMaster.setPlayers(player1, player2);
+                        gameMaster.setPlayers(player, player2);
                         mainFrame.remove(menuPanel);
                         mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsSingleplayer));
                         gameMaster.startGame();
@@ -497,7 +507,7 @@ public class GUI{
                         break;
                     case "Host Game":
                         gameMaster = new GameMaster();
-                        gameMaster.hostGame(player1);
+                        gameMaster.hostGame(player);
                         break;
                     case "Save Game":
                         if(gameMaster != null) {
@@ -512,20 +522,20 @@ public class GUI{
                         mainFrame.updateFrame();
                         break;
                     case "Stab":
-                        doRound(player1.stab(player1.getCurrentEnergy()));
+                        doRound(player.stab(player.getCurrentEnergy()));
                         break;
                     case "Slash":
-                        doRound(player1.slash(player1.getCurrentEnergy()));
+                        doRound(player.slash(player.getCurrentEnergy()));
                         break;
                     case "Overhead Swing":
-                        doRound(player1.overheadSwing(player1.getCurrentEnergy()));
+                        doRound(player.overheadSwing(player.getCurrentEnergy()));
                         break;
                     case "Quit To Menu":
                         quitToMenu(ButtonPanel.this);
                         break;
                     case "Resign":
                         if(quitToMenu(ButtonPanel.this)) {
-                            gameMaster.resign(player1);
+                            gameMaster.resign(player);
                         }
                         break;
                     case "Quit Game":
@@ -535,26 +545,27 @@ public class GUI{
 
                 }
             }
-        }
 
+        }
         private void doRound(int energyUsed) {
 
-            gameMaster.updateMove(player1);
-            int currentEnergy = player1.getCurrentEnergy();
+            gameMaster.updateMove(player);
+            int currentEnergy = player.getCurrentEnergy();
 
-            gameMaster.listenToPlayerMove(player1, energyUsed);
+            gameMaster.listenToPlayerMove(player, energyUsed);
             System.out.println(player2.toString());
             player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
             labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
             mainFrame.validate();
             mainFrame.repaint();
         }
+
     }
 
     private class ListPanel extends JPanel {
-
         private ArrayList<ArrayList<JComponent>> array = new ArrayList<>();
         private TreeMap<String, ArrayList<String>> playerMap = new TreeMap<>();
+
         private GridBagConstraints gbc = new GridBagConstraints();
 
         public ListPanel(String gameType) {
@@ -641,7 +652,24 @@ public class GUI{
                     public void actionPerformed(ActionEvent e) {
                         if(join.equals("Join")){
                             gameMaster = new GameMaster();
-                            gameMaster.joinGame(id, player1);
+                            JFrame loading = new JFrame("Loading");
+                            loading.add(new LoadingPanel("Joining Game ..."));
+                            loading.setPreferredSize(new Dimension(300, 300));
+                            loading.setSize(500, 300);
+                            loading.setLocationRelativeTo(null);
+                            loading.setVisible(true);
+                            mainFrame.setVisible(false);
+                            loading.dispose();
+                            mainFrame.setVisible(true);
+
+                            Timer timer = new Timer(2000, evt -> {
+                                boolean hasJoined = gameMaster.joinGame(id, player);
+                                if(hasJoined) {
+                                    ((Timer)evt.getSource()).stop();
+                                }
+                            });
+                            String gameId = id + player.getRandom();
+                            gameMaster = gameMaster.getGameInProgress(gameId);
                             gamePanel.setGame(gameMaster, gameButtonsMultiplayer);
                             restrictor(gameButtonsMultiplayer);
                             mainFrame.remove(listPanel);
@@ -675,15 +703,21 @@ public class GUI{
 
     }
 
-    private void restrictor(ButtonPanel buttonPanel) {
-        if(player1.useStab()){
-            buttonPanel.makeUnclickable("Stab");
-        }
-        if(player1.useOverheadSwing()) {
-            buttonPanel.makeUnclickable("Overhead Swing");
-        }
-        if(player1.useSlash()){
-            buttonPanel.makeUnclickable("Slash");
+    private class LoadingPanel extends JPanel {
+        private ImageIcon waitingIcon = new ImageIcon(getClass().getResource("/img/loading.gif"));
+
+        private JLabel messageLabel, imageLabel;
+        private JButton cancelButton;
+
+        public LoadingPanel(String message) {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            messageLabel = new JLabel(message, JLabel.CENTER);
+            imageLabel = new JLabel(waitingIcon);
+            cancelButton = new JButton("Cancel");
+
+            add(messageLabel);
+            add(imageLabel);
+            add(cancelButton);
         }
     }
 }

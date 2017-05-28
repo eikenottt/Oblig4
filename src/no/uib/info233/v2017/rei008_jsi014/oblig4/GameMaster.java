@@ -293,13 +293,14 @@ public class GameMaster {
         //TODO displays the available games that players can join in the multiplayer section.
     }
 
-    public void joinGame(String player1_random, Player player2){
+    public boolean joinGame(String player1_random, Player player2){
         //TODO Whe the player joins the game, a new game should start with the host as player one
         if(!Queries.joinGame(player1_random, player2)){
 
             Debugger.print("Could not join game");
+            return true;
         }
-
+        return false;
     }
 
 

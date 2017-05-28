@@ -12,26 +12,11 @@ import java.util.Objects;
 public class Application {
 
     public static void main(String[] args) {
-//
-//        Player pTest = new HumanPlayer("Player 1");
-//
-//    pTest.setPlayerID(Queries.getPlayerRandom("Player 1"));
-//
-//        Player p2 = new HumanPlayer("HoggiMcLoggi");
-//        GameMaster gm = new GameMaster();
-//        gm.setPlayers(pTest, p2);
-//        String player1Id = gm.getGameID().substring(0,9);
-//        System.out.println(player1Id);
 
 
-
-
-
-
-
-//        SwingUtilities.invokeLater(() -> {
-//            new GUI();
-//        });
+        SwingUtilities.invokeLater(() -> {
+            new GUI();
+        });
 
         /*GameMaster gameMaster = new GameMaster();
         Player player1 = new AggressivePlayer("Finne");
