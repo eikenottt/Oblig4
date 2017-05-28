@@ -34,6 +34,7 @@ public abstract class Player {
         this.currentEnergy = 100;
         makePlayerID();
         hasPulse = false;
+        playerMove = 0;
     }
 
     /**
@@ -101,16 +102,9 @@ public abstract class Player {
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getRandom() {
         return playerID;
-    }
-
-    public void setRandom(String playerID) {
-        this.playerID = playerID;
     }
 
     public int getCurrentEnergy() {
@@ -204,6 +198,7 @@ public abstract class Player {
         boolean available = false;
         if (currentEnergy > 15){
             available = true;
+            playerMove++;
         }
         if (!available){
             Debugger.print("You don't have enough energy to use overhead swing!");
@@ -216,6 +211,7 @@ public abstract class Player {
         boolean available = false;
         if (currentEnergy >= 1){
             available = true;
+            playerMove++;
         }
         if (!available){
             Debugger.print("You don't have enough energy to use stab!");
@@ -228,6 +224,7 @@ public abstract class Player {
         boolean available = false;
         if(currentEnergy>5){
             available = true;
+            playerMove++;
         }
         if (!available){
             Debugger.print("You don't have enough energy to use slash!");

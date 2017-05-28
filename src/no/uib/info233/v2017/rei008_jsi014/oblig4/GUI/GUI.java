@@ -28,14 +28,18 @@ public class GUI{
 
     private ButtonPanel menuButtons = new ButtonPanel("Singleplayer", "Multiplayer", "Quit Game"),
                 singleplayerButtons = new ButtonPanel("New Game", "Load Game", "Back To Menu"),
+                loadButtons = new ButtonPanel("Back To Menu"),
                 gameButtonsSingleplayer = new ButtonPanel("Stab", "Slash", "Overhead Swing", "Save Game", "Quit To Menu"),
-                gameButtonsMultiplayer = new ButtonPanel("Stab", "Slash", "Overhead Swing", "Resign");
+                gameButtonsMultiplayer = new ButtonPanel("Stab", "Slash", "Overhead Swing", "Resign"),
+                multiplayerButtons = new ButtonPanel("Host Game", "Back To Menu", "Refresh");
 
     private GamePanel gamePanel = new GamePanel();
 
     private ListPanel listPanel;
 
     private LabelPanel labelPanel;
+
+    private ImagePanel imagePanel = new ImagePanel(getClass().getResource("/img/icon.png").getPath());
 
     private MenuPanel menuPanel = new MenuPanel(player1Name, Queries.getScore(player1Name), menuButtons);
 
@@ -65,36 +69,39 @@ public class GUI{
         if (choice == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
-
     }
 
-    private void quitToMenu(ButtonPanel buttonPanel) {
+    private boolean quitToMenu(ButtonPanel buttonPanel) {
+        boolean quit = false;
         int choice = JOptionPane.showOptionDialog(mainFrame, "Are you sure you want to quit the current game?", "Quit Current Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         if(choice == JOptionPane.YES_OPTION) {
-            menuPanel.updateButtons(menuButtons);
+            menuPanel.updateSection(menuButtons, 1);
             mainFrame.remove(gamePanel);
             mainFrame.changePanel(menuPanel);
             buttonPanel.makeClickable();
+            quit = true;
         }
+        return quit;
     }
 
-    private void loadList(String playerType) {
+    private JPanel loadList(String playerType) {
         if (Queries.hasConnection()) {
             listPanel = new ListPanel(playerType);
-            mainFrame.remove(menuPanel);
             JPanel panel;
             if(playerType.equals("Singleplayer")){
                 panel = listPanel.getPanel("Load");
+                Debugger.print("Saved games successfully retrieved");
             }
             else {
                 panel = listPanel.getPanel("Join");
+                Debugger.print("Multiplayer games successfully retrieved");
             }
-            mainFrame.changePanel(panel);
-            Debugger.print("Saved games successfully retrieved");
+            return panel;
         } else {
             JOptionPane.showMessageDialog(mainFrame, "You are not connected to Wildboy", "Connection error", JOptionPane.ERROR_MESSAGE);
             Debugger.print("There was a problem loading the saved games");
         }
+        return null;
     }
 
     private class MainFrame extends JFrame {
@@ -180,31 +187,28 @@ public class GUI{
                     if (value instanceof ColorUIResource) {
                         if (keyLower.contains("background"))
                             UIManager.put(key, bg);
-                        if (keyLower.toString().contains("foreground"))
+                        if (keyLower.contains("foreground"))
                             UIManager.put(key, fg);
-                        if (keyLower.toString().contains("button.background"))
+                        if (keyLower.contains("button.background"))
                             UIManager.put(key, buttonBG);
-                        if (keyLower.toString().contains("button.foreground"))
+                        if (keyLower.contains("button.foreground"))
                             UIManager.put(key, fg);
-                        if (keyLower.toString().contains("button.select"))
+                        if (keyLower.contains("button.select"))
                             UIManager.put(key, bg);
-                        if (keyLower.toString().contains("button.focus"))
+                        if (keyLower.contains("button.focus"))
                             UIManager.put(key, buttonBG);
-                        if (keyLower.toString().contains("textfield.background"))
+                        if (keyLower.contains("textfield.background"))
                             UIManager.put(key, fg);
-                        if (keyLower.toString().contains("textfield.foreground"))
+                        if (keyLower.contains("textfield.foreground"))
                             UIManager.put(key, bg);
-                        if (keyLower.toString().contains("list.background"))
+                        if (keyLower.contains("list.background"))
                             UIManager.put(key, buttonBG);
-                        if (keyLower.toString().contains("optionpane.messageforeground")) {
+                        if (keyLower.contains("optionpane.messageforeground"))
                             UIManager.put(key, fg);
-                        }
-                        if (keyLower.toString().contains("progressbar.foreground")) {
+                        if (keyLower.contains("progressbar.foreground"))
                             UIManager.put(key, ColorUIResource.RED);
-                        }
-                        if (keyLower.toString().contains("menu.foreground")) {
+                        if (keyLower.contains("menu.foreground"))
                             UIManager.put(key, fg);
-                        }
                     }
                 }
             }
@@ -244,17 +248,15 @@ public class GUI{
 
             add(buttonPanel);
 
-            add(new ImagePanel(getClass().getResource("/img/icon.png").getPath()));
+            add(imagePanel);
         }
 
-        public void updateButtons(ButtonPanel buttonPanel) {
-            remove(1);
-            add(buttonPanel, 1);
+        public void updateSection(JPanel panel, int sectionNr) {
+            remove(sectionNr);
+            add(panel, sectionNr);
         }
 
-        public String getPlayerName () {
-            return playerName;
-        }
+
 
         public void setPlayerName(String playerName) {
             this.playerName = playerName;
@@ -469,11 +471,13 @@ public class GUI{
 
                 switch (e.getActionCommand()){
                     case "Singleplayer":
-                        menuPanel.updateButtons(singleplayerButtons);
+                        menuPanel.updateSection(singleplayerButtons, 1);
                         mainFrame.updateFrame();
                         break;
                     case "Multiplayer":
-                        loadList("Multiplayer");
+                        menuPanel.updateSection(multiplayerButtons, 1);
+                        menuPanel.updateSection(loadList("Multiplayer"), 2);
+                        mainFrame.updateFrame();
                         break;
                     case "New Game":
                         player1 = new HumanPlayer(player1Name);
@@ -485,7 +489,8 @@ public class GUI{
                         gameMaster.startGame();
                         break;
                     case "Back To Menu":
-                        menuPanel.updateButtons(menuButtons);
+                        menuPanel.updateSection(menuButtons,1);
+                        menuPanel.updateSection(imagePanel, 2);
                         mainFrame.updateFrame();
                         break;
                     case "Host Game":
@@ -500,7 +505,9 @@ public class GUI{
                         }
                         break;
                     case "Load Game":
-                        loadList("Singleplayer");
+                        menuPanel.updateSection(loadButtons, 1);
+                        menuPanel.updateSection(loadList("Singleplayer"),2);
+                        mainFrame.updateFrame();
                         break;
                     case "Stab":
                         doRound(player1.stab(player1.getCurrentEnergy()));
@@ -514,7 +521,11 @@ public class GUI{
                     case "Quit To Menu":
                         quitToMenu(ButtonPanel.this);
                         break;
-
+                    case "Resign":
+                        if(quitToMenu(ButtonPanel.this)) {
+                            gameMaster.resign(player1);
+                        }
+                        break;
                     case "Quit Game":
                         exitProgram();
                         break;
@@ -525,17 +536,13 @@ public class GUI{
         }
 
         private void doRound(int energyUsed) {
+
+            gameMaster.updateMove(player1);
             int currentEnergy = player1.getCurrentEnergy();
-            if(!player1.useStab()){
-                makeUnclickable("Stab");
-            }
-            if(!player1.useOverheadSwing()) {
-                makeUnclickable("Overhead Swing");
-            }
-            if(!player1.useSlash()){
-                makeUnclickable("Slash");
-            }
+
             gameMaster.listenToPlayerMove(player1, energyUsed);
+            System.out.println(player2.toString());
+            player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
             labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
             mainFrame.validate();
             mainFrame.repaint();
@@ -634,6 +641,7 @@ public class GUI{
                             gameMaster = new GameMaster();
                             gameMaster.joinGame(id, player1);
                             gamePanel.setGame(gameMaster, gameButtonsMultiplayer);
+                            restrictor(gameButtonsMultiplayer);
                             mainFrame.remove(listPanel);
                             mainFrame.changePanel(gamePanel);
                         }
@@ -641,6 +649,7 @@ public class GUI{
                             gameMaster = new GameMaster();
                             gameMaster.loadGame(id);
                             gamePanel.setGame(gameMaster, gameButtonsSingleplayer);
+                            restrictor(gameButtonsSingleplayer);
                             mainFrame.remove(listPanel);
                             mainFrame.changePanel(gamePanel);
                             }
@@ -662,5 +671,17 @@ public class GUI{
             }
         }
 
+    }
+
+    private void restrictor(ButtonPanel buttonPanel) {
+        if(player1.useStab()){
+            buttonPanel.makeUnclickable("Stab");
+        }
+        if(player1.useOverheadSwing()) {
+            buttonPanel.makeUnclickable("Overhead Swing");
+        }
+        if(player1.useSlash()){
+            buttonPanel.makeUnclickable("Slash");
+        }
     }
 }

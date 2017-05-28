@@ -446,4 +446,26 @@ public final class Queries {
 
 
     }
+
+    public static void updateMove(GameMaster gameMaster, Player player) {
+        try {
+            Connection conn = Connector.getConnection();
+
+            String playerMove;
+
+            if(player.equals(gameMaster.getSpecificPlayer(1))) {
+                playerMove = "player_1_move";
+            }
+            else {
+                playerMove = "player_2_move";
+            }
+
+            statement = conn.prepareStatement("UPDATE game_in_progress SET "+ playerMove +" = ? WHERE game_id = ? ");
+            statement.setInt(1, player.getPlayerMove());
+            statement.setString(2, gameMaster.getGameID());
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
