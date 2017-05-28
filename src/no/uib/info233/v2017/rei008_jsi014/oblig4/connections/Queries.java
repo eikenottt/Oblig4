@@ -439,10 +439,42 @@ public final class Queries {
             e.printStackTrace();
             Debugger.print("EXCEPTION: " + e.getMessage());
         } catch (Exception e){
-            Debugger.print("EXCEPTION: " +e.getMessage());
+            Debugger.print("EXCEPTION: " + e.getMessage());
         }
 
         return playerMoves;
+    }
+
+    public static boolean hasJoined(Player playerHost){
+
+        boolean hasJoined = false;
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT player_2_random FROM oblig4.open_games WHERE player_1_random= ?");
+            statement.setString(1, playerHost.getRandom());
+
+            ResultSet resultSet;
+            resultSet = statement.executeQuery();
+
+            if(resultSet.next()) {
+                String player2 = resultSet.getString(1);
+
+                if (player2 != null){
+                    hasJoined = true;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
+        }catch (Exception e) {
+            e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
+        }
+        return hasJoined;
+
 
 
     }

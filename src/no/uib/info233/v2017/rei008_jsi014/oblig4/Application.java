@@ -13,12 +13,17 @@ public class Application {
 
     public static void main(String[] args) {
 
+        Player pTest = new HumanPlayer("Player 1");
+
+    pTest.setRandom(Queries.getPlayerRandom("Player 1"));
+
+        System.out.println( Queries.hasJoined(pTest));
 
 
 
-        SwingUtilities.invokeLater(() -> {
-            new GUI();
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            new GUI();
+//        });
 
         /*GameMaster gameMaster = new GameMaster();
         Player player1 = new AggressivePlayer("Finne");
