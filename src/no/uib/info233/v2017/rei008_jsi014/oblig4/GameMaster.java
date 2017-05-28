@@ -289,6 +289,18 @@ public class GameMaster {
         t.start();
     }
 
+
+
+    public Boolean hasJoined(String hostId){
+        return Queries.hasJoined(hostId);
+
+
+    }
+    //DELETE TABLE
+    public Boolean hasConnection(){
+        return Queries.hasConnection();
+    }
+
     public void listGames(){
         //TODO displays the available games that players can join in the multiplayer section.
     }

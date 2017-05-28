@@ -489,8 +489,6 @@ public final class Queries {
         }
         return hasJoined;
 
-
-
     }
 
     public static void updateMove(GameMaster gameMaster, Player player) {
