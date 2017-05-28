@@ -370,6 +370,11 @@ public class GameMaster {
         return p2_energyUse;
     }
 
+    public GameMaster getGameInProgress(String gameId){
+
+        return Queries.getGameInProgress(gameId);
+    }
+
 
 
     public void setGameOver(boolean gameOver) {
