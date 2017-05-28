@@ -464,14 +464,17 @@ public final class Queries {
                 if (player2 != null){
                     hasJoined = true;
                 }
+                System.out.println(player2);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
             Debugger.print("EXCEPTION: " + e.getMessage());
+            System.out.println(e.getMessage()); //SOUT
         }catch (Exception e) {
             e.printStackTrace();
             Debugger.print("EXCEPTION: " + e.getMessage());
+            System.out.println(e.getMessage());//SOUT
         }
         return hasJoined;
 

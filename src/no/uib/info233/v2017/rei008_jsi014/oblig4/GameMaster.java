@@ -2,7 +2,10 @@ package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.TimerTask;
+import javax.swing.Timer;
 
 /**
  * GameMaster sets up and keeps track of a game between two players
@@ -235,8 +238,25 @@ public class GameMaster {
     }
 
     public void hostGame(Player player1){
+
+
         //TODO When a HumanPlayer creates a new multiplayer game, he is "hosting" the game.
         Queries.openGame(player1);
+
+
+        final boolean[] hasFoundOpponent = {false};
+        Timer t = new Timer(2000, e -> {
+            hasFoundOpponent[0] = Queries.hasJoined(player1);
+            System.out.println("hasFoundOpponent - " + hasFoundOpponent[0]);//SOUT
+
+        });
+        while(!hasFoundOpponent[0]){
+
+            t.start();
+        }
+        //TODO create new MULTIPLAYER game here
+
+
     }
 
     public void listGames(){

@@ -17,7 +17,10 @@ public class Application {
 
     pTest.setRandom(Queries.getPlayerRandom("Player 1"));
 
-        System.out.println( Queries.hasJoined(pTest));
+        Player p2 = new HumanPlayer("Hoggi");
+        GameMaster gm = new GameMaster();
+        gm.setPlayers(pTest, p2);
+        gm.hostGame(gm.getSpecificPlayer(1));
 
 
 
