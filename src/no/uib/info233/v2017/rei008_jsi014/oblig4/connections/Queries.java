@@ -516,4 +516,53 @@ public final class Queries {
         }
     }
 
+    public static GameMaster getGameInProgress(String gameId){
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            // Execute query
+            statement = conn.prepareStatement("SELECT * FROM oblig4.game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameId);
+
+            ResultSet result = statement.executeQuery();
+
+            while(result.next()){
+                String player1Name = result.getString(2);
+                String player2Name = result.getString(3);
+                int gamePos = result.getInt(4);
+                int p1Energy = result.getInt(5);
+                int p2Energy= result.getInt(6);
+                int p1Move = result.getInt(7);
+                int p2Move = result.getInt(8);
+                int round = result.getInt(9);
+                String player1Id = gameId.substring(0,9);
+
+                Player player1 = new HumanPlayer(player1Name);
+                Player player2 = new HumanPlayer(player2Name);
+                player1.setPlayerID(gameId.substring(0,10));
+                player2.setPlayerID(gameId.substring(10,20));
+                player1.setCurrentEnergy(p1Energy);
+                player2.setCurrentEnergy(p2Energy);
+                player1.setPlayerMove(p1Move);
+                player2.setPlayerMove(p2Move);
+
+                GameMaster gameMaster = new GameMaster();
+                gameMaster.setGamePosition(gamePos);
+                gameMaster.setGameRound(round);
+                gameMaster.setPlayers(player1,player2);
+
+                return gameMaster;
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Debugger.print("EXCEPTION: " + e.getMessage());
+        }
+        return null;
+    }
+
 }

@@ -20,14 +20,18 @@ public class Application {
 //        Player p2 = new HumanPlayer("HoggiMcLoggi");
 //        GameMaster gm = new GameMaster();
 //        gm.setPlayers(pTest, p2);
-//        Queries.createGame(gm);
+//        String player1Id = gm.getGameID().substring(0,9);
+//        System.out.println(player1Id);
 
 
 
 
-        SwingUtilities.invokeLater(() -> {
-            new GUI();
-        });
+
+
+
+//        SwingUtilities.invokeLater(() -> {
+//            new GUI();
+//        });
 
         /*GameMaster gameMaster = new GameMaster();
         Player player1 = new AggressivePlayer("Finne");

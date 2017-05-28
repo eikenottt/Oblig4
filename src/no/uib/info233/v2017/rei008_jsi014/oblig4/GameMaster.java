@@ -459,7 +459,10 @@ public class GameMaster {
        return isNewRound;
     }
 
-    //TODO updateMove --> Sende informasjon om ()
+    public void setGameRound(int gameRound) {
+        this.gameRounds = gameRound;
+    }
+
 
 
 

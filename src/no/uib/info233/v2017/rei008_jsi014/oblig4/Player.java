@@ -265,4 +265,7 @@ public abstract class Player {
         return true;
     }
 
+    public void setPlayerMove(int playerMove) {
+        this.playerMove = playerMove;
+    }
 }
