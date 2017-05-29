@@ -282,13 +282,18 @@ public class GameMaster {
 
 
         final boolean[] hasFoundOpponent = {false};
+        final boolean[] rowDeleted = {false};
         Timer t = new Timer(2000, e -> {
             hasFoundOpponent[0] = Queries.hasJoined(player1.getRandom());
+            rowDeleted[0] = Queries.rowDeleted(player1.getRandom());
             System.out.println("hasFoundOpponent - " + hasFoundOpponent[0]);//SOUT
             if (hasFoundOpponent[0]){
                 ((Timer) e.getSource()).stop();
                 String[] p2 = Queries.getPlayerValues();
                 this.startMultiplayerGame(player1, p2[0], p2[1]);
+            }
+            if(rowDeleted[0]) {
+                ((Timer) e.getSource()).stop();
             }
         });
         t.start();
