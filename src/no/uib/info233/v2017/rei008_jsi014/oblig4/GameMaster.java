@@ -86,9 +86,9 @@ public class GameMaster {
         if(gamePosition > 0 ){
             player = this.player1; // Signals player 1 is the winner
         }else if (gamePosition < 0){
-             player = null; // Signals player 2 is the winner
+             player = this.player2; //Sigals the game ended in a draw
         }else{
-            player = this.player2; //Sigals the game ended in a draw
+            player = null; // Signals player 2 is the winner
         }
 
         return player;
