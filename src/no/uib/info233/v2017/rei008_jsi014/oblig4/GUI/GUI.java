@@ -242,6 +242,7 @@ public class GUI{
     private class LabelPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         JProgressBar player1EnergyBar, player2EnergyBar;
+        JLabel numRoundsLabel;
 
         GameMaster gameMaster;
 
@@ -277,7 +278,7 @@ public class GUI{
             JLabel player1NameLabel = new JLabel(player1.getName());
             JLabel player2NameLabel = new JLabel(player2.getName());
             JLabel energyLabel = new JLabel("Energy", JLabel.CENTER);
-            JLabel numRoundsLabel = new JLabel("Round " + gameMaster.getGameRounds(), JLabel.CENTER);
+            numRoundsLabel = new JLabel("Round " + gameMaster.getGameRounds(), JLabel.CENTER);
 
             // EnergyBars
             player1EnergyBar = new JProgressBar(0,100);
@@ -329,6 +330,11 @@ public class GUI{
             player2EnergyBar.setValue(100- player2energy);
             player2EnergyBar.setString(player2energy+"");
         }
+
+        public void setRounds(int rounds){
+            numRoundsLabel.setText("Round " + rounds);
+        }
+
         public void setGameMaster(GameMaster gameMaster) {
             this.gameMaster = gameMaster;
         }
@@ -550,6 +556,7 @@ public class GUI{
             }
 
             labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
+            labelPanel.setRounds(gameMaster.getGameRounds());
             mainFrame.validate();
             mainFrame.repaint();
 

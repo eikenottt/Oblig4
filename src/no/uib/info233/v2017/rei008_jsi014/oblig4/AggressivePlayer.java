@@ -37,7 +37,6 @@ public class AggressivePlayer extends Player {
                 }
                 break;
             case 2:
-            case 3: // 25% of using slash(), 25% stab(), 50% whirilwind()
                 if (randMove == 0) {
                     useEnergy = slash(yourEnergy);
                 } else if (randMove == 1) {
@@ -51,7 +50,6 @@ public class AggressivePlayer extends Player {
 
         }
         playerMove++;
-        this.updateEnergy(-useEnergy);
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 
