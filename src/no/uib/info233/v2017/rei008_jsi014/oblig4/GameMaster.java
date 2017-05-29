@@ -1,10 +1,11 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
+import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Connector;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
-import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.TimerTask;
 import javax.swing.Timer;
 
 /**
@@ -307,15 +308,12 @@ public class GameMaster {
             }
         });
         t.start();
-
     }
 
 
+    public boolean hasJoined(String hostId){
 
-    public Boolean hasJoined(String hostId){
         return Queries.hasJoined(hostId);
-
-
     }
 
     public void removeGameInProgress(String gameID){
