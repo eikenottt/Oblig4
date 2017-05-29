@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 
+import static no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.GUI.*;
+
 /**
  * Created by John Tore on 26.05.2017.
  */
@@ -59,60 +61,9 @@ public class DebugFrame extends JFrame {
 
 
     // Imported from Main-Frame, might have to make a couple of changes
-    private void setUI() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
-        }
-        FontUIResource f = new FontUIResource("Calibri", Font.PLAIN, 22);
-        ColorUIResource bg = new ColorUIResource(70,70,70);
-        ColorUIResource fg = new ColorUIResource(255,255,255);
-        Color buttonBG = new Color(120,120,120);
-        Enumeration keys = UIManager.getDefaults().keys();
-        while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            String keyLower = key.toString().toLowerCase();
-            Object value = UIManager.get(key);
-            if(value != null) {
-                if (value instanceof FontUIResource) {
-                    UIManager.put(key, f);
-                }
-                if (value instanceof ColorUIResource) {
-                    if(keyLower.contains("background"))
-                        UIManager.put(key, bg);
-                    if(keyLower.toString().contains("foreground"))
-                        UIManager.put(key, fg);
-                    if(keyLower.toString().contains("button.background"))
-                        UIManager.put(key, buttonBG);
-                    if(keyLower.toString().contains("button.foreground"))
-                        UIManager.put(key, fg);
-                    if(keyLower.toString().contains("button.select"))
-                        UIManager.put(key, bg);
-                    if(keyLower.toString().contains("button.focus"))
-                        UIManager.put(key, buttonBG);
-                    if(keyLower.toString().contains("textfield.background"))
-                        UIManager.put(key, fg);
-                    if(keyLower.toString().contains("textfield.foreground"))
-                        UIManager.put(key, bg);
-                    if(keyLower.toString().contains("list.background"))
-                        UIManager.put(key, buttonBG);
-                    if(keyLower.toString().contains("optionpane.messageforeground")) {
-                        UIManager.put(key, fg);
-                    }
-                    if(keyLower.toString().contains("progressbar.foreground")) {
-                        UIManager.put(key, ColorUIResource.RED);
-                    }
-                    if(keyLower.toString().contains("menu.foreground")) {
-                        UIManager.put(key, fg);
-                    }
-                    if(keyLower.contains("textarea.")) {
-                        UIManager.put(key, buttonBG);
-                    }
-                }
-            }
-        }
-    }
+
+
+
 
     public DebugFrame getFrame() {
         return this;
