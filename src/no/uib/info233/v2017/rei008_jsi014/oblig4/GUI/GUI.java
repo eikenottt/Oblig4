@@ -61,7 +61,7 @@ public class GUI{
         player1Name = optionPane.showInputDialog("Player Name:");
         player1Name = (player1Name != null && !player1Name.equals("")) ? player1Name : "Player 1";
         player = new HumanPlayer(player1Name);
-        menuPanel.setPlayerName(player1Name);
+        menuPanel.setPlayerName(player.getName());
 
         /*for (int i = 0; i < 500; i++) {
             Debugger.print("This is a test, to check if it prints out a number:  " + i + "\n");
@@ -92,6 +92,7 @@ public class GUI{
     private JPanel loadList(String playerType) {
         if (GameMaster.hasConnection()) { //Fixme gameMaster .hasConnection
             listPanel = new ListPanel(playerType);
+            listPanel.populateGameTable(playerType);
             JPanel panel;
             if(playerType.equals("Singleplayer")){
                 panel = listPanel.getPanel("Load");
@@ -470,6 +471,7 @@ public class GUI{
                         break;
                     case "Host Game":
                         gameMaster = new GameMaster();
+                        System.out.println(player); //SOUT
                         gameMaster.hostGame(player);
                         waitingPanel = new LoadingPanel("Waiting for player...", true);
 
@@ -482,6 +484,7 @@ public class GUI{
                                 System.out.println("Starting GamePanel"); //SOUT
                                 waitingPanel.dispose();
                                 mainFrame.remove(menuPanel);
+                                System.out.println(gameMaster.getSpecificPlayer(2));// SOUT
                                 mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                 mainFrame.setVisible(true);
                                 gameMaster.removeOpenGame(player.getRandom());
@@ -505,10 +508,10 @@ public class GUI{
                         menuPanel.updateSection(loadList("Singleplayer"),2);
                         mainFrame.updateFrame();
                         break;
-                    case "Refreash":
+                    case "Refresh":
                         menuPanel.updateSection(loadList("Multiplayer"), 2);
+                        mainFrame.remove(menuPanel);
                         mainFrame.changePanel(menuPanel);
-                        mainFrame.updateFrame();
                         break;
                     case "Stab":
                         doRound(player.stab(player.getCurrentEnergy()));

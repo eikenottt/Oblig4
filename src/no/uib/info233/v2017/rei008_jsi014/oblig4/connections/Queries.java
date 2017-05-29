@@ -690,13 +690,10 @@ public final class Queries {
             ResultSet resultSet;
             resultSet = statement.executeQuery();
 
-            if(resultSet.next()) {
-                String random = resultSet.getString(1);
-
-                if (random != null){
-                    exist = true;
-                }
+            if(!resultSet.next()){
+                exist = true;
             }
+
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();

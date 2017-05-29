@@ -349,6 +349,7 @@ public class GameMaster {
         }
         setGamePosition(gamePos);
         setGameOver(true);
+        updateGameInProgress(gameID);
         updateRanking();
         Debugger.print("Player Resigned");
     }
