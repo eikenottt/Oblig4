@@ -75,20 +75,23 @@ public class GameMaster {
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
     }
 
+    /**
+     * Determines the winner of the game, according to the current gamePosition.
+     * @return Player - Returns the winner of the game
+     */
+    public Player determineWinner(){
 
-    public int determineWinner(){
-
-        int winner;
+        Player player;
 
         if(gamePosition > 0 ){
-            winner = 1; // Signals player 1 is the winner
+            player = this.player1; // Signals player 1 is the winner
         }else if (gamePosition < 0){
-            winner = -1; // Signals player 2 is the winner
+             player = null; // Signals player 2 is the winner
         }else{
-            winner = 0; //Sigals the game ended in a draw
+            player = this.player2; //Sigals the game ended in a draw
         }
 
-        return winner;
+        return player;
     }
 
     /**
