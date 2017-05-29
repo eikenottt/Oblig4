@@ -28,7 +28,11 @@ public final class Connector {
             hasConnection = true;
 
             return conn;
-        } catch (Exception e) {
+        }catch (NullPointerException n){
+            Debugger.printException(n.getMessage());
+            Debugger.printError("Can't connect to the server");
+
+        }catch (Exception e) {
             //System.out.println(e);
             hasConnection = false;
             Debugger.print("EXCEPTION: " + e);
