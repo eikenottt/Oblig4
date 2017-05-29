@@ -569,4 +569,15 @@ public final class Queries {
         return null;
     }
 
+    public static void removeGameInProgress(String gameID) {
+
+        try {
+
+        } catch (SQLException e){
+
+        }
+        catch (Exception e){
+
+        }
+    }
 }

@@ -224,10 +224,7 @@ public class GameMaster {
 
         //Creates a new game
         Queries.createGame(this);
-
-
-
-
+        
     }
 
 
@@ -296,7 +293,11 @@ public class GameMaster {
 
 
     }
-    //DELETE TABLE
+
+    public void removeGameInProgress(String gameID){
+        Queries.removeGameInProgress(gameID);
+    }
+
     public static Boolean hasConnection(){
         return Queries.hasConnection();
     }
