@@ -50,7 +50,7 @@ public class GameMaster {
         gameOver = false;
         p1_energyUse = -1;
         p2_energyUse = -1;
-        gameRounds = 0;
+        gameRounds = 1;
         GOAL.add(-3);
         GOAL.add(3);
     }
