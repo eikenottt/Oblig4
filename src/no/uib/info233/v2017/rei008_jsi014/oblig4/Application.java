@@ -14,10 +14,7 @@ public class Application {
     public static void main(String[] args) {
 
 
-        SwingUtilities.invokeLater(() -> {
-            GUI.LoadingPanel j = new GUI.LoadingPanel("Waiting....");
-            j.setVisible(true);
-        });
+        SwingUtilities.invokeLater(GUI::new);
 
         /*GameMaster gameMaster = new GameMaster();
         Player player1 = new AggressivePlayer("Finne");

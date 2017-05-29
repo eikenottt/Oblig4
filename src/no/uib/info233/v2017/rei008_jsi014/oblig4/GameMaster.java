@@ -284,6 +284,7 @@ public class GameMaster {
                 ((Timer) e.getSource()).stop();
                 String[] p2 = Queries.getPlayerValues();
                 this.startMultiplayerGame(player1, p2[0], p2[1]);
+                this.removeOpenGame();
             }
         });
         t.start();
@@ -314,6 +315,10 @@ public class GameMaster {
             return true;
         }
         return false;
+    }
+
+    public void removeOpenGame() {
+        Queries.removeOpenGame(player1.getRandom(), player2.getRandom());
     }
 
 

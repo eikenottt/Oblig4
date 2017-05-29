@@ -518,6 +518,25 @@ public final class Queries {
         }
     }
 
+    public static boolean removeOpenGame(String player1Random, String player2Random) {
+        boolean removed = false;
+        try {
+            Connection conn = Connector.getConnection();
+
+            statement = conn.prepareStatement("DELETE FROM open_games WHERE player_1_random = ? AND player_2_random = ?");
+            statement.setString(1, player1Random);
+            statement.setString(2, player2Random);
+            statement.executeUpdate();
+
+            conn.close();
+            removed = true;
+            Debugger.print("The game was removed from open_games table");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return removed;
+    }
+
     public static GameMaster getGameInProgress(String gameId){
 
         try {

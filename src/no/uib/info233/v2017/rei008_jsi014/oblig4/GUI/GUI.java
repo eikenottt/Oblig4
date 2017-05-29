@@ -4,6 +4,7 @@ import no.uib.info233.v2017.rei008_jsi014.oblig4.*;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
@@ -11,9 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.TreeMap;
+import java.util.*;
 
 
 public class GUI{
@@ -37,6 +36,8 @@ public class GUI{
     private GamePanel gamePanel = new GamePanel();
 
     private ListPanel listPanel;
+
+    private LoadingPanel waitingPanel;
 
     private LabelPanel labelPanel;
 
@@ -63,10 +64,6 @@ public class GUI{
         /*for (int i = 0; i < 500; i++) {
             Debugger.print("This is a test, to check if it prints out a number:  " + i + "\n");
         }*/
-    }
-
-    public GUI(String s) {
-        new LoadingPanel(s);
     }
 
     private void exitProgram() {
@@ -104,7 +101,7 @@ public class GUI{
             return panel;
         } else {
             JOptionPane.showMessageDialog(mainFrame, "You are not connected to Wildboy", "Connection error", JOptionPane.ERROR_MESSAGE);
-            Debugger.print("There was a problem loading the saved games");
+            Debugger.print("There was a problem connecting to the server");
         }
         return null;
     }
@@ -465,15 +462,23 @@ public class GUI{
                     case "Host Game":
                         gameMaster = new GameMaster();
                         gameMaster.hostGame(player);
-                        LoadingPanel waitingPanel = new LoadingPanel("Waiting for player...");
-                        while (!gameMaster.hasJoined(player.getRandom())){
-                            waitingPanel.setVisible(true);
-                            mainFrame.setVisible(false);
-                        }
-                        waitingPanel.dispose();
-                        mainFrame.remove(menuPanel);
-                        mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
-                        mainFrame.setVisible(true);
+                        waitingPanel = new LoadingPanel("Waiting for player...");
+
+                        Timer timer = new Timer(2000, evt -> {
+                            if(!gameMaster.hasJoined(player.getRandom())) {
+                                waitingPanel.setVisible(true);
+                                mainFrame.setVisible(false);
+                            }
+                            else {
+                                ((Timer) evt.getSource()).stop();
+                                waitingPanel.dispose();
+                                mainFrame.remove(menuPanel);
+                                mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
+                                mainFrame.setVisible(true);
+                            }
+                        });
+
+                        timer.start();
                         break;
                     case "Save Game":
                         if(gameMaster != null) {
@@ -512,6 +517,11 @@ public class GUI{
                     case "Quit Game":
                         exitProgram();
                         break;
+                    case "Cancel":
+                        if(waitingPanel != null) {
+                            waitingPanel.dispose();
+                        }
+                        break;
 
 
                 }
@@ -522,6 +532,8 @@ public class GUI{
 
             gameMaster.updateMove(player);
             int currentEnergy = player.getCurrentEnergy();
+
+            player2 = gameMaster.getSpecificPlayer(2);
 
             gameMaster.listenToPlayerMove(player, energyUsed);
             System.out.println(player2.toString());
@@ -640,10 +652,9 @@ public class GUI{
                                 if(hasJoined[0]) {
                                     String gameId = id + player.getRandom();
                                     GameMaster gameMaster2 = gameMaster.getGameInProgress(gameId);
-                                    gamePanel.setGame(gameMaster2, gameButtonsMultiplayer);
                                     restrictor(gameButtonsMultiplayer);
                                     mainFrame.remove(listPanel);
-                                    mainFrame.changePanel(gamePanel);
+                                    mainFrame.changePanel(gamePanel.setGame(gameMaster2, gameButtonsMultiplayer));
                                     ((Timer)evt.getSource()).stop();
                                     Debugger.print("Success");
                                 }
@@ -687,8 +698,8 @@ public class GUI{
 
         public LoadingPanel(String message) {
             setUI();
-            JPanel panel = new JPanel();
-            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            GridBagConstraints gbc = new GridBagConstraints();
+            JPanel panel = new JPanel(new GridBagLayout());
             messageLabel = new JLabel(message, JLabel.CENTER);
             imageLabel = new JLabel(waitingIcon);
             cancelButton = new JButton("Cancel");
@@ -699,9 +710,18 @@ public class GUI{
             setMinimumSize(size);
             setMaximumSize(size);
 
-            panel.add(messageLabel);
-            panel.add(imageLabel);
-            panel.add(cancelButton);
+            gbc.weightx = 0.5;
+            gbc.weighty = 0.5;
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            gbc.anchor = GridBagConstraints.SOUTH;
+            panel.add(messageLabel, gbc);
+            gbc.gridy = 1;
+            gbc.anchor = GridBagConstraints.CENTER;
+            panel.add(imageLabel, gbc);
+            gbc.gridy = 2;
+            gbc.anchor = GridBagConstraints.NORTH;
+            panel.add(cancelButton, gbc);
             add(panel);
             setVisible(false);
         }
