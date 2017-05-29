@@ -216,7 +216,6 @@ public final class Queries {
      * Loads a singleplayer game from the database
      * @param gameID ID of the game
      * @return A GameMaster containing the information needed to play
-     * @throws //TODO CustomException
      */
     public static GameMaster loadSaved(String gameID) {
 
@@ -313,8 +312,6 @@ public final class Queries {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
         }
-
-        // TODO if Map is Empty
 
         return playersMap;
     }
@@ -642,4 +639,6 @@ public final class Queries {
         }
         return exist;
     }
+
+
 }

@@ -153,7 +153,8 @@ public abstract class Player {
             energyUsage =  getCurrentEnergy();
         }
         updateEnergy(-energyUsage);
-        Debugger.print(this.name + " uses stab, with a force of " + energyUsage + " energy!"); // Sends message to debugger
+        Debugger.print(this.getName() + " used overhead swing, with the force of " + energyUsage + " energy.\n"
+                +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
         return energyUsage;
     }
 
@@ -174,7 +175,8 @@ public abstract class Player {
             energyUsage = 5;
         }
         updateEnergy(-energyUsage);
-        Debugger.print(this.name + " uses stab, with a force of " + energyUsage + " energy!"); // Sends message to debugger
+        Debugger.print(this.getName() + " used stab, with the force of " + energyUsage + " energy.\n"
+                +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
 
         return energyUsage;
     }
@@ -194,7 +196,8 @@ public abstract class Player {
             energyUsage = energyUsage + randNumber;
         }
         updateEnergy(-energyUsage);
-        Debugger.print(this.name + " uses slash, with a force of " + energyUsage + " energy! " + currentEnergy);
+        Debugger.print(this.getName() + " used slash, with the force of " + energyUsage + " energy.\n"
+                +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
         return energyUsage;
     }
 

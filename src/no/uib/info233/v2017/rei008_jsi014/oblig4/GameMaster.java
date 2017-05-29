@@ -55,14 +55,17 @@ public class GameMaster {
         GOAL.add(3);
     }
 
-
-
     /**
      * Tells the players to make their first move
      */
     public void startGame(){
         setGameOver(false);
-        Debugger.print(player1Name + " vs " + player2Name + "\n");
+        Debugger.print("######-----| " + player1Name + " vs " + player2Name + " |-----######\n");
+        player1.setCurrentEnergy(100);
+        player2.setCurrentEnergy(100);
+
+        player1.setPlayerMove(0);
+        player2.setPlayerMove(0);
         //TODO change makeNextMove with listenToPlayerMove ?
         /*while (!gameOver){
             //TODO refresh every 2 seconds
@@ -131,15 +134,7 @@ public class GameMaster {
                 gamePosition--; // Move game one step closer toward player 2's goal
             }
 
-
-
-            System.out.println(player1Name + " used " + getP1_energyUse() + " energy and has "+player1.getCurrentEnergy()+" left.");
-            System.out.println(player2Name + " used " + getP2_energyUse() + " energy and has "+player2.getCurrentEnergy()+" left.");
-            System.out.println("Games Played: " + gameRounds + ", Game Position: " + gamePosition);
-
-            // Prints out messages to the debugging console
-            Debugger.print(player1Name + " used " + getP1_energyUse() + " energy and has "+player1.getCurrentEnergy()+" left.");
-            Debugger.print(player2Name + " used " + getP2_energyUse() + " energy and has "+player2.getCurrentEnergy()+" left.");
+            // Prints out message to the debugging console
             Debugger.print("Round: " + gameRounds + ", Game Position: " + gamePosition);
 
             // Reset the energy usage and prepare for a new round
@@ -195,16 +190,11 @@ public class GameMaster {
             this.gamePosition = loadedGameMaster.gamePosition;
 
             gameLoaded = true;
-
-            // TODO Debugger
-            System.out.println("Loaded:  \n ID: " + gameID + " \n Player 1: " + player1.getName() + " With " +player1.getCurrentEnergy()+ " Energy." +"\n Player 2: " +player2.getName()+ " With " + player2.getCurrentEnergy() + " Energy. Game Position is " + gamePosition + "\n Round: " + gameRounds);
-
             Debugger.print("Loaded:  \n ID: " + gameID + " \n Player 1: " + player1.getName() + " With " +player1.getCurrentEnergy()+ " Energy." +"\n Player 2: " +player2.getName()+ " With " + player2.getCurrentEnergy() + " Energy. Game Position is " + gamePosition + "\n Round: " + gameRounds);
         }
         if(!gameLoaded){
             Debugger.print("There was an error loading the game.");
         }
-
     }
 
     public void startMultiplayerGame(Player player1, String player2Name, String player2ID){
