@@ -471,7 +471,6 @@ public class GUI{
                         break;
                     case "Host Game":
                         gameMaster = new GameMaster();
-                        System.out.println(player); //SOUT
                         gameMaster.hostGame(player);
                         waitingPanel = new LoadingPanel("Waiting for player...", true);
 
@@ -484,7 +483,7 @@ public class GUI{
                                 System.out.println("Starting GamePanel"); //SOUT
                                 waitingPanel.dispose();
                                 mainFrame.remove(menuPanel);
-                                System.out.println(gameMaster.getSpecificPlayer(2));// SOUT
+                                System.out.println(gameMaster);
                                 mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                 mainFrame.setVisible(true);
                                 gameMaster.removeOpenGame(player.getRandom());

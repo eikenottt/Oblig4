@@ -72,7 +72,6 @@ public class GameMaster {
             //TODO run listenToPlayerMove
             //TODO Update Table after every move
         }*/
-        player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
     }
 
     /**
@@ -117,10 +116,10 @@ public class GameMaster {
 
             if(player.equals(player1)) {
                 this.p1_energyUse = energyUse;
-                System.out.println(player.getName() + " Used " + energyUse + " -----------########");
+                System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
             } else {
                 this.p2_energyUse = energyUse;
-                System.out.println(player.getName() + " Used " + energyUse + " -----------########");
+                System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
             }
         }
 
@@ -230,7 +229,7 @@ public class GameMaster {
         gameOver = false;
         p1_energyUse = -1;
         p2_energyUse = -1;
-        gameRounds = 0;
+        gameRounds = 1;
 
         //Creates a new game
         Queries.createGame(this);
@@ -516,6 +515,20 @@ public class GameMaster {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return "GameMaster{" +
+                "gameID='" + gameID + '\'' +
+                ", player1=" + player1 +
+                ", player2=" + player2 +
+                ", GOAL=" + GOAL +
+                ", gamePosition=" + gamePosition +
+                ", p1_energyUse=" + p1_energyUse +
+                ", p2_energyUse=" + p2_energyUse +
+                ", player1Name='" + player1Name + '\'' +
+                ", player2Name='" + player2Name + '\'' +
+                ", gameOver=" + gameOver +
+                ", gameRounds=" + gameRounds +
+                '}';
+    }
 }

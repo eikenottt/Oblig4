@@ -87,8 +87,8 @@ public final class Queries {
             conn = Connector.getConnection();
 
             statement = conn.prepareStatement(
-                    "INSERT INTO oblig4.game_in_progress(game_id, player_1, player_2, game_position, player_1_energy, player_2_energy, player_1_move, player_2_move, move_number) " +
-                            "VALUES (?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO oblig4.game_in_progress(game_id, player_1, player_2, game_position, player_1_energy, player_2_energy, move_number) " +
+                            "VALUES (?,?,?,?,?,?,?)");
 
             statement.setString(1, gameMaster.getGameID());
             statement.setString(2, player1.getName());
@@ -96,9 +96,7 @@ public final class Queries {
             statement.setInt(4, gameMaster.getGamePosition());
             statement.setInt(5, player1.getCurrentEnergy());
             statement.setInt(6, player2.getCurrentEnergy());
-            statement.setInt(7, player1.getPlayerMove());
-            statement.setInt(8, player2.getPlayerMove());
-            statement.setInt(9, gameMaster.getGameRounds());
+            statement.setInt(7, gameMaster.getGameRounds());
             statement.executeUpdate();
 
             conn.close();//Close connection
