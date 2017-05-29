@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 
+import static no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.GUI.*;
+
 /**
  * Created by John Tore on 26.05.2017.
  */
@@ -19,7 +21,7 @@ public class DebugFrame extends JFrame {
 
     public DebugFrame(String title) {
         super(title);
-        GUI.setUI();
+        setUI();
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setSize(550, 600);

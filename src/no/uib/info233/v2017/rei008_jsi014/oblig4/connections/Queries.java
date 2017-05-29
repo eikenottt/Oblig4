@@ -42,7 +42,7 @@ public final class Queries {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         return tableUpdated;
@@ -68,7 +68,7 @@ public final class Queries {
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         return tableUpdated;
@@ -103,12 +103,12 @@ public final class Queries {
 
             conn.close();//Close connection
 
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-            Debugger.print("EXCEPTION: " + e1.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
         Debugger.print("Game inserted in game_in_progress table");
 
@@ -154,7 +154,7 @@ public final class Queries {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Debugger.print("EXCEPTION: " + e.getMessage());
+                Debugger.printException(e.getMessage());
             }
         }
 
@@ -202,10 +202,10 @@ public final class Queries {
             }
 
         } catch (SQLException e) {
-            Debugger.print("EXCEPTION: " + e.getMessage() + e.getErrorCode());
+            Debugger.printException(e.getMessage());
         } catch (Exception e) {
             e.getMessage();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         return updated;
@@ -268,7 +268,7 @@ public final class Queries {
 
             conn.close();
         } catch (Exception e) {
-            Debugger.print("EXEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         if(gameMaster == null) {
@@ -308,10 +308,10 @@ public final class Queries {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         // TODO if Map is Empty
@@ -344,8 +344,12 @@ public final class Queries {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            Debugger.printException(e.getMessage());
+
         } catch (Exception e) {
             e.printStackTrace();
+            Debugger.printException(e.getMessage());
+
         }
 
         return playersMap;
@@ -445,9 +449,9 @@ public final class Queries {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         } catch (Exception e){
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         return playerMoves;
@@ -480,11 +484,11 @@ public final class Queries {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
             System.out.println(e.getMessage()); //SOUT
         }catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
             System.out.println(e.getMessage());//SOUT
         }
         return hasJoined;
@@ -561,10 +565,10 @@ public final class Queries {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
         return null;
     }
@@ -572,8 +576,14 @@ public final class Queries {
     public static void removeGameInProgress(String gameID) {
 
         try {
+            Connection conn = Connector.getConnection();
+            statement = conn.prepareStatement("DELETE FROM oblig4.game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameID);
+            statement.executeUpdate();
 
-        } catch (SQLException e){
+            conn.close();
+        }
+        catch (SQLException e){
 
         }
         catch (Exception e){

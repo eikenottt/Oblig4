@@ -707,7 +707,7 @@ public class GUI{
         }
     }
 
-    private static void setUI() {
+    static void setUI() {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {

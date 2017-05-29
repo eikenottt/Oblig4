@@ -31,6 +31,14 @@ public final class Debugger {
 
     }
 
+    public static void printException(String exceptionMessage){
+        debugFrame.debugOut("EXCEPTION: " + exceptionMessage + "\n");
+    }
+
+    public static void printError(String error){
+        debugFrame.debugOut("Error: " + error);
+    }
+
 
     public static DebugFrame getDebugFrame() {
         return debugFrame;
