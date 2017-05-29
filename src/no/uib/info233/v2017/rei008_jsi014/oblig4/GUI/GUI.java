@@ -554,6 +554,7 @@ public class GUI{
             int currentEnergy = player.getCurrentEnergy();
 
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
+                labelPanel.setRounds(gameMaster.getGameRounds()); //DONE <-- prøver å legge update rounds her
                 restrictor(gameButtonsSingleplayer);
                 player.makeNextMove(gameMaster.getGamePosition(), player.getCurrentEnergy(), player2.getCurrentEnergy());
                 player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
@@ -569,7 +570,7 @@ public class GUI{
             mainFrame.validate();
             mainFrame.repaint();
 
-            System.out.println(gameMaster.isGameOver());
+            System.out.println(gameMaster.isGameOver());//SOUT denne hadde du glemt
             if(gameMaster.isGameOver()){
 
                 if(player.equals(gameMaster.determineWinner())){

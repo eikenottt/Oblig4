@@ -101,21 +101,30 @@ public class GameMaster {
      */
     public void listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
 
-
-
-        if(player1.hasPulse && player2.hasPulse) {
-            int[] playerMoves = Queries.getPlayerMove(gameID);
-            int player1Move = playerMoves[0], player2Move = playerMoves[1];
-            if(player1Move > player2Move){
-            }
-
-
-        }
-
         if(!gameOver) { // Game Not Over
 
+            if (player1.hasPulse && player2.hasPulse) { // Both players are human -> MultiplayerGame
+
+                Queries.updateMove(this, player);
+
+                String[] playerMoves = Queries.getPlayerMove(gameID);
+                String player1Move = playerMoves[0], player2Move = playerMoves[1];
+                if (player1Move != null && player2Move == null) {  // Only player2 has made move
+                    //TODO Lock screen of player 1
+                }
+                if (player1Move == null && player2Move != null) { // Only player1 has made move
+                    //TODO Lock screen of player 2
+                }
+                if (player1Move != null && player2Move != null) {  //Both players has made move
+                    //TODO Run Evaluate turn, Both have mad a move, remember to set playermoves back to null
+                } else {
+                    //TODO both players should be able to make a move
+                }
+
+            }
+        }else{
             if(player.equals(player1)) {
-                this.p1_energyUse = energyUse;
+                this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
                 System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
             } else {
                 this.p2_energyUse = energyUse;
@@ -495,20 +504,20 @@ public class GameMaster {
      * round of the game.
      * @return True if both players have made move this round.
      */
-    public boolean moveChecker(){
-
-       int playerMoves[] = Queries.getPlayerMove(gameID); //Gather fresh info of the current moves
-
-       int player1Move = playerMoves[0];
-       int player2Move = playerMoves[1];
-
-       boolean isNewRound = false;
-       if (player1Move == player2Move){ // Checks if both players has made a move, this round.
-           isNewRound = true;
-       }
-
-       return isNewRound;
-    }
+//    public boolean moveChecker(){
+//
+//       int playerMoves[] = Queries.getPlayerMove(gameID); //Gather fresh info of the current moves
+//
+//       int player1Move = playerMoves[0];
+//       int player2Move = playerMoves[1];
+//
+//       boolean isNewRound = false;
+//       if (player1Move == player2Move){ // Checks if both players has made a move, this round.
+//           isNewRound = true;
+//       }
+//
+//       return isNewRound;
+//    }
 
     public void setGameRound(int gameRound) {
         this.gameRounds = gameRound;

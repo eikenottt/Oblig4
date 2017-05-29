@@ -421,9 +421,10 @@ public final class Queries {
     }
 
 
-    public static int[] getPlayerMove(String gameID) {
+    public static String[] getPlayerMove(String gameID) {
 
-        int[] playerMoves = new int[2];
+        String[] playerMoves = new String[2];
+
 
         try {
 
@@ -435,8 +436,8 @@ public final class Queries {
             ResultSet resultSet = statement.executeQuery();
 
             if(resultSet.next()){
-                int player1Move = resultSet.getInt(1);
-                int player2Move = resultSet.getInt(2);
+                String player1Move = ( resultSet.getString(1));
+                String player2Move = resultSet.getString(2);
 
                  playerMoves[0] = player1Move;
                  playerMoves[1] = player2Move;
@@ -518,6 +519,8 @@ public final class Queries {
         }
     }
 
+
+
     public static boolean removeOpenGame(String player1Random) {
         boolean removed = false;
         try {
@@ -591,8 +594,6 @@ public final class Queries {
                 int gamePos = result.getInt(4);
                 int p1Energy = result.getInt(5);
                 int p2Energy= result.getInt(6);
-                int p1Move = result.getInt(7);
-                int p2Move = result.getInt(8);
                 int round = result.getInt(9);
 
                 Player player1 = new HumanPlayer(player1Name);
@@ -601,8 +602,6 @@ public final class Queries {
                 player2.setPlayerID(gameId.substring(10,20));
                 player1.setCurrentEnergy(p1Energy);
                 player2.setCurrentEnergy(p2Energy);
-                player1.setPlayerMove(p1Move);
-                player2.setPlayerMove(p2Move);
 
                 GameMaster gameMaster = new GameMaster();
                 gameMaster.setGamePosition(gamePos);
@@ -675,7 +674,7 @@ public final class Queries {
         return exist;
     }
 
-    public static boolean rowDeleted(String p1Random){
+    public static boolean rowDeleted(String p1Random) {
 
         boolean exist = false;
 
@@ -688,7 +687,7 @@ public final class Queries {
             ResultSet resultSet;
             resultSet = statement.executeQuery();
 
-            if(!resultSet.next()){
+            if (!resultSet.next()) {
                 exist = true;
             }
 
@@ -697,13 +696,14 @@ public final class Queries {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
             System.out.println(e.getMessage()); //SOUT
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
             System.out.println(e.getMessage());//SOUT
         }
         return exist;
     }
+
 
 
 
