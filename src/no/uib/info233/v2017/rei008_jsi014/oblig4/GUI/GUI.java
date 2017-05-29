@@ -346,8 +346,10 @@ public class GUI{
         GridBagConstraints gbc;
 
         private ImageIcon players = new ImageIcon(getClass().getResource("/img/Player-icons.png"));
+        private ImageIcon icon = new ImageIcon(getClass().getResource("/img/icon.png"));
         private JLayeredPane layeredPane = new JLayeredPane();
         private JLabel playerLabel = new JLabel(players);
+        private JLabel iconLabel = new JLabel(icon);
 
         public ImagePanel(String... imgPath) {
             gbc = new GridBagConstraints();
@@ -407,7 +409,8 @@ public class GUI{
         }
 
         public void removeImage() {
-            layeredPane.remove(playerLabel);
+            layeredPane.removeAll();
+            layeredPane.add(iconLabel, gbc, 1);
             repaint();
         }
 
@@ -520,6 +523,7 @@ public class GUI{
                     case "Back To Menu":
                         menuPanel.updateSection(menuButtons,1);
                         menuPanel.updateSection(imagePanel, 2);
+                        imagePanel.removeImage();
                         mainFrame.updateFrame();
                         break;
                     case "Host Game":

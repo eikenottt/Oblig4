@@ -17,7 +17,7 @@ public class HumanPlayer extends Player {
 
     @Override
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
-        updateEnergy(-yourEnergy);
+        //updateEnergy(-yourEnergy);
         getGameMaster().listenToPlayerMove(this, yourEnergy);
 
     }

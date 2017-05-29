@@ -47,7 +47,7 @@ public class PassivePlayer extends Player{
         }
 
         playerMove++;
-        this.updateEnergy(-useEnergy);
+        //this.updateEnergy(-useEnergy);
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 
