@@ -394,6 +394,10 @@ public class GameMaster {
         return Queries.getGameInProgress(gameId);
     }
 
+    public boolean gameExists(String gameID){
+        return Queries.gameExists(gameID);
+    }
+
 
 
     public void setGameOver(boolean gameOver) {
