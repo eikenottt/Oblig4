@@ -110,13 +110,13 @@ public class GUI{
     }
 
     private void restrictor(ButtonPanel buttonPanel) {
-        if(player.useStab()){
+        if(!player.useStab()){
             buttonPanel.makeUnclickable("Stab");
         }
-        if(player.useOverheadSwing()) {
+        if(!player.useOverheadSwing()) {
             buttonPanel.makeUnclickable("Overhead Swing");
         }
-        if(player.useSlash()){
+        if(!player.useSlash()){
             buttonPanel.makeUnclickable("Slash");
         }
     }
@@ -474,20 +474,24 @@ public class GUI{
                         waitingPanel = new LoadingPanel("Waiting for player...", true);
 
                         timer = new Timer(2000, evt -> {
-                            if(!gameMaster.hasJoined(player.getRandom())) {
+                            if(!gameMaster.hasJoined(player.getRandom())){
                                 waitingPanel.setVisible(true);
+                                System.out.println("Waiting");
                             }
                             else {
-                                ((Timer) evt.getSource()).stop();
+                                System.out.println("Starting GamePanel"); //SOUT
                                 waitingPanel.dispose();
                                 mainFrame.remove(menuPanel);
                                 mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                 mainFrame.setVisible(true);
                                 gameMaster.removeOpenGame(player.getRandom());
+                                gameMaster.startGame();
+                                ((Timer) evt.getSource()).stop();
                             }
                         });
-
                         timer.start();
+
+
                         break;
                     case "Save Game":
                         if(gameMaster != null) {
@@ -548,10 +552,12 @@ public class GUI{
             int currentEnergy = player.getCurrentEnergy();
 
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
+                restrictor(gameButtonsSingleplayer);
                 gameMaster.listenToPlayerMove(player, energyUsed);
                 player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
             }
             else {
+                restrictor(gameButtonsMultiplayer);
                 waitForPlayer(energyUsed);
             }
 
@@ -688,7 +694,6 @@ public class GUI{
                                 hasJoined[0] = gameMaster.gameExists(gameId); //FIXME gameMaster.hasJoined
                                 if(hasJoined[0]) {
                                     gameMaster = gameMaster.getGameInProgress(gameId);
-                                    //restrictor(gameButtonsMultiplayer);
                                     mainFrame.remove(menuPanel);
                                     mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                     waitingPanel.dispose();
@@ -732,7 +737,7 @@ public class GUI{
 
     }
 
-    private class LoadingPanel extends JDialog {
+    private class LoadingPanel extends JFrame {
         private ImageIcon waitingIcon = new ImageIcon(getClass().getResource("/img/loading.gif"));
 
         private JLabel messageLabel, imageLabel;
@@ -753,7 +758,7 @@ public class GUI{
                 }
             });
 
-            setModal(true);
+            //setModal(true);
 
             Dimension size = new Dimension(500,300);
             setPreferredSize(size);
@@ -795,6 +800,9 @@ public class GUI{
             cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(e -> {
                 dispose();
+                mainFrame.remove(gamePanel);
+                menuPanel.updateSection(menuButtons, 1);
+                mainFrame.changePanel(menuPanel);
             });
 
             setModal(true);
