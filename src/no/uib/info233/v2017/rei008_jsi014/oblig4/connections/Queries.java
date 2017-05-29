@@ -677,5 +677,39 @@ public final class Queries {
         return exist;
     }
 
+    public static boolean rowDeleted(String p1Random){
+
+        boolean exist = false;
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT player_1_random FROM oblig4.open_games WHERE player_1_random= ?");
+            statement.setString(1, p1Random);
+
+            ResultSet resultSet;
+            resultSet = statement.executeQuery();
+
+            if(resultSet.next()) {
+                String random = resultSet.getString(1);
+
+                if (random != null){
+                    exist = true;
+                }
+            }
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage()); //SOUT
+        }catch (Exception e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage());//SOUT
+        }
+        return exist;
+    }
+
+
 
 }
