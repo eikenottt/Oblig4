@@ -17,8 +17,9 @@ import java.util.TreeMap;
 
 
 public class GUI{
-    private String player1Name = "Player 1";
     private long time = System.currentTimeMillis();
+
+    private String player1Name = "Player 1";
 
     private GameMaster gameMaster;
 
@@ -62,6 +63,10 @@ public class GUI{
         /*for (int i = 0; i < 500; i++) {
             Debugger.print("This is a test, to check if it prints out a number:  " + i + "\n");
         }*/
+    }
+
+    public GUI(String s) {
+        new LoadingPanel(s);
     }
 
     private void exitProgram() {
@@ -177,54 +182,6 @@ public class GUI{
 
         }
 
-        private void setUI() {
-            try {
-                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
-                e.printStackTrace();
-            }
-            FontUIResource f = new FontUIResource("Calibri", Font.PLAIN, 22);
-            ColorUIResource bg = new ColorUIResource(70, 70, 70);
-            ColorUIResource fg = new ColorUIResource(255, 255, 255);
-            Color buttonBG = new Color(120, 120, 120);
-            Enumeration keys = UIManager.getDefaults().keys();
-            while (keys.hasMoreElements()) {
-                Object key = keys.nextElement();
-                String keyLower = key.toString().toLowerCase();
-                Object value = UIManager.get(key);
-                if (value != null) {
-                    if (value instanceof FontUIResource) {
-                        UIManager.put(key, f);
-                    }
-                    if (value instanceof ColorUIResource) {
-                        if (keyLower.contains("background"))
-                            UIManager.put(key, bg);
-                        if (keyLower.contains("foreground"))
-                            UIManager.put(key, fg);
-                        if (keyLower.contains("button.background"))
-                            UIManager.put(key, buttonBG);
-                        if (keyLower.contains("button.foreground"))
-                            UIManager.put(key, fg);
-                        if (keyLower.contains("button.select"))
-                            UIManager.put(key, bg);
-                        if (keyLower.contains("button.focus"))
-                            UIManager.put(key, buttonBG);
-                        if (keyLower.contains("textfield.background"))
-                            UIManager.put(key, fg);
-                        if (keyLower.contains("textfield.foreground"))
-                            UIManager.put(key, bg);
-                        if (keyLower.contains("list.background"))
-                            UIManager.put(key, buttonBG);
-                        if (keyLower.contains("optionpane.messageforeground"))
-                            UIManager.put(key, fg);
-                        if (keyLower.contains("progressbar.foreground"))
-                            UIManager.put(key, ColorUIResource.RED);
-                        if (keyLower.contains("menu.foreground"))
-                            UIManager.put(key, fg);
-                    }
-                }
-            }
-        }
 
         void changePanel(JPanel newPanel) {
             add(newPanel);
@@ -487,7 +444,9 @@ public class GUI{
                     case "Multiplayer":
                         menuPanel.updateSection(multiplayerButtons, 1);
                         menuPanel.updateSection(loadList("Multiplayer"), 2);
-                        mainFrame.updateFrame();
+                        mainFrame.remove(menuPanel);
+                        mainFrame.changePanel(menuPanel);
+
                         break;
                     case "New Game":
                         player = new HumanPlayer(player1Name);
@@ -506,6 +465,15 @@ public class GUI{
                     case "Host Game":
                         gameMaster = new GameMaster();
                         gameMaster.hostGame(player);
+                        LoadingPanel waitingPanel = new LoadingPanel("Waiting for player...");
+                        while (!gameMaster.hasJoined(player.getRandom())){
+                            waitingPanel.setVisible(true);
+                            mainFrame.setVisible(false);
+                        }
+                        waitingPanel.dispose();
+                        mainFrame.remove(menuPanel);
+                        mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
+                        mainFrame.setVisible(true);
                         break;
                     case "Save Game":
                         if(gameMaster != null) {
@@ -521,6 +489,7 @@ public class GUI{
                         break;
                     case "Refreash":
                         menuPanel.updateSection(loadList("Multiplayer"), 2);
+                        mainFrame.changePanel(menuPanel);
                         mainFrame.updateFrame();
                         break;
                     case "Stab":
@@ -670,8 +639,8 @@ public class GUI{
                                 Debugger.print("Trying To Connect");
                                 if(hasJoined[0]) {
                                     String gameId = id + player.getRandom();
-                                    gameMaster = gameMaster.getGameInProgress(gameId);
-                                    gamePanel.setGame(gameMaster, gameButtonsMultiplayer);
+                                    GameMaster gameMaster2 = gameMaster.getGameInProgress(gameId);
+                                    gamePanel.setGame(gameMaster2, gameButtonsMultiplayer);
                                     restrictor(gameButtonsMultiplayer);
                                     mainFrame.remove(listPanel);
                                     mainFrame.changePanel(gamePanel);
@@ -710,21 +679,80 @@ public class GUI{
 
     }
 
-    private class LoadingPanel extends JPanel {
+    public static class LoadingPanel extends JFrame {
         private ImageIcon waitingIcon = new ImageIcon(getClass().getResource("/img/loading.gif"));
 
         private JLabel messageLabel, imageLabel;
         private JButton cancelButton;
 
         public LoadingPanel(String message) {
-            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            setUI();
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
             messageLabel = new JLabel(message, JLabel.CENTER);
             imageLabel = new JLabel(waitingIcon);
             cancelButton = new JButton("Cancel");
 
-            add(messageLabel);
-            add(imageLabel);
-            add(cancelButton);
+            Dimension size = new Dimension(500,300);
+            setPreferredSize(size);
+            setSize(size);
+            setMinimumSize(size);
+            setMaximumSize(size);
+
+            panel.add(messageLabel);
+            panel.add(imageLabel);
+            panel.add(cancelButton);
+            add(panel);
+            setVisible(false);
+        }
+    }
+
+    private static void setUI() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
+        FontUIResource f = new FontUIResource("Calibri", Font.PLAIN, 22);
+        ColorUIResource bg = new ColorUIResource(70, 70, 70);
+        ColorUIResource fg = new ColorUIResource(255, 255, 255);
+        Color buttonBG = new Color(120, 120, 120);
+        Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            String keyLower = key.toString().toLowerCase();
+            Object value = UIManager.get(key);
+            if (value != null) {
+                if (value instanceof FontUIResource) {
+                    UIManager.put(key, f);
+                }
+                if (value instanceof ColorUIResource) {
+                    if (keyLower.contains("background"))
+                        UIManager.put(key, bg);
+                    if (keyLower.contains("foreground"))
+                        UIManager.put(key, fg);
+                    if (keyLower.contains("button.background"))
+                        UIManager.put(key, buttonBG);
+                    if (keyLower.contains("button.foreground"))
+                        UIManager.put(key, fg);
+                    if (keyLower.contains("button.select"))
+                        UIManager.put(key, bg);
+                    if (keyLower.contains("button.focus"))
+                        UIManager.put(key, buttonBG);
+                    if (keyLower.contains("textfield.background"))
+                        UIManager.put(key, fg);
+                    if (keyLower.contains("textfield.foreground"))
+                        UIManager.put(key, bg);
+                    if (keyLower.contains("list.background"))
+                        UIManager.put(key, buttonBG);
+                    if (keyLower.contains("optionpane.messageforeground"))
+                        UIManager.put(key, fg);
+                    if (keyLower.contains("progressbar.foreground"))
+                        UIManager.put(key, ColorUIResource.RED);
+                    if (keyLower.contains("menu.foreground"))
+                        UIManager.put(key, fg);
+                }
+            }
         }
     }
 }

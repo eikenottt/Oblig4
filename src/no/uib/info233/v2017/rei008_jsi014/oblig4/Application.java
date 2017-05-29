@@ -15,7 +15,8 @@ public class Application {
 
 
         SwingUtilities.invokeLater(() -> {
-            new GUI();
+            GUI.LoadingPanel j = new GUI.LoadingPanel("Waiting....");
+            j.setVisible(true);
         });
 
         /*GameMaster gameMaster = new GameMaster();
