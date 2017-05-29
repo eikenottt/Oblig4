@@ -475,6 +475,7 @@ public class GUI{
                                 mainFrame.remove(menuPanel);
                                 mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                 mainFrame.setVisible(true);
+                                gameMaster.removeOpenGame();
                             }
                         });
 
@@ -520,6 +521,9 @@ public class GUI{
                     case "Cancel":
                         if(waitingPanel != null) {
                             waitingPanel.dispose();
+                        }
+                        else {
+                            Debugger.printError("The loading screen is Null");
                         }
                         break;
 
@@ -635,28 +639,27 @@ public class GUI{
                     public void actionPerformed(ActionEvent e) {
                         if(join.equals("Join")){
                             gameMaster = new GameMaster();
-/*                            JFrame loading = new JFrame("Loading");
-                            loading.add(new LoadingPanel("Joining Game ..."));
-                            loading.setPreferredSize(new Dimension(300, 300));
-                            loading.setSize(500, 300);
-                            loading.setLocationRelativeTo(null);
-                            loading.setVisible(true);
-                            mainFrame.setVisible(false);
-                            loading.dispose();
-                            mainFrame.setVisible(true);*/
+                            waitingPanel = new LoadingPanel("Joining Game...");
+
                             final boolean[] hasJoined = new boolean[1];
                             gameMaster.joinGame(id, player);
+                            String gameId = id + player.getRandom();
                             Timer timer = new Timer(2000, evt -> {
-                                hasJoined[0] = gameMaster.hasJoined(id); //FIXME gameMaster.hasJoined
+                                hasJoined[0] = gameMaster.gameExists(gameId); //FIXME gameMaster.hasJoined
                                 Debugger.print("Trying To Connect");
                                 if(hasJoined[0]) {
-                                    String gameId = id + player.getRandom();
                                     GameMaster gameMaster2 = gameMaster.getGameInProgress(gameId);
                                     restrictor(gameButtonsMultiplayer);
                                     mainFrame.remove(listPanel);
                                     mainFrame.changePanel(gamePanel.setGame(gameMaster2, gameButtonsMultiplayer));
+                                    waitingPanel.dispose();
+                                    mainFrame.setVisible(true);
                                     ((Timer)evt.getSource()).stop();
                                     Debugger.print("Success");
+                                }
+                                else {
+                                    waitingPanel.setVisible(true);
+                                    mainFrame.setVisible(false);
                                 }
                             });
                             timer.start();
@@ -709,6 +712,7 @@ public class GUI{
             setSize(size);
             setMinimumSize(size);
             setMaximumSize(size);
+            setLocationRelativeTo(null);
 
             gbc.weightx = 0.5;
             gbc.weighty = 0.5;
