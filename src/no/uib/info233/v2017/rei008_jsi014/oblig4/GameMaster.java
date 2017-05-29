@@ -117,8 +117,10 @@ public class GameMaster {
 
             if(player.equals(player1)) {
                 this.p1_energyUse = energyUse;
+                System.out.println(player.getName() + " Used " + energyUse + " -----------########");
             } else {
                 this.p2_energyUse = energyUse;
+                System.out.println(player.getName() + " Used " + energyUse + " -----------########");
             }
         }
 

@@ -556,7 +556,7 @@ public class GUI{
 
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 restrictor(gameButtonsSingleplayer);
-                gameMaster.listenToPlayerMove(player, energyUsed);
+                player.makeNextMove(gameMaster.getGamePosition(), player.getCurrentEnergy(), player2.getCurrentEnergy());
                 player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
             }
             else {
@@ -564,6 +564,7 @@ public class GUI{
                 waitForPlayer(energyUsed);
             }
 
+            gameMaster.updateGameInProgress(gameMaster.getGameID());
             labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
             labelPanel.setRounds(gameMaster.getGameRounds());
             mainFrame.validate();
@@ -592,7 +593,7 @@ public class GUI{
     private void waitForPlayer(int energyUsed) {
         timer = new Timer(2000, e -> {
             if (gameMaster.hasMoved(gameMaster.getGameID())) {
-                gameMaster.listenToPlayerMove(player, energyUsed);
+                player.makeNextMove(gameMaster.getGamePosition(), player.getCurrentEnergy(), player2.getCurrentEnergy());
                 ((Timer)e.getSource()).stop();
             }
         });
