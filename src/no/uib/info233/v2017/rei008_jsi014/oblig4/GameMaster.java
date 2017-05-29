@@ -75,6 +75,22 @@ public class GameMaster {
         player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
     }
 
+
+    public int determineWinner(){
+
+        int winner;
+
+        if(gamePosition > 0 ){
+            winner = 1; // Signals player 1 is the winner
+        }else if (gamePosition < 0){
+            winner = -1; // Signals player 2 is the winner
+        }else{
+            winner = 0; //Sigals the game ended in a draw
+        }
+
+        return winner;
+    }
+
     /**
      * If game is not over, sets the amount of energy to use
      * for each player. When both are set, then call evaluate method.
