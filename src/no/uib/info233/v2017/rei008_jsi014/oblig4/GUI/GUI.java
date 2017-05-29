@@ -43,7 +43,7 @@ public class GUI{
 
     private static Timer timer;
 
-    private ImagePanel imagePanel = new ImagePanel(getClass().getResource("/img/icon.png").getPath());
+    private ImagePanel imagePanel = new ImagePanel("icon");
 
     private MenuPanel menuPanel = new MenuPanel(player1Name, Queries.getScore(player1Name), menuButtons);
 
@@ -345,22 +345,70 @@ public class GUI{
     private class ImagePanel extends JPanel {
         GridBagConstraints gbc;
 
-        ImageIcon imageIcon;
+        private ImageIcon players = new ImageIcon(getClass().getResource("/img/Player-icons.png"));
+        private JLayeredPane layeredPane = new JLayeredPane();
+        private JLabel playerLabel = new JLabel(players);
 
-        public ImagePanel(String imgPath) {
+        public ImagePanel(String... imgPath) {
             gbc = new GridBagConstraints();
-            imageIcon = new ImageIcon(imgPath);
-            JLabel imageIconLabel = new JLabel(imageIcon);
-            setLayout(new GridBagLayout());
 
-            gbc.weighty = 10;
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            add(imageIconLabel, gbc);
+            layeredPane.setLayout(new GridBagLayout());
+            setLayout(new GridBagLayout());
+            int i = 0;
+
+            for(String img  : imgPath) {
+                JLabel imageIconLabel = new JLabel(new ImageIcon(getClass().getResource("/img/"+img+".png")));
+
+                gbc.weighty = 10;
+                gbc.weightx = 2;
+                gbc.gridx = i;
+                gbc.gridy = 0;
+                layeredPane.add(imageIconLabel, gbc, 3);
+
+
+                i++;
+            }
+            add(layeredPane);
 
         }
-        public ImageIcon getImage() {
-            return imageIcon;
+        public void addImage(int location) {
+            switch (location) {
+                case -3:
+                    location = 0;
+                    break;
+                case -2:
+                    location = 1;
+                    break;
+                case -1:
+                    location = 2;
+                    break;
+                case 0:
+                    location = 3;
+                    break;
+                case 1:
+                    location = 4;
+                    break;
+                case 2:
+                    location = 5;
+                    break;
+                case 3:
+                    location = 6;
+                    break;
+            }
+            gbc.gridx = location;
+            layeredPane.remove(playerLabel);
+            layeredPane.add(playerLabel, gbc, 1);
+            layeredPane.validate();
+            layeredPane.repaint();
+            add(layeredPane);
+            validate();
+            repaint();
+
+        }
+
+        public void removeImage() {
+            layeredPane.remove(playerLabel);
+            repaint();
         }
 
     }
@@ -376,11 +424,16 @@ public class GUI{
             removeAll();
             labelPanel = new LabelPanel(gameMaster);
             add(labelPanel);
+            imagePanel = new ImagePanel("redEnd", "redMark", "redMark", "middle", "blueMark", "blueMark", "blueEnd");
+            imagePanel.addImage(gameMaster.getGamePosition());
+            add(imagePanel);
 
             add(buttonPanel);
 
             return this;
         }
+
+
 
     }
 
@@ -388,7 +441,7 @@ public class GUI{
 
         JButton[] buttons;
 
-        public ButtonPanel(String... buttonNames) {
+        ButtonPanel(String... buttonNames) {
             buttons = new JButton[buttonNames.length];
             GridBagConstraints gbc = new GridBagConstraints();
 
@@ -420,21 +473,21 @@ public class GUI{
             }
         }
         void makeUnclickable(String buttonName) {
-            for (int i = 0; i < buttons.length; i++) {
-                if (buttons[i].getText().equals(buttonName)) {
-                    buttons[i].setEnabled(false);
+            for (JButton button : buttons) {
+                if (button.getText().equals(buttonName)) {
+                    button.setEnabled(false);
                 }
             }
         }
 
 
         void makeClickable() {
-            for (int i = 0; i < buttons.length; i++) {
-                buttons[i].setEnabled(true);
+            for (JButton button : buttons) {
+                button.setEnabled(true);
             }
         }
 
-        public JButton[] getButtons() {
+        JButton[] getButtons() {
             return buttons;
         }
         private class ButtonListener extends Component implements ActionListener {
@@ -546,16 +599,13 @@ public class GUI{
         }
         private void doRound(int energyUsed) {
 
-            gameMaster.updateMove(player); //TODO energy, move
-
-
             player2 = gameMaster.getSpecificPlayer(2);
 
             int currentEnergy = player.getCurrentEnergy();
 
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 restrictor(gameButtonsSingleplayer);
-                player.makeNextMove(gameMaster.getGamePosition(), player.getCurrentEnergy(), player2.getCurrentEnergy());
+                player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
                 player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
             }
             else {
@@ -566,17 +616,21 @@ public class GUI{
             gameMaster.updateGameInProgress(gameMaster.getGameID());
             labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
             labelPanel.setRounds(gameMaster.getGameRounds());
+            imagePanel.addImage(gameMaster.getGamePosition());
             mainFrame.validate();
             mainFrame.repaint();
 
             System.out.println(gameMaster.isGameOver());
             if(gameMaster.isGameOver()){
+                imagePanel.removeImage();
+                gameButtonsSingleplayer.makeClickable();
+                gameButtonsMultiplayer.makeClickable();
 
                 if(player.equals(gameMaster.determineWinner())){
                     new GameOverPanel("Winner");
                 }
                 else if(gameMaster.determineWinner() == null) {
-                    new GameOverPanel("Draw");
+                    new GameOverPanel("Nice Tie");
                 }
                 else {
                     new GameOverPanel("Loser");
@@ -845,7 +899,7 @@ public class GUI{
             if(message.equals("Winner")) {
                 waitingIcon = new ImageIcon(getClass().getResource("/img/winner.png"));
             }
-            else if(message.equals("Draw")){
+            else if(message.equals("Nice Tie")){
                 waitingIcon = new ImageIcon(getClass().getResource("/img/tie.png"));
             }
             else {

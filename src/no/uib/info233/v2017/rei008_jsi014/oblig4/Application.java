@@ -4,6 +4,7 @@ import no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.*;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Objects;
 
 /**
@@ -26,6 +27,7 @@ public class Application {
         String gameToJoin = Queries.getPlayerRandom("TestRune");
         System.out.println("no string? - " + gameToJoin);
         Queries.joinGame(gameToJoin, p2);*/
+
     }
 
 }
