@@ -508,9 +508,10 @@ public final class Queries {
                 playerEnergy = "player_2_energy";
             }
 
-            statement = conn.prepareStatement("UPDATE game_in_progress SET "+ playerMove +" = ? WHERE game_id = ? ");
+            statement = conn.prepareStatement("UPDATE game_in_progress SET "+ playerMove +" = ? , "+playerEnergy+"= ? WHERE game_id = ? ");
             statement.setInt(1, player.getPlayerMove());
-            statement.setString(2, gameMaster.getGameID());
+            statement.setInt(2, player.getCurrentEnergy());
+            statement.setString(3, gameMaster.getGameID());
             statement.executeUpdate();
 
             conn.close();
@@ -519,14 +520,13 @@ public final class Queries {
         }
     }
 
-    public static boolean removeOpenGame(String player1Random, String player2Random) {
+    public static boolean removeOpenGame(String player1Random) {
         boolean removed = false;
         try {
             Connection conn = Connector.getConnection();
 
-            statement = conn.prepareStatement("DELETE FROM open_games WHERE player_1_random = ? AND player_2_random = ?");
+            statement = conn.prepareStatement("DELETE FROM open_games WHERE player_1_random = ?");
             statement.setString(1, player1Random);
-            statement.setString(2, player2Random);
             statement.executeUpdate();
 
             conn.close();
@@ -536,6 +536,44 @@ public final class Queries {
             e.printStackTrace();
         }
         return removed;
+    }
+
+    public static void updateGameInProgress(String gameID, GameMaster gameMaster) {
+        try {
+            Connection conn = Connector.getConnection();
+
+            statement = conn.prepareStatement("UPDATE game_in_progress SET game_position = ?,  move_number = ? WHERE game_id = ?");
+            statement.setInt(1, gameMaster.getGamePosition());
+            statement.setInt(2, gameMaster.getGameRounds());
+            statement.setString(3, gameID);
+            statement.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean hasMoved(String gameID) {
+        boolean hasMoved = false;
+        try {
+            Connection conn = Connector.getConnection();
+
+            statement = conn.prepareStatement("SELECT player_1_move, player_2_move FROM game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameID);
+
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                if(Integer.toString(rs.getInt(1)) != null || Integer.toString(rs.getInt(2)) != null) {
+                    hasMoved = true;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return hasMoved;
     }
 
     public static GameMaster getGameInProgress(String gameId){
@@ -558,7 +596,6 @@ public final class Queries {
                 int p1Move = result.getInt(7);
                 int p2Move = result.getInt(8);
                 int round = result.getInt(9);
-                String player1Id = gameId.substring(0,9);
 
                 Player player1 = new HumanPlayer(player1Name);
                 Player player2 = new HumanPlayer(player2Name);

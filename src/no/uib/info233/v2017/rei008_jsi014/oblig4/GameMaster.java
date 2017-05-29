@@ -50,7 +50,7 @@ public class GameMaster {
         gameOver = false;
         p1_energyUse = -1;
         p2_energyUse = -1;
-        gameRounds = 0;
+        gameRounds = 1;
         GOAL.add(-3);
         GOAL.add(3);
     }
@@ -137,8 +137,6 @@ public class GameMaster {
      */
     private void evaluateTurn() {
 
-        //TODO insert isGameOver somewhere
-
         gameRounds++; // Increase the number of rounds played
 
         setGameOver(isGameOver());
@@ -168,6 +166,7 @@ public class GameMaster {
             else {
                 updateRanking();
             }*/
+            updateGameInProgress(gameID); //TODO game_position, move_number
         }
         else {
             updateRanking(); // Update the database
@@ -176,7 +175,7 @@ public class GameMaster {
     }
 
 
-    private boolean isGameOver() {
+    public boolean isGameOver() {
         // if the current gamePosition lays in the GOAL array or both players energy is at zero
         return (GOAL.contains(gamePosition) || (player1.getCurrentEnergy() == 0 && player2.getCurrentEnergy() == 0));
     }
@@ -326,8 +325,8 @@ public class GameMaster {
         return false;
     }
 
-    public void removeOpenGame() {
-        Queries.removeOpenGame(player1.getRandom(), player2.getRandom());
+    public void removeOpenGame(String player1Random) {
+        Queries.removeOpenGame(player1Random);
     }
 
 
@@ -401,6 +400,14 @@ public class GameMaster {
     public GameMaster getGameInProgress(String gameId){
 
         return Queries.getGameInProgress(gameId);
+    }
+
+    public boolean hasMoved(String gameID) {
+        return Queries.hasMoved(gameID);
+    }
+
+    public void updateGameInProgress(String gameID) {
+        Queries.updateGameInProgress(gameID, this);
     }
 
     public boolean gameExists(String gameID){

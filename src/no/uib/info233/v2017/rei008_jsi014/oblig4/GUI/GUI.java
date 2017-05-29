@@ -41,6 +41,8 @@ public class GUI{
 
     private LabelPanel labelPanel;
 
+    private static Timer timer;
+
     private ImagePanel imagePanel = new ImagePanel(getClass().getResource("/img/icon.png").getPath());
 
     private MenuPanel menuPanel = new MenuPanel(player1Name, Queries.getScore(player1Name), menuButtons);
@@ -80,6 +82,7 @@ public class GUI{
             menuPanel.updateSection(menuButtons, 1);
             mainFrame.remove(gamePanel);
             mainFrame.changePanel(menuPanel);
+            //player.setCurrentEnergy(100);
             buttonPanel.makeClickable();
             quit = true;
         }
@@ -87,7 +90,7 @@ public class GUI{
     }
 
     private JPanel loadList(String playerType) {
-        if (GameMaster.hasConnection()) {
+        if (GameMaster.hasConnection()) { //Fixme gameMaster .hasConnection
             listPanel = new ListPanel(playerType);
             JPanel panel;
             if(playerType.equals("Singleplayer")){
@@ -462,12 +465,11 @@ public class GUI{
                     case "Host Game":
                         gameMaster = new GameMaster();
                         gameMaster.hostGame(player);
-                        waitingPanel = new LoadingPanel("Waiting for player...");
+                        waitingPanel = new LoadingPanel("Waiting for player...", true);
 
-                        Timer timer = new Timer(2000, evt -> {
+                        timer = new Timer(2000, evt -> {
                             if(!gameMaster.hasJoined(player.getRandom())) {
                                 waitingPanel.setVisible(true);
-                                mainFrame.setVisible(false);
                             }
                             else {
                                 ((Timer) evt.getSource()).stop();
@@ -475,7 +477,7 @@ public class GUI{
                                 mainFrame.remove(menuPanel);
                                 mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                 mainFrame.setVisible(true);
-                                gameMaster.removeOpenGame();
+                                gameMaster.removeOpenGame(player.getRandom());
                             }
                         });
 
@@ -515,16 +517,14 @@ public class GUI{
                             gameMaster.resign(player);
                         }
                         break;
+                    case "Cancel":
+                        System.out.println(this); //SOUT
+                        waitingPanel.dispose();
+                        timer.stop();
+                        Debugger.printError("The loading screen is Null");
+                        break;
                     case "Quit Game":
                         exitProgram();
-                        break;
-                    case "Cancel":
-                        if(waitingPanel != null) {
-                            waitingPanel.dispose();
-                        }
-                        else {
-                            Debugger.printError("The loading screen is Null");
-                        }
                         break;
 
 
@@ -534,19 +534,52 @@ public class GUI{
         }
         private void doRound(int energyUsed) {
 
-            gameMaster.updateMove(player);
-            int currentEnergy = player.getCurrentEnergy();
+            gameMaster.updateMove(player); //TODO energy, move
+
 
             player2 = gameMaster.getSpecificPlayer(2);
 
-            gameMaster.listenToPlayerMove(player, energyUsed);
-            System.out.println(player2.toString());
-            player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
+            int currentEnergy = player.getCurrentEnergy();
+
+            if(!gameMaster.getSpecificPlayer(2).getPulse()){
+                gameMaster.listenToPlayerMove(player, energyUsed);
+                player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
+            }
+            else {
+                waitForPlayer(energyUsed);
+            }
+
             labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
             mainFrame.validate();
             mainFrame.repaint();
+
+            System.out.println(gameMaster.isGameOver());
+            if(gameMaster.isGameOver()){
+
+                if(player.equals(gameMaster.determineWinner())){
+                    new GameOverPanel("Winner");
+                }
+                else if(gameMaster.determineWinner() == null) {
+                    new GameOverPanel("Draw");
+                }
+                else {
+                    new GameOverPanel("Loser");
+                }
+
+            }
+
         }
 
+    }
+
+
+    private void waitForPlayer(int energyUsed) {
+        timer = new Timer(2000, e -> {
+            if (gameMaster.hasMoved(gameMaster.getGameID())) {
+                gameMaster.listenToPlayerMove(player, energyUsed);
+                ((Timer)e.getSource()).stop();
+            }
+        });
     }
 
     private class ListPanel extends JPanel {
@@ -639,19 +672,18 @@ public class GUI{
                     public void actionPerformed(ActionEvent e) {
                         if(join.equals("Join")){
                             gameMaster = new GameMaster();
-                            waitingPanel = new LoadingPanel("Joining Game...");
+                            waitingPanel = new LoadingPanel("Joining Game...", false);
 
                             final boolean[] hasJoined = new boolean[1];
                             gameMaster.joinGame(id, player);
                             String gameId = id + player.getRandom();
-                            Timer timer = new Timer(2000, evt -> {
-                                hasJoined[0] = gameMaster.gameExists(gameId);
-                                Debugger.print("Trying To Connect");
+                            timer = new Timer(2000, evt -> {
+                                hasJoined[0] = gameMaster.gameExists(gameId); //FIXME gameMaster.hasJoined
                                 if(hasJoined[0]) {
-                                    GameMaster gameMaster2 = gameMaster.getGameInProgress(gameId);
-                                    restrictor(gameButtonsMultiplayer);
-                                    mainFrame.remove(listPanel);
-                                    mainFrame.changePanel(gamePanel.setGame(gameMaster2, gameButtonsMultiplayer));
+                                    gameMaster = gameMaster.getGameInProgress(gameId);
+                                    //restrictor(gameButtonsMultiplayer);
+                                    mainFrame.remove(menuPanel);
+                                    mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                     waitingPanel.dispose();
                                     mainFrame.setVisible(true);
                                     ((Timer)evt.getSource()).stop();
@@ -659,7 +691,7 @@ public class GUI{
                                 }
                                 else {
                                     waitingPanel.setVisible(true);
-                                    mainFrame.setVisible(false);
+                                    Debugger.print("Trying To Connect");
                                 }
                             });
                             timer.start();
@@ -693,19 +725,28 @@ public class GUI{
 
     }
 
-    public static class LoadingPanel extends JFrame {
+    private class LoadingPanel extends JDialog {
         private ImageIcon waitingIcon = new ImageIcon(getClass().getResource("/img/loading.gif"));
 
         private JLabel messageLabel, imageLabel;
         private JButton cancelButton;
 
-        public LoadingPanel(String message) {
+        public LoadingPanel(String message, boolean isHost) {
             setUI();
             GridBagConstraints gbc = new GridBagConstraints();
             JPanel panel = new JPanel(new GridBagLayout());
             messageLabel = new JLabel(message, JLabel.CENTER);
             imageLabel = new JLabel(waitingIcon);
             cancelButton = new JButton("Cancel");
+            cancelButton.addActionListener(e -> {
+                dispose();
+                timer.stop();
+                if(isHost) {
+                    gameMaster.removeOpenGame(player.getRandom());
+                }
+            });
+
+            setModal(true);
 
             Dimension size = new Dimension(500,300);
             setPreferredSize(size);
@@ -729,6 +770,73 @@ public class GUI{
             add(panel);
             setVisible(false);
         }
+
+    }
+    private class GameOverPanel extends JDialog {
+
+        private JLabel messageLabel, imageLabel, gameOverLabel;
+        private JButton cancelButton;
+
+        public GameOverPanel(String message) {
+            setUI();
+            GridBagConstraints gbc = new GridBagConstraints();
+            JPanel panel = new JPanel(new GridBagLayout());
+            gameOverLabel = new JLabel("Game Over", JLabel.CENTER);
+            messageLabel = changeText(message);
+            messageLabel.setFont(new Font("Calibri", Font.PLAIN, 50));
+            imageLabel = changeImage(message);
+            cancelButton = new JButton("Cancel");
+            cancelButton.addActionListener(e -> {
+                dispose();
+            });
+
+            setModal(true);
+
+            Dimension size = new Dimension(700,500);
+            setPreferredSize(size);
+            setSize(size);
+            setMinimumSize(size);
+            setMaximumSize(size);
+            setLocationRelativeTo(null);
+
+            gbc.weightx = 0.5;
+            gbc.weighty = 0.5;
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            gbc.anchor = GridBagConstraints.NORTH;
+            panel.add(gameOverLabel, gbc);
+            gbc.gridy = 1;
+            gbc.anchor = GridBagConstraints.SOUTH;
+            panel.add(messageLabel, gbc);
+            gbc.gridy = 2;
+            gbc.anchor = GridBagConstraints.CENTER;
+            panel.add(imageLabel, gbc);
+            gbc.gridy = 3;
+            gbc.anchor = GridBagConstraints.NORTH;
+            panel.add(cancelButton, gbc);
+            add(panel);
+            setVisible(true);
+        }
+
+        public JLabel changeText(String message) {
+            return new JLabel(message, JLabel.CENTER);
+        }
+
+        public JLabel changeImage(String message) {
+            ImageIcon waitingIcon;
+            if(message.equals("Winner")) {
+                waitingIcon = new ImageIcon(getClass().getResource("/img/winner.png"));
+            }
+            else if(message.equals("Draw")){
+                waitingIcon = new ImageIcon(getClass().getResource("/img/tie.png"));
+            }
+            else {
+                waitingIcon = new ImageIcon(getClass().getResource("/img/loser.png"));
+            }
+
+            return new JLabel(waitingIcon);
+        }
+
     }
 
     static void setUI() {

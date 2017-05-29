@@ -11,7 +11,7 @@ public class AggressivePlayer extends Player {
      * @param name name
      */
     public AggressivePlayer(String name) {
-        super(name + "Aggressive");
+        super(name);
     }
 
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
