@@ -152,6 +152,7 @@ public abstract class Player {
         }else {
             energyUsage =  getCurrentEnergy();
         }
+        updateEnergy(-energyUsage);
         Debugger.print(this.getName() + " used overhead swing, with the force of " + energyUsage + " energy.\n"
                 +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
         return energyUsage;
@@ -173,6 +174,7 @@ public abstract class Player {
         }else if(yourEnergy > 5 && yourEnergy <= 15){
             energyUsage = 5;
         }
+        updateEnergy(-energyUsage);
         Debugger.print(this.getName() + " used stab, with the force of " + energyUsage + " energy.\n"
                 +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
 
@@ -193,6 +195,7 @@ public abstract class Player {
         if (yourEnergy >= 20) {
             energyUsage = energyUsage + randNumber;
         }
+        updateEnergy(-energyUsage);
         Debugger.print(this.getName() + " used slash, with the force of " + energyUsage + " energy.\n"
                 +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
         return energyUsage;

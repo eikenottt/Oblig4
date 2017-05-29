@@ -102,7 +102,7 @@ public class GameMaster {
      */
     public void listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
 
-        if(!gameOver) { // Game Not Over
+        if (!gameOver) { // Game Not Over
 
             if (player1.hasPulse && player2.hasPulse) { // Both players are human -> MultiplayerGame
 
@@ -122,21 +122,21 @@ public class GameMaster {
                     //TODO both players should be able to make a move
                 }
 
-            }
-        }else{
-            if(player.equals(player1)) {
-                this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
-                System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
             } else {
-                this.p2_energyUse = energyUse;
-                System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
+                if (player.equals(player1)) {
+                    this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
+                    System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
+                } else {
+                    this.p2_energyUse = energyUse;
+                    System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
+                }
             }
-        }
 
-        if(this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
-            evaluateTurn();
-        }
+            if (this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
+                evaluateTurn();
+            }
 
+        }
     }
 
 
