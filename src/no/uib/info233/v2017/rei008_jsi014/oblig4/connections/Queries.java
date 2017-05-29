@@ -609,4 +609,37 @@ public final class Queries {
 
         }
     }
+
+    public static boolean gameExists(String gameID){
+
+        boolean exist = false;
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT game_id FROM oblig4.game_in_progress WHERE game_id= ?");
+            statement.setString(1, gameID);
+
+            ResultSet resultSet;
+            resultSet = statement.executeQuery();
+
+            if(resultSet.next()) {
+                String gameId = resultSet.getString(1);
+
+                if (gameID != null){
+                    exist = true;
+                }
+            }
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage()); //SOUT
+        }catch (Exception e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage());//SOUT
+        }
+        return exist;
+    }
 }
