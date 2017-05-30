@@ -1,7 +1,8 @@
 Oppgaver
 
 John Tore:
-    - lage Debugger klasse + gui //Done-ish //TODO fikse at det kun refereres til det samme debuggervinduet
+    - lage Debugger klasse + gui //Done-ish
+    - fikse at det kun refereres til det samme debuggervinduet //DONE
 
 Rune:
     - Implementere resten av klassene fra bugga versjon //DONE

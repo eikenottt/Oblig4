@@ -1,8 +1,6 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
 
-import java.util.Scanner;
-
 public class HumanPlayer extends Player {
 
     /**
@@ -19,23 +17,9 @@ public class HumanPlayer extends Player {
 
     @Override
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
-        Scanner input = new Scanner(System.in);
-        String attack = input.next();
-        int energyUse;
+        //updateEnergy(-yourEnergy);
+        getGameMaster().listenToPlayerMove(this, yourEnergy);
 
-        switch (attack.toLowerCase()) {
-            case "stab":
-                energyUse = stab(yourEnergy);
-                break;
-            case "slash":
-                energyUse = slash(yourEnergy);
-                break;
-            default:
-                energyUse = overheadSwing(yourEnergy);
-                break;
-        }
-
-        updateEnergy(-energyUse);
-        getGameMaster().listenToPlayerMove(this, energyUse);
     }
+
 }

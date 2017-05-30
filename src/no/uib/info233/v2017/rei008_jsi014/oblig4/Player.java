@@ -15,10 +15,11 @@ import java.util.UUID;
 public abstract class Player {
 
     private String name;
-    protected String playerID;
+    private String playerID;
     private int currentEnergy;
-    protected Random rand = new Random();
-    protected boolean hasPulse;
+    Random rand = new Random();
+    boolean hasPulse;
+    int playerMove;
 
     private GameMaster gameMaster;
 
@@ -28,18 +29,19 @@ public abstract class Player {
      * sets currentEnergy as 100 by default
      * @param name name
      */
-    public Player(String name) {
+    Player(String name) {
         this.name = name;
         this.currentEnergy = 100;
         makePlayerID();
         hasPulse = false;
+        playerMove = 0;
     }
 
     /**
      * Sets the gameMaster
-     * @param gameMaster
+     * @param gameMaster the game to register for
      */
-    public void registerGameMaster(GameMaster gameMaster) {
+    void registerGameMaster(GameMaster gameMaster) {
         this.gameMaster = gameMaster;
     }
 
@@ -58,7 +60,7 @@ public abstract class Player {
      * Updates the energy value for player
      * @param value - adds value to the currentEnergy
      */
-    public void updateEnergy(int value) {
+    void updateEnergy(int value) {
         this.currentEnergy += value;
         if (currentEnergy < 0) {
             currentEnergy = 0;
@@ -100,15 +102,12 @@ public abstract class Player {
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getRandom() {
         return playerID;
     }
 
-    public void setRandom(String playerID) {
+    public void setPlayerID(String playerID){
         this.playerID = playerID;
     }
 
@@ -120,12 +119,16 @@ public abstract class Player {
         this.currentEnergy = currentEnergy;
     }
 
-    public GameMaster getGameMaster() {
+    GameMaster getGameMaster() {
         return gameMaster;
     }
 
     public boolean getPulse() {
         return hasPulse;
+    }
+
+    public int getPlayerMove() {
+        return playerMove;
     }
 
 
@@ -134,38 +137,48 @@ public abstract class Player {
 
     /**
      * A high energy usage basic attack all players can perform.
-     * implements some randomness
+     * implements some randomness, if the player have less than 36 energy,
+     * this attack will drain all energy which is left
      * @param yourEnergy - the energy the player has available
      * @return int energy to spend
      */
     public int overheadSwing(int yourEnergy){
         int randNumber;
         randNumber = rand.nextInt(15);
+        int energyUsage;
 
-        if(yourEnergy > 35){
-            return 20 + randNumber;
+        if(yourEnergy > 36){
+            energyUsage = 20 + randNumber;
         }else {
-            return getCurrentEnergy();
+            energyUsage =  getCurrentEnergy();
         }
+        updateEnergy(-energyUsage);
+        Debugger.print(this.getName() + " used overhead swing, with the force of " + energyUsage + " energy.\n"
+                +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
+        return energyUsage;
     }
 
     /**
-     * Low predictability attack, implements a lot of randomness
+     * Low energy attack, implements a lot of randomness
      * @param yourEnergy - the energy the player has available
      * @return int energy to spend
      */
     public int stab(int yourEnergy){
 
         int randNumber;
-        randNumber = this.rand.nextInt(50);
+        int energyUsage = 1;
+        randNumber = this.rand.nextInt(15);
 
-        if (yourEnergy > 50){
-            return randNumber;
-        }else if(yourEnergy>11){
-            return randNumber/10 + 1;
-        }else{
-            return 0;
+        if (yourEnergy > 15){
+            energyUsage += randNumber;
+        }else if(yourEnergy > 5 && yourEnergy <= 15){
+            energyUsage = 5;
         }
+        updateEnergy(-energyUsage);
+        Debugger.print(this.getName() + " used stab, with the force of " + energyUsage + " energy.\n"
+                +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
+
+        return energyUsage;
     }
 
     /**
@@ -176,13 +189,55 @@ public abstract class Player {
      */
     public int slash(int yourEnergy){
 
+        int energyUsage = 5;
         int randNumber = this.rand.nextInt(15);
-        if (yourEnergy > 20) {
-            return 5 + randNumber;
-        }else if( yourEnergy >= 5){
-            return 5;
-        }else return 0;
 
+        if (yourEnergy >= 20) {
+            energyUsage = energyUsage + randNumber;
+        }
+        updateEnergy(-energyUsage);
+        Debugger.print(this.getName() + " used slash, with the force of " + energyUsage + " energy.\n"
+                +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
+        return energyUsage;
+    }
+
+    public boolean useOverheadSwing(){
+        boolean available = false;
+        if (currentEnergy > 15){
+            available = true;
+            playerMove++;
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy to use overhead swing!");
+        }
+
+        return available;
+    }
+
+    public boolean useStab(){
+        boolean available = false;
+        if (currentEnergy >= 1){
+            available = true;
+            playerMove++;
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy to use stab!");
+        }
+
+        return available;
+    }
+
+    public boolean useSlash(){
+        boolean available = false;
+        if(currentEnergy>5){
+            available = true;
+            playerMove++;
+        }
+        if (!available){
+            Debugger.print("You don't have enough energy to use slash!");
+        }
+
+        return available;
     }
 
 
@@ -213,4 +268,7 @@ public abstract class Player {
         return true;
     }
 
+    public void setPlayerMove(int playerMove) {
+        this.playerMove = playerMove;
+    }
 }

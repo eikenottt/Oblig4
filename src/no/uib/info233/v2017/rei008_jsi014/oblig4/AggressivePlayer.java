@@ -1,8 +1,6 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
-/**
- * Created by Rune on 25.05.2017.
- */
+
 public class AggressivePlayer extends Player {
 
     /**
@@ -13,7 +11,7 @@ public class AggressivePlayer extends Player {
      * @param name name
      */
     public AggressivePlayer(String name) {
-        super(name + "Aggressive");
+        super(name);
     }
 
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
@@ -39,7 +37,6 @@ public class AggressivePlayer extends Player {
                 }
                 break;
             case 2:
-            case 3: // 25% of using slash(), 25% stab(), 50% whirilwind()
                 if (randMove == 0) {
                     useEnergy = slash(yourEnergy);
                 } else if (randMove == 1) {
@@ -52,7 +49,7 @@ public class AggressivePlayer extends Player {
                 break;
 
         }
-        this.updateEnergy(-useEnergy);
+        playerMove++;
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 

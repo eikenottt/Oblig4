@@ -1,8 +1,12 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
+import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Connector;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 /**
  * GameMaster sets up and keeps track of a game between two players
@@ -47,21 +51,47 @@ public class GameMaster {
         gameOver = false;
         p1_energyUse = -1;
         p2_energyUse = -1;
-        gameRounds = 0;
+        gameRounds = 1;
         GOAL.add(-3);
         GOAL.add(3);
     }
 
-
-
     /**
      * Tells the players to make their first move
      */
-    void startGame(){
+    public void startGame(){
         setGameOver(false);
-        Debugger.print(player1Name + " vs " + player2Name + "\n");
-        player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
-        player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
+        Debugger.print("######-----| " + player1Name + " vs " + player2Name + " |-----######\n");
+        player1.setCurrentEnergy(100);
+        player2.setCurrentEnergy(100);
+
+        player1.setPlayerMove(0);
+        player2.setPlayerMove(0);
+        //TODO change makeNextMove with listenToPlayerMove ?
+        /*while (!gameOver){
+            //TODO refresh every 2 seconds
+            //TODO run listenToPlayerMove
+            //TODO Update Table after every move
+        }*/
+    }
+
+    /**
+     * Determines the winner of the game, according to the current gamePosition.
+     * @return Player - Returns the winner of the game
+     */
+    public Player determineWinner(){
+
+        Player player;
+
+        if(gamePosition > 0 ){
+            player = this.player1; // Signals player 1 is the winner
+        }else if (gamePosition < 0){
+             player = this.player2; //Sigals the game ended in a draw
+        }else{
+            player = null; // Signals player 2 is the winner
+        }
+
+        return player;
     }
 
     /**
@@ -70,24 +100,43 @@ public class GameMaster {
      * @param player player
      * @param energyUse energyUse
      */
-    void listenToPlayerMove(Player player, int energyUse) {
+    public void listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
 
-        boolean bothPlayersMoved = false;
+        if (!gameOver) { // Game Not Over
 
-        if(!gameOver) { // Game Not Over
+            if (player1.getPulse() && player2.getPulse()) { // Both players are human -> MultiplayerGame
 
-            if(player.equals(player1)) {
-                this.p1_energyUse = energyUse;
+                Queries.updateMove(this, player);
+
+                String[] playerMoves = Queries.getPlayerMove(gameID);
+                String player1Move = playerMoves[0], player2Move = playerMoves[1];
+                if (player1Move != null && player2Move == null) {  // Only player2 has made move
+                    //TODO Lock screen of player 1
+                }
+                if (player1Move == null && player2Move != null) { // Only player1 has made move
+                    //TODO Lock screen of player 2
+                }
+                if (player1Move != null && player2Move != null) {  //Both players has made move
+                    //TODO Run Evaluate turn, Both have mad a move, remember to set playermoves back to null
+                } else {
+                    //TODO both players should be able to make a move
+                }
+
             } else {
-                this.p2_energyUse = energyUse;
+                if (player.equals(player1)) {
+                    this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
+                    System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
+                } else {
+                    this.p2_energyUse = energyUse;
+                    System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
+                }
             }
-        }
 
-        if(this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
-            bothPlayersMoved = true;
-            evaluateTurn();
-        }
+            if (this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
+                evaluateTurn();
+            }
 
+        }
     }
 
 
@@ -98,8 +147,6 @@ public class GameMaster {
      * When game is over, it runs the updateRanking method
      */
     private void evaluateTurn() {
-
-        //TODO insert isGameOver somewhere
 
         gameRounds++; // Increase the number of rounds played
 
@@ -115,43 +162,40 @@ public class GameMaster {
                 gamePosition--; // Move game one step closer toward player 2's goal
             }
 
-
-
-            System.out.println(player1Name + " used " + getP1_energyUse() + " energy and has "+player1.getCurrentEnergy()+" left.");
-            System.out.println(player2Name + " used " + getP2_energyUse() + " energy and has "+player2.getCurrentEnergy()+" left.");
-            System.out.println("Games Played: " + gameRounds + ", Game Position: " + gamePosition);
-
-            // Prints out messages to the debugging console
-            Debugger.print(player1Name + " used " + getP1_energyUse() + " energy and has "+player1.getCurrentEnergy()+" left.");
-            Debugger.print(player2Name + " used " + getP2_energyUse() + " energy and has "+player2.getCurrentEnergy()+" left.");
+            // Prints out message to the debugging console
             Debugger.print("Round: " + gameRounds + ", Game Position: " + gamePosition);
 
             // Reset the energy usage and prepare for a new round
             this.p1_energyUse = -1;
             this.p2_energyUse = -1;
 
-            if(!isGameOver()) {
+            /*if(!isGameOver()) {
                 // Players makes their next move
-                player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
-                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());
+                *//*player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
+                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());*//*
             }
             else {
                 updateRanking();
-            }
+            }*/
+            if(player1.getPulse() && player2.getPulse())
+                updateGameInProgress(gameID); //TODO game_position, move_number
         }
         else {
-            updateRanking(); // Update the database
+            if(player2.getPulse() && player1.getPulse())
+                updateRanking(); // Update the database
         }
 
     }
 
 
-    private boolean isGameOver() {
+    public boolean isGameOver() {
         // if the current gamePosition lays in the GOAL array or both players energy is at zero
         return (GOAL.contains(gamePosition) || (player1.getCurrentEnergy() == 0 && player2.getCurrentEnergy() == 0));
     }
 
     private int fetchIntInString(String string) {
+        //TODO feilmelding på fetchIntInString  - StringIndexOutOfBoundsException
+        //TODO return -1 if gameID don't contain ¿ and |
         String d = string.substring(string.indexOf("¿")+1, string.indexOf("|"));
         return Integer.parseInt(d);
     }
@@ -161,9 +205,8 @@ public class GameMaster {
     /**
      * Loads the state of the saved game into the gameMaster
      * @param gameID the id of the game
-     * @return True if the game loads successfully
      */
-    public boolean loadGame(String gameID){
+    public void loadGame(String gameID){
 
         GameMaster loadedGameMaster = Queries.loadSaved(gameID);
 
@@ -178,43 +221,56 @@ public class GameMaster {
             this.gamePosition = loadedGameMaster.gamePosition;
 
             gameLoaded = true;
-
-            // TODO Debugger
-            System.out.println("Loaded:  \n ID: " + gameID + " \n Player 1: " + player1.getName() + " With " +player1.getCurrentEnergy()+ " Energy." +"\n Player 2: " +player2.getName()+ " With " + player2.getCurrentEnergy() + " Energy. Game Position is " + gamePosition + "\n Round: " + gameRounds);
-
             Debugger.print("Loaded:  \n ID: " + gameID + " \n Player 1: " + player1.getName() + " With " +player1.getCurrentEnergy()+ " Energy." +"\n Player 2: " +player2.getName()+ " With " + player2.getCurrentEnergy() + " Energy. Game Position is " + gamePosition + "\n Round: " + gameRounds);
         }
         if(!gameLoaded){
             Debugger.print("There was an error loading the game.");
         }
+    }
 
-        return gameLoaded;
+    public void startMultiplayerGame(Player player1, String player2Name, String player2ID){
+
+
+        //add joinedPlayer
+        Player player2 = new HumanPlayer(player2Name);
+        player2.setPlayerID(player2ID);
+        setPlayers(player1, player2);
+
+        //reset the GameMaster
+        gamePosition = 0;
+        gameOver = false;
+        p1_energyUse = -1;
+        p2_energyUse = -1;
+        gameRounds = 1;
+
+        //Creates a new game
+        Queries.createGame(this);
+        
     }
 
 
     /**
      * Runs when the game is over and updates the database
-     * @return True if the database was updated
      */
     private void updateRanking() {
 
         float pointsPlayer1 = getPointsFromPosition(gamePosition);
         float pointsPlayer2 = getPointsFromPosition(gamePosition*-1);
 
-        System.out.println("There have been played " + gameRounds + " rounds!");
+        System.out.println("There have been played " + gameRounds + " rounds!"); //SOUT
 
         Debugger.print("There have been played " + gameRounds + " rounds!");
 
         if(pointsPlayer1 > pointsPlayer2) {
-            System.out.println(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2);
+            System.out.println(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2); //SOUT
             Debugger.print(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2);
         }
         else if(pointsPlayer2 > pointsPlayer1) {
-            System.out.println(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1);
+            System.out.println(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1); //SOUT
             Debugger.print(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1);
         }
         else {
-            System.out.println("The game ended in a draw");
+            System.out.println("The game ended in a draw"); //SOUT
             Debugger.print("Nice Tie - The game ended in a draw");
         }
 
@@ -231,18 +287,81 @@ public class GameMaster {
         Queries.updateSavedGame(this);
     }
 
-    public void hostGame(){
+    public void hostGame(Player player1){
+
+
         //TODO When a HumanPlayer creates a new multiplayer game, he is "hosting" the game.
         Queries.openGame(player1);
+
+
+        final boolean[] hasFoundOpponent = {false};
+        final boolean[] rowDeleted = {false};
+        Timer t = new Timer(2000, e -> {
+            hasFoundOpponent[0] = Queries.hasJoined(player1.getRandom());
+            rowDeleted[0] = Queries.rowDeleted(player1.getRandom());
+            System.out.println("hasFoundOpponent - " + hasFoundOpponent[0]);//SOUT
+            if (hasFoundOpponent[0]){
+                ((Timer) e.getSource()).stop();
+                String[] p2 = Queries.getPlayerValues();
+                this.startMultiplayerGame(player1, p2[0], p2[1]);
+            }
+            if(rowDeleted[0]) {
+                ((Timer) e.getSource()).stop();
+            }
+        });
+        t.start();
+    }
+
+
+    public boolean hasJoined(String hostId){
+
+        return Queries.hasJoined(hostId);
+    }
+
+    public void removeGameInProgress(String gameID){
+        Queries.removeGameInProgress(gameID);
+    }
+
+    public static Boolean hasConnection(){
+        return Queries.hasConnection();
     }
 
     public void listGames(){
         //TODO displays the available games that players can join in the multiplayer section.
     }
 
-    public void joinGame(String player1, Player player2){
+    public boolean joinGame(String player1_random, Player player2){
         //TODO Whe the player joins the game, a new game should start with the host as player one
-        Queries.joinGame(player1, player2);
+        if(!Queries.joinGame(player1_random, player2)){
+
+            Debugger.print("Could not join game");
+            return true;
+        }
+        return false;
+    }
+
+    public void removeOpenGame(String player1Random) {
+        Queries.removeOpenGame(player1Random);
+    }
+
+
+    public void updateMove(Player player) {
+        Queries.updateMove(this, player);
+    }
+
+    public void resign(Player player1) {
+        int gamePos;
+        if(player1.equals(this.player1)){
+            gamePos = -3;
+        }
+        else {
+            gamePos = 3;
+        }
+        setGamePosition(gamePos);
+        setGameOver(true);
+        updateGameInProgress(gameID);
+        updateRanking();
+        Debugger.print("Player Resigned");
     }
 
 
@@ -267,8 +386,12 @@ public class GameMaster {
     public Player getSpecificPlayer(int playerNumber){
         if(playerNumber == 2){
             return this.player2;
-        }else{
+        }else if(playerNumber == 1){
             return this.player1;
+        }
+        else {
+            Debugger.print("There is no such player");
+            return null;
         }
     }
 
@@ -290,9 +413,26 @@ public class GameMaster {
         return p2_energyUse;
     }
 
+    public GameMaster getGameInProgress(String gameId){
+
+        return Queries.getGameInProgress(gameId);
+    }
+
+    public boolean hasMoved(String gameID) {
+        return Queries.hasMoved(gameID);
+    }
+
+    public void updateGameInProgress(String gameID) {
+        Queries.updateGameInProgress(gameID, this);
+    }
+
+    public boolean gameExists(String gameID){
+        return Queries.gameExists(gameID);
+    }
 
 
-    private void setGameOver(boolean gameOver) {
+
+    public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
     }
 
@@ -300,8 +440,13 @@ public class GameMaster {
         return gameID;
     }
 
+    // TODO GameID må ikkje være lenger enn 20 på game_in_progress
     private void setGameID() {
-        gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
+        if(player1.hasPulse && player2.hasPulse) {
+            gameID = player1.getRandom() + player2.getRandom();
+        } else {
+            gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
+        }
     }
 
     public void setGameID(String gameID) {
@@ -316,12 +461,16 @@ public class GameMaster {
         this.gamePosition = gamePosition;
     }
 
+    public int getGameRounds() {
+        return gameRounds;
+    }
+
     /**
      * Translates the position of the players into points
      * @param currentPosition position of the player
      * @return a float value with the player score
      */
-    private float getPointsFromPosition(int currentPosition) {
+    public float getPointsFromPosition(int currentPosition) {
         float points;
         switch (currentPosition) {
             case -3:
@@ -350,6 +499,45 @@ public class GameMaster {
         return points;
     }
 
+    /**
+     * A Bolean test to check if both players has made a move in the current
+     * round of the game.
+     * @return True if both players have made move this round.
+     */
+//    public boolean moveChecker(){
+//
+//       int playerMoves[] = Queries.getPlayerMove(gameID); //Gather fresh info of the current moves
+//
+//       int player1Move = playerMoves[0];
+//       int player2Move = playerMoves[1];
+//
+//       boolean isNewRound = false;
+//       if (player1Move == player2Move){ // Checks if both players has made a move, this round.
+//           isNewRound = true;
+//       }
+//
+//       return isNewRound;
+//    }
+
+    public void setGameRound(int gameRound) {
+        this.gameRounds = gameRound;
+    }
 
 
+    @Override
+    public String toString() {
+        return "GameMaster{" +
+                "gameID='" + gameID + '\'' +
+                ", player1=" + player1 +
+                ", player2=" + player2 +
+                ", GOAL=" + GOAL +
+                ", gamePosition=" + gamePosition +
+                ", p1_energyUse=" + p1_energyUse +
+                ", p2_energyUse=" + p2_energyUse +
+                ", player1Name='" + player1Name + '\'' +
+                ", player2Name='" + player2Name + '\'' +
+                ", gameOver=" + gameOver +
+                ", gameRounds=" + gameRounds +
+                '}';
+    }
 }

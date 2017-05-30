@@ -1,8 +1,6 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
-/**
- * Created by Rune on 25.05.2017.
- */
+
 public class PassivePlayer extends Player{
     /**
      * Constructor for player
@@ -21,7 +19,7 @@ public class PassivePlayer extends Player{
         int useEnergy;
         switch (currentPosition){
             case -3: case -2: case -1: // 50% overheadSwing() 50% stab() for position 0, 1 and 2
-                if (randMove == 0 || randMove == 1) {
+                if ((randMove == 0 || randMove == 1)) {
                     useEnergy = overheadSwing(yourEnergy);
                 }else
                     useEnergy = stab(yourEnergy);
@@ -41,11 +39,15 @@ public class PassivePlayer extends Player{
                 }
                 break;
             default:
-                useEnergy = 0;
+                if(getCurrentEnergy() > 0) {
+                useEnergy = overheadSwing(yourEnergy);
+                } else{
+                useEnergy = 0;}
                 break;
-
         }
-        this.updateEnergy(-useEnergy);
+
+        playerMove++;
+        //this.updateEnergy(-useEnergy);
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 

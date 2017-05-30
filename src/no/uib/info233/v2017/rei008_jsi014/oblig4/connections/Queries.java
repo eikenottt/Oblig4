@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 /**
@@ -14,10 +15,13 @@ import java.util.TreeMap;
  */
 public final class Queries {
 
+    private static String[] playerValues = new String[2];
+
     private static PreparedStatement statement;
 
     /**
      * Sets player 1 as a host for a game
+     *
      * @param player hosting player
      * @return true if a row was inserted
      */
@@ -32,13 +36,13 @@ public final class Queries {
             statement.setString(1, player.getName());
             statement.setString(2, player.getRandom());
             int rowCount = statement.executeUpdate();
-            if(rowCount > 0) {
+            if (rowCount > 0) {
                 tableUpdated = true;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         return tableUpdated;
@@ -56,17 +60,59 @@ public final class Queries {
             statement.setString(2, player2.getRandom());
             statement.setString(3, p1_random);
             int rowCount = statement.executeUpdate();
-            if(rowCount > 0) {
+            if (rowCount > 0) {
                 tableUpdated = true;
             }
+            Debugger.print("Open_Games Table was updated");
 
+            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         return tableUpdated;
     }
+
+
+    public static void createGame(GameMaster gameMaster) {
+
+        Connection conn = null;
+
+        //Create Player objects to hold the players, for aesthetic purposes
+        Player player1 = gameMaster.getSpecificPlayer(1);
+        Player player2 = gameMaster.getSpecificPlayer(2);
+
+        try {
+            conn = Connector.getConnection();
+
+            statement = conn.prepareStatement(
+                    "INSERT INTO oblig4.game_in_progress(game_id, player_1, player_2, game_position, player_1_energy, player_2_energy, move_number) " +
+                            "VALUES (?,?,?,?,?,?,?)");
+
+            statement.setString(1, gameMaster.getGameID());
+            statement.setString(2, player1.getName());
+            statement.setString(3, player2.getName());
+            statement.setInt(4, gameMaster.getGamePosition());
+            statement.setInt(5, player1.getCurrentEnergy());
+            statement.setInt(6, player2.getCurrentEnergy());
+            statement.setInt(7, gameMaster.getGameRounds());
+            statement.executeUpdate();
+
+            conn.close();//Close connection
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+        }
+        Debugger.print("Game inserted in game_in_progress table");
+
+    }
+
+
     /**
      * Handles the SQL-queries and manipulations in the database
      * @param player the player to be updated
@@ -106,7 +152,7 @@ public final class Queries {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Debugger.print("EXCEPTION: " + e.getMessage());
+                Debugger.printException(e.getMessage());
             }
         }
 
@@ -154,11 +200,10 @@ public final class Queries {
             }
 
         } catch (SQLException e) {
-            e.getErrorCode();
-            Debugger.print("EXCEPTION: " + e.getMessage() + e.getErrorCode());
+            Debugger.printException(e.getMessage());
         } catch (Exception e) {
             e.getMessage();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
 
         return updated;
@@ -169,12 +214,10 @@ public final class Queries {
      * Loads a singleplayer game from the database
      * @param gameID ID of the game
      * @return A GameMaster containing the information needed to play
-     * @throws //TODO CustomException
      */
     public static GameMaster loadSaved(String gameID) {
 
         GameMaster gameMaster = null;
-        boolean loaded = false;
         try {
             Connection conn = Connector.getConnection(); // Make connection
 
@@ -218,14 +261,11 @@ public final class Queries {
 
             gameMaster.setPlayers(player1, player2);
 
-            loaded = true;//Successful load
-            if(loaded){
-                Debugger.print("Success: The game has been successfully loaded!");
-            }
+            Debugger.print("Success: The game has been successfully loaded!");
 
-
+            conn.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Debugger.printException(e.getMessage());
         }
 
         if(gameMaster == null) {
@@ -253,7 +293,8 @@ public final class Queries {
             while(result.next()){
                 ArrayList<String> score = new ArrayList<>();
                 // Player score
-                score.add(result.getString(4));
+                Float playerScore = result.getFloat(4);
+                score.add(playerScore.toString());
                 // Player Name code
                 score.add(result.getString(1));
                 // Player Random and everything else
@@ -264,16 +305,51 @@ public final class Queries {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            Debugger.print("EXCEPTION: " + e.getMessage());
+            Debugger.printException(e.getMessage());
         }
-
-        // TODO if Map is Empty
 
         return playersMap;
     }
+
+    public static TreeMap<String, ArrayList<String>> getGameMap(TreeMap<String, ArrayList<String>> playersMap){
+        try {
+
+            Connection conn = Connector.getConnection(); // Make connection
+            statement = conn.prepareStatement("SELECT * FROM oblig4.saved_games");
+            ResultSet result = statement.executeQuery();
+
+            while(result.next()){
+                ArrayList<String> score = new ArrayList<>();
+                // Player 1 name
+                score.add(result.getString(2));
+                // Player 2 name
+                score.add(result.getString(3));
+                // Game Position
+                score.add(result.getString(4));
+                // Player 1 Energy
+                score.add(result.getString(5));
+                // Player 2 Energy
+                score.add(result.getString(6));
+                // Game ID and everything else
+                playersMap.put(result.getString(1), score);
+            }
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+
+        }
+
+        return playersMap;
+    }
+
 
     /**
      * Gets the score of a specified player
@@ -304,6 +380,10 @@ public final class Queries {
 
     }
 
+    public static String[] getPlayerValues() {
+        return playerValues;
+    }
+
     public static String getPlayerRandom(String playerName){
 
         String pRandom = "";
@@ -311,7 +391,7 @@ public final class Queries {
         try {
             Connection conn = Connector.getConnection(); // Make connection
 
-            statement = conn.prepareStatement("SELECT player_1_random FROM oblig4.open_games WHERE player_1 = ?");
+            statement = conn.prepareStatement("SELECT player_2,player_2_random FROM oblig4.open_games WHERE player_1 = ?");
             statement.setString(1, playerName);
             ResultSet resultSet = statement.executeQuery();
 
@@ -326,7 +406,306 @@ public final class Queries {
 
         return pRandom;
 
+    }
+
+    public static boolean hasConnection() {
+        boolean hasConnection = false;
+        try {
+            Connection conn = Connector.getConnection();
+            hasConnection = Connector.hasConnection();
+            conn.close();
+        } catch (Exception e) {
+            for(StackTraceElement ste : e.getStackTrace()) {
+                Debugger.printError(ste.toString());
+            }
         }
+        return hasConnection;
+    }
+
+
+    public static String[] getPlayerMove(String gameID) {
+
+        String[] playerMoves = new String[2];
+
+
+        try {
+
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT player_1_move, player_2_move FROM oblig4.game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameID);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if(resultSet.next()){
+                String player1Move = ( resultSet.getString(1));
+                String player2Move = resultSet.getString(2);
+
+                 playerMoves[0] = player1Move;
+                 playerMoves[1] = player2Move;
+            }
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+        } catch (Exception e){
+            Debugger.printException(e.getMessage());
+        }
+
+        return playerMoves;
+    }
+
+    public static boolean hasJoined(String hostID){
+
+        boolean hasJoined = false;
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT player_2, player_2_random FROM oblig4.open_games WHERE player_1_random= ?");
+            statement.setString(1, hostID);
+
+            ResultSet resultSet;
+            resultSet = statement.executeQuery();
+
+            if(resultSet.next()) {
+                String player2 = resultSet.getString(1);
+                String player2ID = resultSet.getString(2);
+
+                if (player2 != null){
+                    playerValues[0] = player2;
+                    playerValues[1] = player2ID;
+                    hasJoined = true;
+                }
+                System.out.println(player2);//SOUT
+            }
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage()); //SOUT
+        }catch (Exception e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage());//SOUT
+        }
+        return hasJoined;
+
+    }
+
+    public static void updateMove(GameMaster gameMaster, Player player) {
+        try {
+            Connection conn = Connector.getConnection();
+
+            String playerMove;
+            String playerEnergy;
+
+            if(player.equals(gameMaster.getSpecificPlayer(1))) {
+                playerMove = "player_1_move";
+                playerEnergy = "player_1_energy";
+            }
+            else {
+                playerMove = "player_2_move";
+                playerEnergy = "player_2_energy";
+            }
+
+            statement = conn.prepareStatement("UPDATE game_in_progress SET "+ playerMove +" = ? , "+playerEnergy+"= ? WHERE game_id = ? ");
+            statement.setInt(1, player.getPlayerMove());
+            statement.setInt(2, player.getCurrentEnergy());
+            statement.setString(3, gameMaster.getGameID());
+            statement.executeUpdate();
+
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public static boolean removeOpenGame(String player1Random) {
+        boolean removed = false;
+        try {
+            Connection conn = Connector.getConnection();
+
+            statement = conn.prepareStatement("DELETE FROM open_games WHERE player_1_random = ?");
+            statement.setString(1, player1Random);
+            statement.executeUpdate();
+
+            conn.close();
+            removed = true;
+            Debugger.print("The game was removed from open_games table");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return removed;
+    }
+
+    public static void updateGameInProgress(String gameID, GameMaster gameMaster) {
+        try {
+            Connection conn = Connector.getConnection();
+
+            statement = conn.prepareStatement("UPDATE game_in_progress SET game_position = ?,  move_number = ? WHERE game_id = ?");
+            statement.setInt(1, gameMaster.getGamePosition());
+            statement.setInt(2, gameMaster.getGameRounds());
+            statement.setString(3, gameID);
+            statement.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean hasMoved(String gameID) {
+        boolean hasMoved = false;
+        try {
+            Connection conn = Connector.getConnection();
+
+            statement = conn.prepareStatement("SELECT player_1_move, player_2_move FROM game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameID);
+
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                if(Integer.toString(rs.getInt(1)) != null || Integer.toString(rs.getInt(2)) != null) {
+                    hasMoved = true;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return hasMoved;
+    }
+
+    public static GameMaster getGameInProgress(String gameId){
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            // Execute query
+            statement = conn.prepareStatement("SELECT * FROM oblig4.game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameId);
+
+            ResultSet result = statement.executeQuery();
+
+            while(result.next()){
+                String player1Name = result.getString(2);
+                String player2Name = result.getString(3);
+                int gamePos = result.getInt(4);
+                int p1Energy = result.getInt(5);
+                int p2Energy= result.getInt(6);
+                int round = result.getInt(9);
+
+                Player player1 = new HumanPlayer(player1Name);
+                Player player2 = new HumanPlayer(player2Name);
+                player1.setPlayerID(gameId.substring(0,10));
+                player2.setPlayerID(gameId.substring(10,20));
+                player1.setCurrentEnergy(p1Energy);
+                player2.setCurrentEnergy(p2Energy);
+
+                GameMaster gameMaster = new GameMaster();
+                gameMaster.setGamePosition(gamePos);
+                gameMaster.setGameRound(round);
+                gameMaster.setPlayers(player1,player2);
+
+                return gameMaster;
+
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+        }
+        return null;
+    }
+
+    public static void removeGameInProgress(String gameID) {
+
+        try {
+            Connection conn = Connector.getConnection();
+            statement = conn.prepareStatement("DELETE FROM oblig4.game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameID);
+            statement.executeUpdate();
+
+            conn.close();
+        }
+        catch (SQLException e){
+
+        }
+        catch (Exception e){
+
+        }
+    }
+
+    public static boolean gameExists(String gameID){
+
+        boolean exist = false;
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT game_id FROM oblig4.game_in_progress WHERE game_id= ?");
+            statement.setString(1, gameID);
+
+            ResultSet resultSet;
+            resultSet = statement.executeQuery();
+
+            if(resultSet.next()) {
+                String gameId = resultSet.getString(1);
+
+                if (gameID != null){
+                    exist = true;
+                }
+            }
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage()); //SOUT
+        }catch (Exception e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage());//SOUT
+        }
+        return exist;
+    }
+
+    public static boolean rowDeleted(String p1Random) {
+
+        boolean exist = false;
+
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
+
+            statement = conn.prepareStatement("SELECT player_1_random FROM oblig4.open_games WHERE player_1_random= ?");
+            statement.setString(1, p1Random);
+
+            ResultSet resultSet;
+            resultSet = statement.executeQuery();
+
+            if (!resultSet.next()) {
+                exist = true;
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage()); //SOUT
+        } catch (Exception e) {
+            e.printStackTrace();
+            Debugger.printException(e.getMessage());
+            System.out.println(e.getMessage());//SOUT
+        }
+        return exist;
+    }
+
 
 
 
