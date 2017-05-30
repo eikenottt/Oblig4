@@ -580,7 +580,7 @@ public final class Queries {
         return hasMoved;
     }
 
-    public static GameMaster getGameInProgress(String gameId, Player player){
+    public static GameMaster getGameInProgress(String gameId){
 
         GameMaster gameMaster = new GameMaster();
         try {
@@ -593,21 +593,24 @@ public final class Queries {
             ResultSet result = statement.executeQuery();
 
             while(result.next()){
+                String player1Name = result.getString(2);
                 String player2Name = result.getString(3);
                 int gamePos = result.getInt(4);
                 int p1Energy = result.getInt(5);
                 int p2Energy= result.getInt(6);
                 int round = result.getInt(9);
 
+                Player player1 = new HumanPlayer(player1Name);
                 Player player2 = new HumanPlayer(player2Name);
-                player.setPlayerID(gameId.substring(0,10));
+
+                player1.setPlayerID(gameId.substring(0,10));
                 player2.setPlayerID(gameId.substring(10,20));
-                player.setCurrentEnergy(p1Energy);
+                player1.setCurrentEnergy(p1Energy);
                 player2.setCurrentEnergy(p2Energy);
 
                 gameMaster.setGamePosition(gamePos);
                 gameMaster.setGameRound(round);
-                gameMaster.setPlayers(player,player2);
+                gameMaster.setPlayers(player1,player2);
 
 
             }

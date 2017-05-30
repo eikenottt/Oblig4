@@ -812,7 +812,11 @@ public class GUI{
                                 hasJoined[0] = gameMaster.gameExists(gameId); //FIXME gameMaster.hasJoined
                                 if(hasJoined[0]) {
                                     SwingUtilities.invokeLater(() -> {
-                                        gameMaster = gameMaster.getGameInProgress(gameId, player);
+                                        gameMaster = gameMaster.getGameInProgress(gameId);
+                                        Player p2 = gameMaster.getSpecificPlayer(1);
+                                        gameMaster.setPlayers(p2, player);
+                                        System.out.println(gameMaster.toString());
+
                                         mainFrame.remove(menuPanel);
                                         mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                         waitingPanel.dispose();

@@ -401,9 +401,9 @@ public class GameMaster {
         return p2_energyUse;
     }
 
-    public GameMaster getGameInProgress(String gameId, Player player){
+    public GameMaster getGameInProgress(String gameId){
 
-        return Queries.getGameInProgress(gameId, player);
+        return Queries.getGameInProgress(gameId);
     }
 
     public boolean hasMoved(String gameID) {
