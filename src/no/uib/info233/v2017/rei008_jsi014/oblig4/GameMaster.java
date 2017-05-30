@@ -104,7 +104,7 @@ public class GameMaster {
 
         if (!gameOver) { // Game Not Over
 
-            if (player1.hasPulse && player2.hasPulse) { // Both players are human -> MultiplayerGame
+            if (player1.getPulse() && player2.getPulse()) { // Both players are human -> MultiplayerGame
 
                 Queries.updateMove(this, player);
 
@@ -177,10 +177,12 @@ public class GameMaster {
             else {
                 updateRanking();
             }*/
-            updateGameInProgress(gameID); //TODO game_position, move_number
+            if(player1.getPulse() && player2.getPulse())
+                updateGameInProgress(gameID); //TODO game_position, move_number
         }
         else {
-            updateRanking(); // Update the database
+            if(player2.getPulse() && player1.getPulse())
+                updateRanking(); // Update the database
         }
 
     }

@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -288,6 +289,8 @@ public class GUI{
             player2EnergyBar.setBackground(Color.BLUE);
             player2EnergyBar.setForeground(new Color(70,70,70));
             player2EnergyBar.setStringPainted(true);
+            player1EnergyBar.setUI(new EnergyBarUI());
+            player2EnergyBar.setUI(new EnergyBarUI());
             player1EnergyBar.setStringPainted(true);
             player1EnergyBar.setValue(player1.getCurrentEnergy());
             player2EnergyBar.setValue(100-player2.getCurrentEnergy());
@@ -616,9 +619,9 @@ public class GUI{
             else {
                 restrictor(gameButtonsMultiplayer);
                 waitForPlayer(energyUsed);
+                gameMaster.updateGameInProgress(gameMaster.getGameID());
             }
 
-            gameMaster.updateGameInProgress(gameMaster.getGameID());
             labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
             labelPanel.setRounds(gameMaster.getGameRounds());
             imagePanel.addImage(gameMaster.getGamePosition());
@@ -956,12 +959,26 @@ public class GUI{
                         UIManager.put(key, buttonBG);
                     if (keyLower.contains("optionpane.messageforeground"))
                         UIManager.put(key, fg);
-                    if (keyLower.contains("progressbar.foreground"))
-                        UIManager.put(key, ColorUIResource.RED);
+                    if (keyLower.contains("progressbar.selectionBackground"))
+                        UIManager.put(key, fg);
+                    if (keyLower.contains("progressbar.selectionForeground"))
+                        UIManager.put(key, fg);
                     if (keyLower.contains("menu.foreground"))
                         UIManager.put(key, fg);
                 }
             }
+        }
+    }
+
+    private class EnergyBarUI extends BasicProgressBarUI {
+        @Override
+        protected Color getSelectionForeground() {
+            return Color.WHITE;
+        }
+
+        @Override
+        protected Color getSelectionBackground() {
+            return Color.WHITE;
         }
     }
 }
