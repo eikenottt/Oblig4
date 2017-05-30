@@ -457,6 +457,8 @@ public class GUI{
     private class ButtonPanel extends JPanel {
 
         JButton[] buttons;
+        ImageIcon singleplayerIcon = new ImageIcon(getClass().getResource("/img/Singleplayer.png")),
+                multiplayerIcon = new ImageIcon(getClass().getResource("/img/Multiplayer.png"));
 
         ButtonPanel(String... buttonNames) {
             buttons = new JButton[buttonNames.length];
@@ -474,7 +476,19 @@ public class GUI{
 
             for(int i = 0; i < buttonNames.length; i++) {
 
-                JButton button1 = new JButton(buttonNames[i]);
+                JButton button1;
+                switch (buttonNames[i]){
+                    case "Singleplayer":
+                        button1 = new JButton(buttonNames[i], singleplayerIcon);
+                        break;
+                    case"Multiplayer":
+                        button1 = new JButton(buttonNames[i], multiplayerIcon);
+                        break;
+                    default:
+                        button1 = new JButton(buttonNames[i]);
+                        break;
+                }
+
                 button1.addActionListener(new ButtonListener());
                 buttons[i] = button1;
 
@@ -628,6 +642,7 @@ public class GUI{
                     case "Resign":
                         if(quitToMenu(ButtonPanel.this)) {
                             gameMaster.resign(player);
+                            timer.stop();
                         }
                         break;
                     case "Cancel":
