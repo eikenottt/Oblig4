@@ -703,11 +703,14 @@ public class GUI{
     private void waitForPlayer(int energyUsed) {
         player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
         timer = new Timer(2000, e -> {
+            Debugger.print("Waiting for the other player to make a move");
             if (gameMaster.hasMoved(gameMaster.getGameID())) {
                 gameButtonsMultiplayer.makeClickable();
                 ((Timer)e.getSource()).stop();
+                Debugger.print("Your turn");
             }
         });
+        timer.start();
     }
 
     private class ListPanel extends JPanel {
