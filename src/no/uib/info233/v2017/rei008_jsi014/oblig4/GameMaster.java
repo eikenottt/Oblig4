@@ -304,8 +304,6 @@ public class GameMaster {
             }
             if(rowDeleted[0]) {
                 ((Timer) e.getSource()).stop();
-                this.player1.setHost(false);
-                System.out.println("You hare the host: " + player1.getHost());
             }
         });
         t.start();
