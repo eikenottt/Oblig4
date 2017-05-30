@@ -20,6 +20,7 @@ public abstract class Player {
     Random rand = new Random();
     boolean hasPulse;
     int playerMove;
+    boolean isHost;
 
     private GameMaster gameMaster;
 
@@ -35,6 +36,7 @@ public abstract class Player {
         makePlayerID();
         hasPulse = false;
         playerMove = 0;
+        isHost = false;
     }
 
     /**
