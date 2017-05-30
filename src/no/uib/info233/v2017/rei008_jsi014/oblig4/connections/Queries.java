@@ -607,7 +607,7 @@ public final class Queries {
                 Player player2 = new HumanPlayer(player2Name);
 
                 player1.setPlayerID(gameId.substring(0,10));
-                player2.setPlayerID(gameId.substring(10,20));
+                player2.setPlayerID(gameId.substring(10, gameId.length()));
                 player1.setCurrentEnergy(p1Energy);
                 player2.setCurrentEnergy(p2Energy);
 

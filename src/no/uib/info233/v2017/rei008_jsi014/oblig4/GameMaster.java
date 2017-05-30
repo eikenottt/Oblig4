@@ -126,19 +126,28 @@ public class GameMaster {
         }
     }
 
+    /**
+     * Refreshes the game, by retrieving from the game_in_progress table, and determines whether the player is the host or not.
+     * and returns the GameMaster needed accordingly.
+     * @param player - The player loading the game
+     * @return - Updated GameMaster from the game_in_progress table.
+     */
     public GameMaster gameProcessor(Player player){
         String[] playerMoves = Queries.getPlayerMove(gameID);
         String player1Move = playerMoves[0], player2Move = playerMoves[1];
 
         updateGameInProgress(gameID);
-        GameMaster updatedGame = getGameInProgress(gameID);
+        GameMaster nextRound = getGameInProgress(gameID);
 
-        if(!player.getHost()){
-            Player player1 = updatedGame.getSpecificPlayer(1);
-            updatedGame.setPlayers(player1, player);
+        if(player.getHost()){
+            Player player2 = nextRound.getSpecificPlayer(2);
+            nextRound.setPlayers(player, player2);
+        }else{
+            Player player1 = nextRound.getSpecificPlayer(1);
+            nextRound.setPlayers(player1, player);
         }
 
-        return updatedGame;
+        return nextRound;
 
     }
 
