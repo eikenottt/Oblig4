@@ -567,6 +567,11 @@ public class GUI{
                                 System.out.println("Waiting");
                             }
                             else {
+                                try {
+                                    Thread.sleep(1000); // To ensure that the information is gathered before execution
+                                } catch (InterruptedException e1) {
+                                    e1.printStackTrace();
+                                }
                                 System.out.println("Starting GamePanel"); //SOUT
                                 waitingPanel.dispose();
                                 mainFrame.remove(menuPanel);

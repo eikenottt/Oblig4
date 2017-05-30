@@ -169,19 +169,17 @@ public class GameMaster {
             this.p1_energyUse = -1;
             this.p2_energyUse = -1;
 
-            /*if(!isGameOver()) {
-                // Players makes their next move
-                *//*player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
-                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());*//*
+            if(player1.getPulse() && player2.getPulse()) {
+                updateGameInProgress(gameID); // Updates game_position, move_number
             }
-            else {
-                updateRanking();
-            }*/
-            if(player1.getPulse() && player2.getPulse())
-                updateGameInProgress(gameID); //TODO game_position, move_number
+            if(isGameOver()) {
+                if(player1.getPulse()) {
+                    updateRanking();
+                }
+            }
         }
         else {
-            if(player2.getPulse() && player1.getPulse())
+            if(player1.getPulse())
                 updateRanking(); // Update the database
         }
 
@@ -287,6 +285,7 @@ public class GameMaster {
                 ((Timer) e.getSource()).stop();
                 String[] p2 = Queries.getPlayerValues();
                 this.startMultiplayerGame(player1, p2[0], p2[1]);
+                System.out.println(this);
             }
             if(rowDeleted[0]) {
                 ((Timer) e.getSource()).stop();
