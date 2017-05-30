@@ -712,9 +712,9 @@ public class GUI{
             if (gameMaster.hasMoved(gameMaster.getGameID())) {
                 gameButtonsMultiplayer.makeClickable();
                 ((Timer)e.getSource()).stop();
-                if (player.getHost()){
-                    gameMaster.gameProcessor(player);
-                }
+
+                gameMaster = gameMaster.gameProcessor(player);
+
                 Debugger.print("Your turn");
             }
         });
