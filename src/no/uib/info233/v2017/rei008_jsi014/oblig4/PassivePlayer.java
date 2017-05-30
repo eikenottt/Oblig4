@@ -21,12 +21,16 @@ public class PassivePlayer extends Player{
             case -3: case -2: case -1: // 50% overheadSwing() 50% stab() for position 0, 1 and 2
                 if ((randMove == 0 || randMove == 1)) {
                     useEnergy = overheadSwing(yourEnergy);
+                }else if (yourEnergy == 0){
+                    useEnergy = yourEnergy;
                 }else
                     useEnergy = stab(yourEnergy);
                 break;
             case 0: // 25% stab() 75% slash in position 3
                 if (randMove == 0 ){
                     useEnergy = stab(yourEnergy);
+                }else if(yourEnergy == 0){
+                    useEnergy = yourEnergy;
                 }else{
                     useEnergy= slash(yourEnergy);
                 }

@@ -61,6 +61,7 @@ public abstract class Player {
      * @param value - adds value to the currentEnergy
      */
     void updateEnergy(int value) {
+        this.playerMove = value;
         this.currentEnergy += value;
         if (currentEnergy < 0) {
             currentEnergy = 0;
@@ -175,6 +176,7 @@ public abstract class Player {
             energyUsage = 5;
         }
         updateEnergy(-energyUsage);
+
         Debugger.print(this.getName() + " used stab, with the force of " + energyUsage + " energy.\n"
                 +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
 
@@ -205,7 +207,7 @@ public abstract class Player {
         boolean available = false;
         if (currentEnergy > 15){
             available = true;
-            playerMove++;
+
         }
         if (!available){
             Debugger.print("You don't have enough energy to use overhead swing!");
@@ -218,7 +220,7 @@ public abstract class Player {
         boolean available = false;
         if (currentEnergy >= 1){
             available = true;
-            playerMove++;
+
         }
         if (!available){
             Debugger.print("You don't have enough energy to use stab!");
@@ -231,7 +233,6 @@ public abstract class Player {
         boolean available = false;
         if(currentEnergy>5){
             available = true;
-            playerMove++;
         }
         if (!available){
             Debugger.print("You don't have enough energy to use slash!");
