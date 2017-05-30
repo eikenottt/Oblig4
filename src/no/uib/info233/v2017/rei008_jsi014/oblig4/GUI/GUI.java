@@ -491,6 +491,16 @@ public class GUI{
             }
         }
 
+        void makeAttacksUnclickable() {
+            String buttonName;
+            for(JButton button : buttons){
+                buttonName = button.getText();
+                if(!buttonName.equals("Resign") && !buttonName.equals("Quit To Menu") && !buttonName.equals("Save Game")) {
+                    button.setEnabled(false);
+                }
+            }
+        }
+
 
         void makeClickable() {
             for (JButton button : buttons) {
@@ -627,6 +637,7 @@ public class GUI{
 
         }
         private void doRound(int energyUsed) {
+            makeAttacksUnclickable();
 
             player2 = gameMaster.getSpecificPlayer(2);
 
@@ -645,6 +656,7 @@ public class GUI{
                         player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
                     }
                 }
+                makeClickable();
             }
             else {
                 restrictor(gameButtonsMultiplayer);
@@ -684,6 +696,7 @@ public class GUI{
         timer = new Timer(2000, e -> {
             if (gameMaster.hasMoved(gameMaster.getGameID())) {
                 player.makeNextMove(gameMaster.getGamePosition(), player.getCurrentEnergy(), player2.getCurrentEnergy());
+                gameButtonsMultiplayer.makeClickable();
                 ((Timer)e.getSource()).stop();
             }
         });
@@ -805,11 +818,12 @@ public class GUI{
                         }
                         else {
                             gameMaster = new GameMaster();
-                            gameMaster.loadGame(id);
-                            gamePanel.setGame(gameMaster, gameButtonsSingleplayer);
+                            gameMaster = gameMaster.loadGame(id, player);
+                            System.out.println(gameMaster);//SOUT
+                            mainFrame.remove(menuPanel);
+                            mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsSingleplayer));
                             restrictor(gameButtonsSingleplayer);
-                            mainFrame.remove(listPanel);
-                            mainFrame.changePanel(gamePanel);
+                            gameMaster.startGame();
                             }
                         }
                 }));
@@ -935,7 +949,8 @@ public class GUI{
             gbc.anchor = GridBagConstraints.NORTH;
             panel.add(pointsLabel, gbc);
             gbc.gridy = 5;
-            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.weighty = 3;
             panel.add(cancelButton, gbc);
             add(panel);
             setVisible(true);

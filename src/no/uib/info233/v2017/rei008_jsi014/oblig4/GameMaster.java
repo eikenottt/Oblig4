@@ -193,7 +193,7 @@ public class GameMaster {
         return (GOAL.contains(gamePosition) || (player1.getCurrentEnergy() == 0 && player2.getCurrentEnergy() == 0));
     }
 
-    private int fetchIntInString(String string) {
+    public int fetchIntInString(String string) {
         //TODO feilmelding på fetchIntInString  - StringIndexOutOfBoundsException
         //TODO return -1 if gameID don't contain ¿ and |
         String d = string.substring(string.indexOf("¿")+1, string.indexOf("|"));
@@ -206,26 +206,9 @@ public class GameMaster {
      * Loads the state of the saved game into the gameMaster
      * @param gameID the id of the game
      */
-    public void loadGame(String gameID){
+    public GameMaster loadGame(String gameID, Player player){
 
-        GameMaster loadedGameMaster = Queries.loadSaved(gameID);
-
-        boolean gameLoaded = false;
-
-        if(loadedGameMaster != null) {
-
-            this.gameID = loadedGameMaster.gameID;
-            this.gameRounds = fetchIntInString(gameID);
-            this.player1 = loadedGameMaster.player1;
-            this.player2 = loadedGameMaster.player2;
-            this.gamePosition = loadedGameMaster.gamePosition;
-
-            gameLoaded = true;
-            Debugger.print("Loaded:  \n ID: " + gameID + " \n Player 1: " + player1.getName() + " With " +player1.getCurrentEnergy()+ " Energy." +"\n Player 2: " +player2.getName()+ " With " + player2.getCurrentEnergy() + " Energy. Game Position is " + gamePosition + "\n Round: " + gameRounds);
-        }
-        if(!gameLoaded){
-            Debugger.print("There was an error loading the game.");
-        }
+        return Queries.loadSaved(gameID, player);
     }
 
     public void startMultiplayerGame(Player player1, String player2Name, String player2ID){
@@ -447,6 +430,10 @@ public class GameMaster {
         } else {
             gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
         }
+    }
+
+    public void updateGameID(int gameRounds) {
+        gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
     }
 
     public void setGameID(String gameID) {
