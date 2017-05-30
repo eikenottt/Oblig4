@@ -712,23 +712,11 @@ public class GUI{
             if (gameMaster.hasMoved(gameMaster.getGameID())) {
                 gameButtonsMultiplayer.makeClickable();
                 ((Timer)e.getSource()).stop();
-                gameMaster.updateGameInProgress(gameMaster.getGameID());
-                getInformaiton();
+                gameMaster.gameProsessor(player);
                 Debugger.print("Your turn");
             }
         });
         timer.start();
-    }
-
-    private void getInformaiton() {
-        if(player.getHost()) {
-            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
-        }
-        else {
-            Player p2 = gameMaster.getSpecificPlayer(1);
-            gameMaster.setPlayers(p2, player);
-        }
-
     }
 
     private class ListPanel extends JPanel {
