@@ -843,10 +843,12 @@ public class GUI{
                             gameMaster = new GameMaster();
                             gameMaster = gameMaster.loadGame(id, player);
                             System.out.println(gameMaster);//SOUT
+                            imagePanel.removeImage();
                             mainFrame.remove(menuPanel);
+                            menuPanel.updateSection(imagePanel, 2);
                             mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsSingleplayer));
                             restrictor(gameButtonsSingleplayer);
-                            gameMaster.startGame();
+                            //gameMaster.startGame();
                             }
                         }
                 }));
@@ -938,9 +940,10 @@ public class GUI{
             cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(e -> {
                 dispose();
-                imagePanel.removeImage();
                 mainFrame.remove(gamePanel);
                 labelPanel = new LabelPanel(player.getName(), Queries.getScore(player.getName()));
+                imagePanel.removeImage();
+                menuPanel.updateSection(imagePanel, 2);
                 menuPanel.updateSection(labelPanel, 0);
                 menuPanel.updateSection(menuButtons, 1);
                 mainFrame.changePanel(menuPanel);
