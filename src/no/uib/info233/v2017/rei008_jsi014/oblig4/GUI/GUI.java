@@ -64,9 +64,6 @@ public class GUI{
         player = new HumanPlayer(player1Name);
         menuPanel.setPlayerName(player.getName());
 
-        /*for (int i = 0; i < 500; i++) {
-            Debugger.print("This is a test, to check if it prints out a number:  " + i + "\n");
-        }*/
     }
 
     private void exitProgram() {
@@ -251,12 +248,17 @@ public class GUI{
         JProgressBar player1EnergyBar, player2EnergyBar;
         JLabel numRoundsLabel;
 
+        Float score;
+
         GameMaster gameMaster;
 
         public LabelPanel(String playerName, Float score) {
+
+            this.score = score;
+
             setLayout(new GridBagLayout());
             JLabel playerNameLabel = new JLabel(playerName, JLabel.CENTER);
-            JLabel scoreLabel = new JLabel("Score: "+score);
+            JLabel scoreLabel = new JLabel("Score: "+this.score);
 
             gbc.weightx = 0.5;
             gbc.weighty = 10;
@@ -346,6 +348,10 @@ public class GUI{
 
         public void setGameMaster(GameMaster gameMaster) {
             this.gameMaster = gameMaster;
+        }
+
+        public void updateScore(Float score) {
+            this.score = score;
         }
 
     }
@@ -669,7 +675,6 @@ public class GUI{
                 restrictor(gameButtonsMultiplayer);
                 player1.getPlayerMove();
                 waitForPlayer(energyUsed);
-                gameMaster.updateGameInProgress(gameMaster.getGameID());
             }
 
             labelPanel.setProgressbarEnergy(player1.getCurrentEnergy(), player2.getCurrentEnergy());
@@ -707,10 +712,23 @@ public class GUI{
             if (gameMaster.hasMoved(gameMaster.getGameID())) {
                 gameButtonsMultiplayer.makeClickable();
                 ((Timer)e.getSource()).stop();
+                gameMaster.updateGameInProgress(gameMaster.getGameID());
+                getInformaiton();
                 Debugger.print("Your turn");
             }
         });
         timer.start();
+    }
+
+    private void getInformaiton() {
+        if(player.getHost()) {
+            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID(), player);
+        }
+        else {
+            Player p2 = gameMaster.getSpecificPlayer(1);
+            gameMaster.setPlayers(p2, player);
+        }
+
     }
 
     private class ListPanel extends JPanel {
@@ -934,6 +952,8 @@ public class GUI{
                 dispose();
                 imagePanel.removeImage();
                 mainFrame.remove(gamePanel);
+                labelPanel = new LabelPanel(player.getName(), Queries.getScore(player.getName()));
+                menuPanel.updateSection(labelPanel, 0);
                 menuPanel.updateSection(menuButtons, 1);
                 mainFrame.changePanel(menuPanel);
             });
