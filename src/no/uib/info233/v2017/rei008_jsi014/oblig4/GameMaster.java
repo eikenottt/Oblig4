@@ -109,14 +109,14 @@ public class GameMaster {
 
                 Queries.updateMove(this, player);
 
+
+            }
+            if (player.equals(player1)) {
+                this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
+                System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
             } else {
-                if (player.equals(player1)) {
-                    this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
-                    System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
-                } else {
-                    this.p2_energyUse = energyUse;
-                    System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
-                }
+                this.p2_energyUse = energyUse;
+                System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
             }
 
             if (this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
