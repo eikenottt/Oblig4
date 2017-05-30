@@ -500,7 +500,7 @@ public final class Queries {
             String playerMove;
             String playerEnergy;
 
-            if(player.equals(gameMaster.getSpecificPlayer(1))) {
+            if(player.getHost()) {
                 playerMove = "player_1_move";
                 playerEnergy = "player_1_energy";
             }
@@ -546,7 +546,7 @@ public final class Queries {
         try {
             Connection conn = Connector.getConnection();
 
-            statement = conn.prepareStatement("UPDATE game_in_progress SET game_position = ?,  move_number = ? WHERE game_id = ?");
+            statement = conn.prepareStatement("UPDATE game_in_progress SET game_position = ?,  move_number = ?, player_1_move = NULL, player_2_move = NULL WHERE game_id = ?");
             statement.setInt(1, gameMaster.getGamePosition());
             statement.setInt(2, gameMaster.getGameRounds());
             statement.setString(3, gameID);
@@ -568,7 +568,10 @@ public final class Queries {
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                if(Integer.toString(rs.getInt(1)) != null && Integer.toString(rs.getInt(2)) != null) {
+                String p1_move = Integer.toString(rs.getInt(1));
+                String p2_move = Integer.toString(rs.getInt(2));
+                System.out.println(p1_move + " - - - " + p2_move); //sout
+                if(p1_move != null && p2_move != null) {
                     hasMoved = true;
                 }
             }
