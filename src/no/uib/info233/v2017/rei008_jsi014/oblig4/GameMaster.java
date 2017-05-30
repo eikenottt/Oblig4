@@ -109,20 +109,6 @@ public class GameMaster {
 
                 Queries.updateMove(this, player);
 
-                String[] playerMoves = Queries.getPlayerMove(gameID);
-                String player1Move = playerMoves[0], player2Move = playerMoves[1];
-                if (player1Move != null && player2Move == null) {  // Only player2 has made move
-                    //TODO Lock screen of player 1
-                }
-                if (player1Move == null && player2Move != null) { // Only player1 has made move
-                    //TODO Lock screen of player 2
-                }
-                if (player1Move != null && player2Move != null) {  //Both players has made move
-                    //TODO Run Evaluate turn, Both have mad a move, remember to set playermoves back to null
-                } else {
-                    //TODO both players should be able to make a move
-                }
-
             } else {
                 if (player.equals(player1)) {
                     this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
@@ -138,6 +124,22 @@ public class GameMaster {
             }
 
         }
+    }
+
+    public GameMaster gameProcessor(Player player){
+        String[] playerMoves = Queries.getPlayerMove(gameID);
+        String player1Move = playerMoves[0], player2Move = playerMoves[1];
+
+        updateGameInProgress(gameID);
+        GameMaster updatedGame = getGameInProgress(gameID);
+
+        if(!player.getHost()){
+            Player player1 = updatedGame.getSpecificPlayer(1);
+            updatedGame.setPlayers(player1, player);
+        }
+
+        return updatedGame;
+
     }
 
 
