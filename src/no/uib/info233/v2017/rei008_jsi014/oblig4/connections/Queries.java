@@ -568,8 +568,8 @@ public final class Queries {
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                String p1_move = Integer.toString(rs.getInt(1));
-                String p2_move = Integer.toString(rs.getInt(2));
+                String p1_move = rs.getString(1);
+                String p2_move = rs.getString(2);
                 System.out.println(p1_move + " - - - " + p2_move); //sout
                 if(p1_move != null && p2_move != null) {
                     hasMoved = true;

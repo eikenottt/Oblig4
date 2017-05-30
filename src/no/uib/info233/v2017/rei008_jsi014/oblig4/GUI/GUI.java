@@ -722,7 +722,7 @@ public class GUI{
 
     private void getInformaiton() {
         if(player.getHost()) {
-            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID(), player);
+            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
         }
         else {
             Player p2 = gameMaster.getSpecificPlayer(1);
