@@ -23,12 +23,4 @@ public class HumanPlayer extends Player {
 
     }
 
-    public void setHost(boolean isHost){
-        this.isHost = isHost;
-    }
-
-    public boolean getHost(){
-        return this.isHost;
-    }
-
 }

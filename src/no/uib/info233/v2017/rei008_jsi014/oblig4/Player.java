@@ -134,6 +134,14 @@ public abstract class Player {
         return playerMove;
     }
 
+    public void setHost(boolean isHost){
+        this.isHost = isHost;
+    }
+
+    public boolean getHost(){
+        return this.isHost;
+    }
+
 
 
     // ------------ Attacks ----------- //

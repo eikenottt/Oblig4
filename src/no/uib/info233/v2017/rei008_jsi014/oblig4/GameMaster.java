@@ -1,5 +1,6 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Connector;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
@@ -286,9 +287,14 @@ public class GameMaster {
                 String[] p2 = Queries.getPlayerValues();
                 this.startMultiplayerGame(player1, p2[0], p2[1]);
                 System.out.println(this);
+
+                this.player1.setHost(true);
+                System.out.println("You are the host: " + player1.getHost());
             }
             if(rowDeleted[0]) {
                 ((Timer) e.getSource()).stop();
+                this.player1.setHost(false);
+                System.out.println("You hare the host: " + player1.getHost());
             }
         });
         t.start();
