@@ -257,6 +257,7 @@ public final class Queries {
                 gameMaster = new GameMaster();
                 gameMaster.setGameID(id);
                 gameMaster.setGamePosition(gamePos);
+                gameMaster.setGameRound(gameMaster.fetchIntInString(id));
 
                 gameMaster.setPlayers(player, player2);
 
