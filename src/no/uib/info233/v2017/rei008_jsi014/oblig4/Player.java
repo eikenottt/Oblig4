@@ -61,7 +61,7 @@ public abstract class Player {
      * @param value - adds value to the currentEnergy
      */
     void updateEnergy(int value) {
-        this.playerMove = value;
+        this.playerMove = value * -1;
         this.currentEnergy += value;
         if (currentEnergy < 0) {
             currentEnergy = 0;

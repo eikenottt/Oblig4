@@ -509,6 +509,7 @@ public final class Queries {
                 playerEnergy = "player_2_energy";
             }
 
+            System.out.println("Player Move : " + player.getPlayerMove()); //SOUT
             statement = conn.prepareStatement("UPDATE game_in_progress SET "+ playerMove +" = ? , "+playerEnergy+"= ? WHERE game_id = ? ");
             statement.setInt(1, player.getPlayerMove());
             statement.setInt(2, player.getCurrentEnergy());

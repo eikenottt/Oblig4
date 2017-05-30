@@ -667,6 +667,7 @@ public class GUI{
             }
             else {
                 restrictor(gameButtonsMultiplayer);
+                player1.getPlayerMove();
                 waitForPlayer(energyUsed);
                 gameMaster.updateGameInProgress(gameMaster.getGameID());
             }
