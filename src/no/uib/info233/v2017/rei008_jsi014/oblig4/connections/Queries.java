@@ -415,7 +415,9 @@ public final class Queries {
             hasConnection = Connector.hasConnection();
             conn.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            for(StackTraceElement ste : e.getStackTrace()) {
+                Debugger.printError(ste.toString());
+            }
         }
         return hasConnection;
     }

@@ -470,7 +470,7 @@ public class GameMaster {
      * @param currentPosition position of the player
      * @return a float value with the player score
      */
-    private float getPointsFromPosition(int currentPosition) {
+    public float getPointsFromPosition(int currentPosition) {
         float points;
         switch (currentPosition) {
             case -3:

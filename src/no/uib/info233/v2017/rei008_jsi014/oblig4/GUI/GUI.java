@@ -80,6 +80,7 @@ public class GUI{
         boolean quit = false;
         int choice = JOptionPane.showOptionDialog(mainFrame, "Are you sure you want to quit the current game?", "Quit Current Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         if(choice == JOptionPane.YES_OPTION) {
+            imagePanel.removeImage();
             menuPanel.updateSection(menuButtons, 1);
             mainFrame.remove(gamePanel);
             mainFrame.changePanel(menuPanel);
@@ -105,10 +106,14 @@ public class GUI{
             }
             return panel;
         } else {
-            JOptionPane.showMessageDialog(mainFrame, "You are not connected to Wildboy", "Connection error", JOptionPane.ERROR_MESSAGE);
-            Debugger.print("There was a problem connecting to the server");
+            notConnected();
         }
         return null;
+    }
+
+    private void notConnected() {
+        JOptionPane.showMessageDialog(mainFrame, "You are not connected to Wildboy", "Connection error", JOptionPane.ERROR_MESSAGE);
+        Debugger.print("There was a problem connecting to the server");
     }
 
     private void restrictor(ButtonPanel buttonPanel) {
@@ -508,15 +513,27 @@ public class GUI{
                         mainFrame.updateFrame();
                         break;
                     case "Multiplayer":
-                        menuPanel.updateSection(multiplayerButtons, 1);
-                        menuPanel.updateSection(loadList("Multiplayer"), 2);
-                        mainFrame.remove(menuPanel);
-                        mainFrame.changePanel(menuPanel);
+                        if(Queries.hasConnection()) {
+                            menuPanel.updateSection(multiplayerButtons, 1);
+                            menuPanel.updateSection(loadList("Multiplayer"), 2);
+                            mainFrame.remove(menuPanel);
+                            mainFrame.changePanel(menuPanel);
+                        }
+                        else {
+                            notConnected();
+                        }
 
                         break;
                     case "New Game":
                         player = new HumanPlayer(player1Name);
-                        player2 = new AggressivePlayer("CPU");
+                        Random random = new Random();
+                        int randomNumber = random.nextInt(2);
+                        System.out.println(randomNumber); //SOUT
+                        if(randomNumber == 0) {
+                            player2 = new AggressivePlayer("CPU");
+                        }else {
+                            player2 = new PassivePlayer("CPU");
+                        }
                         gameMaster = new GameMaster();
                         gameMaster.setPlayers(player, player2);
                         mainFrame.remove(menuPanel);
@@ -563,9 +580,14 @@ public class GUI{
                         }
                         break;
                     case "Load Game":
-                        menuPanel.updateSection(loadButtons, 1);
-                        menuPanel.updateSection(loadList("Singleplayer"),2);
-                        mainFrame.updateFrame();
+                        if(Queries.hasConnection()) {
+                            menuPanel.updateSection(loadButtons, 1);
+                            menuPanel.updateSection(loadList("Singleplayer"), 2);
+                            mainFrame.updateFrame();
+                        }
+                        else {
+                            notConnected();
+                        }
                         break;
                     case "Refresh":
                         menuPanel.updateSection(loadList("Multiplayer"), 2);
@@ -613,8 +635,16 @@ public class GUI{
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 labelPanel.setRounds(gameMaster.getGameRounds()); //DONE <-- prøver å legge update rounds her
                 restrictor(gameButtonsSingleplayer);
-                player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
-                player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
+                if(player.getCurrentEnergy() > 0) {
+                    player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
+                    player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
+                }
+                else {
+                    while (!gameMaster.isGameOver()) {
+                        player.makeNextMove(gameMaster.getGamePosition(), 0, player2.getCurrentEnergy());
+                        player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
+                    }
+                }
             }
             else {
                 restrictor(gameButtonsMultiplayer);
@@ -630,7 +660,6 @@ public class GUI{
 
             System.out.println(gameMaster.isGameOver());//SOUT denne hadde du glemt
             if(gameMaster.isGameOver()){
-                imagePanel.removeImage();
                 gameButtonsSingleplayer.makeClickable();
                 gameButtonsMultiplayer.makeClickable();
 
@@ -851,20 +880,28 @@ public class GUI{
     }
     private class GameOverPanel extends JDialog {
 
-        private JLabel messageLabel, imageLabel, gameOverLabel;
+        private JLabel messageLabel, imageLabel, gameOverLabel, pointsLabel, roundLabel;
         private JButton cancelButton;
 
         public GameOverPanel(String message) {
             setUI();
             GridBagConstraints gbc = new GridBagConstraints();
+
+            setTitle("Game Over");
+
             JPanel panel = new JPanel(new GridBagLayout());
             gameOverLabel = new JLabel("Game Over", JLabel.CENTER);
             messageLabel = changeText(message);
-            messageLabel.setFont(new Font("Calibri", Font.PLAIN, 50));
+            messageLabel.setFont(new Font("Calibri", Font.BOLD, 50));
             imageLabel = changeImage(message);
+            roundLabel = new JLabel("Game ended in Round: " + gameMaster.getGameRounds());
+            roundLabel.setFont(new Font("Calibri", Font.ITALIC, 25));
+            roundLabel.setForeground(new Color(160,160,160));
+            pointsLabel = new JLabel("You earned " + gameMaster.getPointsFromPosition(gameMaster.getGamePosition()) + " points!");
             cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(e -> {
                 dispose();
+                imagePanel.removeImage();
                 mainFrame.remove(gamePanel);
                 menuPanel.updateSection(menuButtons, 1);
                 mainFrame.changePanel(menuPanel);
@@ -883,15 +920,21 @@ public class GUI{
             gbc.weighty = 0.5;
             gbc.gridx = 1;
             gbc.gridy = 0;
-            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.anchor = GridBagConstraints.CENTER;
             panel.add(gameOverLabel, gbc);
             gbc.gridy = 1;
             gbc.anchor = GridBagConstraints.SOUTH;
             panel.add(messageLabel, gbc);
             gbc.gridy = 2;
+            gbc.anchor = GridBagConstraints.NORTH;
+            panel.add(roundLabel, gbc);
+            gbc.gridy = 3;
             gbc.anchor = GridBagConstraints.CENTER;
             panel.add(imageLabel, gbc);
-            gbc.gridy = 3;
+            gbc.gridy = 4;
+            gbc.anchor = GridBagConstraints.NORTH;
+            panel.add(pointsLabel, gbc);
+            gbc.gridy = 5;
             gbc.anchor = GridBagConstraints.NORTH;
             panel.add(cancelButton, gbc);
             add(panel);
