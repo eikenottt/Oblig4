@@ -564,14 +564,14 @@ public class GUI{
                         timer = new Timer(2000, evt -> {
                             if(!gameMaster.hasJoined(player.getRandom())){
                                 waitingPanel.setVisible(true);
-                                System.out.println("Waiting");
+                                System.out.println("Waiting"); //SOUT
                             }
                             else {
                                 SwingUtilities.invokeLater(() -> {
                                     System.out.println("Starting GamePanel"); //SOUT
                                     waitingPanel.dispose();
                                     mainFrame.remove(menuPanel);
-                                    System.out.println(gameMaster);
+                                    System.out.println("Hosting GameMaster: " + gameMaster); //SOUT
                                     mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                     mainFrame.setVisible(true);
                                     gameMaster.removeOpenGame(player.getRandom());
@@ -812,7 +812,7 @@ public class GUI{
                                 hasJoined[0] = gameMaster.gameExists(gameId); //FIXME gameMaster.hasJoined
                                 if(hasJoined[0]) {
                                     SwingUtilities.invokeLater(() -> {
-                                        gameMaster = gameMaster.getGameInProgress(gameId);
+                                        gameMaster = gameMaster.getGameInProgress(gameId, player);
                                         mainFrame.remove(menuPanel);
                                         mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
                                         waitingPanel.dispose();
