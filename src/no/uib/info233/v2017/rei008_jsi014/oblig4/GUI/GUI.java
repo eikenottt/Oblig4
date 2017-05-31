@@ -730,8 +730,8 @@ public class GUI{
                     gameMaster.setP2_energyUse(p2_energyUse);
                     gameMaster.evaluateTurn();
                     gameMaster.resetMoves();
-                    gameButtonsMultiplayer.makeClickable();
                 }
+                gameButtonsMultiplayer.makeClickable();
                 ((Timer)ev.getSource()).stop();
             }
         });
