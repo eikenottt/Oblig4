@@ -643,7 +643,6 @@ public class GUI{
                     case "Resign":
                         if(quitToMenu(ButtonPanel.this)) {
                             gameMaster.resign(player);
-                            timer.stop();
                         }
                         break;
                     case "Cancel":
@@ -744,8 +743,8 @@ public class GUI{
                         System.out.println("Sov du godt?");
                         gameMaster.resetMoves();
                     }
-                    gameMaster.evaluateTurn();
                     Debugger.print("Enemy used: " + p2_energyUse + " Energy");
+                    gameMaster.evaluateTurn();
                     updateGamePanel(player, player2);
                     ((Timer)ev.getSource()).stop();
                 }

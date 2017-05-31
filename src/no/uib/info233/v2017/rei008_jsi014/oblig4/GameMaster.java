@@ -42,6 +42,8 @@ public class GameMaster {
     private int gameRounds;
     private boolean isUpdated = false;
 
+    Timer timer;
+
 
     /**
      * Constructor for GameMaster
@@ -172,7 +174,7 @@ public class GameMaster {
 
         GameMaster oldGame = getGameInProgress(getGameID());
 
-        Timer timer = new Timer(2000, e -> {
+        timer = new Timer(2000, e -> {
             if(hasMoved(gameID)){
                 ((Timer) e.getSource()).stop();
                 GameMaster newGame = getGameInProgress(gameID);
@@ -395,6 +397,7 @@ public class GameMaster {
 
     public void resign(Player player1) {
         int gamePos;
+        timer.stop();
         if(player1.equals(this.player1)){
             gamePos = -3;
         }
