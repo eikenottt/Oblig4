@@ -714,47 +714,56 @@ public class GUI{
 
     }
 
-
-    private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
-
-        System.out.println("I used this much energy: " + energyUsed); //SOUT
+    /**
+     * Method that checks if you should be able to make a move
+     */
+    private void isItYourTurn(){
         String[] s = Queries.getPlayerMove(gameMaster.getGameID());
         if (player.getHost()){
-            if (s[0] == null){
+            if (s[0] == null){ //Means that player one's move is null --> the p1 hasn't moved
                 gameButtonsMultiplayer.makeClickable();
             }else {
-                if (s[1] == null ){
+                if (s[1] == null ){//p2 hasn't made a move yet
                     gameButtonsMultiplayer.makeClickable();
                 }
             }
         }
 
+    }
+
+
+    private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
+
+        System.out.println("I used this much energy: " + energyUsed); //SOUT
+        isItYourTurn();
+
+
         if (player.getHost()) {
-            gameMaster.updateMove(player);
+            gameMaster.listenToPlayerMove(player,energyUsed);
             gameMaster = gameMaster.gameProcessor(player);
 
         } else{
             gameMaster.updateMove(player);
         }
 
-        timer = new Timer(2000, e -> {
-            Debugger.print("Waiting for the other player to make a move");
-            if (gameMaster.hasMoved(gameMaster.getGameID())) {
-                System.out.println("Has both playeyers moved?: " + gameMaster.hasMoved(gameMaster.getGameID())); // SOUT
-                player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
-                gameButtonsMultiplayer.makeClickable();
-                ((Timer)e.getSource()).stop();
-
-                if (gameMaster.isUpdated()){
-
-                    gameButtonsMultiplayer.makeClickable();
-                    gameMaster.setIsUpdated(false);
-
-                }
-                Debugger.print("Your turn");
-            }
-        });
-        timer.start();
+//        timer = new Timer(2000, e -> {
+//            Debugger.print("Waiting for the other player to make a move");
+//            if (gameMaster.isUpdated()) {
+//                System.out.println("Has both players moved?: " + gameMaster.hasMoved(gameMaster.getGameID())); // SOUT
+//                player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
+//                gameButtonsMultiplayer.makeClickable();
+//                ((Timer)e.getSource()).stop();
+//
+//                if (gameMaster.isUpdated()){
+//
+//                    gameButtonsMultiplayer.makeClickable();
+//                    gameMaster.setIsUpdated(false);
+//
+//                }
+//                Debugger.print("Your turn");
+//            }
+//        });
+//        timer.start();
     }
 
     private class ListPanel extends JPanel {
