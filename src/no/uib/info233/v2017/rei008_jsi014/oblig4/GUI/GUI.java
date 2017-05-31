@@ -660,7 +660,7 @@ public class GUI{
             }
 
         }
-        private void doRound(int energyUsed) {
+        private void doRound(int energyUsed) { //int energy used represents the Attack, directly gathered from the button stab/slash/overhead swing
             makeAttacksUnclickable();
 
             player2 = gameMaster.getSpecificPlayer(2);
@@ -684,7 +684,7 @@ public class GUI{
             }
             else {
                 restrictor(gameButtonsMultiplayer);
-                waitForPlayer(energyUsed);
+                waitForPlayer(energyUsed); //if its a multiplayer game, send it to the waitForPlayer
             }
 
             labelPanel.setProgressbarEnergy(player1.getCurrentEnergy(), player2.getCurrentEnergy());
@@ -715,11 +715,15 @@ public class GUI{
     }
 
 
-    private void waitForPlayer(int energyUsed) {
+    private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
+
+        System.out.println("I used this much energy: " + energyUsed); //SOUT
 
         if (player.getHost()) {
             gameMaster = gameMaster.gameProcessor(player);
 
+        } else{
+            gameMaster.updateMove(player);
         }
 
         timer = new Timer(2000, e -> {

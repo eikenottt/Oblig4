@@ -120,7 +120,7 @@ public class GameMaster {
                 System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
             }
 
-            if (this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
+            if ((this.p1_energyUse > -1 && this.p2_energyUse > -1 ) || (hasMoved(gameID)) ) { // if both players has made a move
                 evaluateTurn();
             }
 
@@ -135,24 +135,31 @@ public class GameMaster {
      */
     public GameMaster gameProcessor(Player player){
         String[] playerMoves = Queries.getPlayerMove(gameID);
-        int player1Move = Integer.valueOf(playerMoves[0]), player2Move = Integer.valueOf(playerMoves[1]);
-        isUpdated = false;
-
         GameMaster nextRound = this.getGameInProgress(gameID);
+        if (hasMoved(gameID) ) {
+            int player1Move = Integer.valueOf(playerMoves[0]);
+            int player2Move = Integer.valueOf(playerMoves[1]);
 
-        if(player.getHost()){
-            listenToPlayerMove(player, player1Move);
+            isUpdated = false;
 
-            Player player2 = nextRound.getSpecificPlayer(2);
-            nextRound.setPlayers(player, player2);
-        }else{
-            listenToPlayerMove(player, player2Move);
-            Player player1 = nextRound.getSpecificPlayer(1);
-            nextRound.setPlayers(player1, player);
+
+            nextRound.listenToPlayerMove(player1, player1Move);
+            nextRound.listenToPlayerMove(player2, player2Move);
         }
 
-        nextRound = getGameInProgress(gameID);
-        updateGameInProgress(gameID);
+//        if(player.getHost()){
+//            listenToPlayerMove(player, player1Move);
+//
+//            Player player2 = nextRound.getSpecificPlayer(2);
+//            nextRound.setPlayers(player, player2);
+//        }else{
+//            listenToPlayerMove(player, player2Move);
+//            Player player1 = nextRound.getSpecificPlayer(1);
+//            nextRound.setPlayers(player1, player);
+//        }
+//
+//        nextRound = getGameInProgress(gameID);
+//        updateGameInProgress(gameID);
 
         return nextRound;
 
