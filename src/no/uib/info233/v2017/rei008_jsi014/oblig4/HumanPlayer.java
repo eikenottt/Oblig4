@@ -1,6 +1,8 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
 
+import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
+
 public class HumanPlayer extends Player {
 
     /**
@@ -18,6 +20,7 @@ public class HumanPlayer extends Player {
     @Override
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
         //updateEnergy(-yourEnergy);
+        registerGameMaster(Queries.getGameInProgress(getGameMaster().getGameID()));
         System.out.println("gameMaster player2: " + getGameMaster()); //SOUT
         getGameMaster().listenToPlayerMove(this, yourEnergy);
 
