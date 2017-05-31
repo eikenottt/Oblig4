@@ -185,6 +185,7 @@ public abstract class Player {
         }else if(yourEnergy > 5 && yourEnergy <= 15){
             energyUsage = 5;
         }
+        if (yourEnergy <= 0){ energyUsage = 0;};
         updateEnergy(-energyUsage);
 
         Debugger.print(this.getName() + " used stab, with the force of " + energyUsage + " energy.\n"
@@ -230,7 +231,6 @@ public abstract class Player {
         boolean available = false;
         if (currentEnergy >= 1){
             available = true;
-
         }
         if (!available){
             Debugger.print("You don't have enough energy to use stab!");

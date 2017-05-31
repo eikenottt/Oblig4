@@ -29,18 +29,19 @@ public class PassivePlayer extends Player{
             case 0: // 25% stab() 75% slash in position 3
                 if (randMove == 0 ){
                     useEnergy = stab(yourEnergy);
-                }else if(yourEnergy == 0){
-                    useEnergy = yourEnergy;
                 }else{
                     useEnergy= slash(yourEnergy);
                 }
+                if(yourEnergy == 0){
+                    useEnergy = yourEnergy;}
                 break;
-            case 1: case 2: case 3: // 25% slash 75% swordPoke in position 4, 5 and 6
+            case 1: case 2: case 3: // 25% slash 75% swordPoke in position 4, 5 and
                 if(randMove == 3){
                     useEnergy = slash(yourEnergy);
                 }else{
                     useEnergy = swordPoke(yourEnergy);
                 }
+
                 break;
             default:
                 if(getCurrentEnergy() > 0) {
