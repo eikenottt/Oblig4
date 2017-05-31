@@ -502,15 +502,15 @@ public class GUI{
                         break;
                     case "Stab":
                         button1 = new JButton(buttonNames[i]);
-                        button1.setToolTipText("minimum 1 Energy");
+                        button1.setToolTipText("1 - 15 Energy");
                         break;
                     case "Slash":
                         button1 = new JButton(buttonNames[i]);
-                        button1.setToolTipText("minimum 5 Energy");
+                        button1.setToolTipText("5 - 20 Energy");
                         break;
                     case "Overhead Swing":
                         button1 = new JButton(buttonNames[i]);
-                        button1.setToolTipText("minimum 15 Energy");
+                        button1.setToolTipText("15 - 35 Energy");
                         break;
                     default:
                         button1 = new JButton(buttonNames[i]);
