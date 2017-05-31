@@ -70,8 +70,19 @@ public class GUI{
     private void exitProgram() {
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Exit Game", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
-            if(gameMaster != null)
-                gameMaster.resign(player);
+            if(gameMaster != null) {
+                int gamePos;
+                if (timer != null)
+                    timer.stop();
+
+                if (player.equals(this.player)) {
+                    gamePos = -3;
+                } else {
+                    gamePos = 3;
+                }
+                gameMaster.setGamePosition(gamePos);
+                gameMaster.setGameOver(true);
+            }
             System.exit(0);
         }
     }
@@ -449,6 +460,14 @@ public class GUI{
             add(imagePanel);
 
             add(buttonPanel);
+
+            Timer timer = new Timer(2000, e -> {
+                if(gameMaster.getGameOverFromDataBase()){
+                    ((Timer)e.getSource()).stop();
+                    gameOver();
+                }
+            });
+            timer.start();
 
             return this;
         }

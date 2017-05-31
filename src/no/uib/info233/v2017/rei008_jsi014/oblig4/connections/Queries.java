@@ -744,6 +744,25 @@ public final class Queries {
     }
 
 
+    public static int getGamePosition(String gameID) {
+        int gamePosition = 0;
+        try {
+            Connection conn = Connector.getConnection(); // Make connection
 
+            statement = conn.prepareStatement("SELECT game_position FROM oblig4.game_in_progress WHERE game_id = ?");
+            statement.setString(1, gameID);
 
+            ResultSet resultSet;
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                gamePosition = resultSet.getInt(1);
+            }
+        }
+        catch (Exception e) {
+            e.getStackTrace();
+        }
+
+        return gamePosition;
+    }
 }

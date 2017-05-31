@@ -4,6 +4,7 @@ import com.sun.org.apache.xpath.internal.SourceTree;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Connector;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
+import java.security.cert.PolicyQualifierInfo;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -502,6 +503,15 @@ public class GameMaster {
 
     public String getGameID() {
         return gameID;
+    }
+
+    public boolean getGameOverFromDataBase() {
+        boolean isOver = false;
+        int gamePosition = Queries.getGamePosition(gameID);
+        if(gamePosition == 3 || gamePosition == -3) {
+            isOver = true;
+        }
+        return isOver;
     }
 
     // TODO GameID må ikkje være lenger enn 20 på game_in_progress
