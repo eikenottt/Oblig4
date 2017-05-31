@@ -644,4 +644,8 @@ public class GameMaster {
         result = 31 * result + gameRounds;
         return result;
     }
+
+    public void stopTimer() {
+        timer.stop();
+    }
 }

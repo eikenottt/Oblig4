@@ -911,7 +911,7 @@ public class GUI{
                             final boolean[] hasJoined = new boolean[1];
                             gameMaster.joinGame(id, player);
                             String gameId = id + player.getRandom();
-                            timer = new Timer(2000, evt -> {
+                            Timer timer = new Timer(2000, evt -> {
                                 hasJoined[0] = gameMaster.gameExists(gameId); //FIXME gameMaster.hasJoined
                                 if(hasJoined[0]) {
                                     SwingUtilities.invokeLater(() -> {
@@ -1024,6 +1024,7 @@ public class GUI{
             GridBagConstraints gbc = new GridBagConstraints();
 
             setTitle("Game Over");
+            gameMaster.stopTimer();
 
             JPanel panel = new JPanel(new GridBagLayout());
             gameOverLabel = new JLabel("Game Over", JLabel.CENTER);
@@ -1033,7 +1034,11 @@ public class GUI{
             roundLabel = new JLabel("Game ended in Round: " + gameMaster.getGameRounds());
             roundLabel.setFont(new Font("Calibri", Font.ITALIC, 25));
             roundLabel.setForeground(new Color(160,160,160));
-            pointsLabel = new JLabel("You earned " + gameMaster.getPointsFromPosition(gameMaster.getGamePosition()) + " points!");
+            if(player.getHost()) {
+                pointsLabel = new JLabel("You earned " + gameMaster.getPointsFromPosition(gameMaster.getGamePosition()) + " points!");
+            }else {
+                pointsLabel = new JLabel("You earned " + gameMaster.getPointsFromPosition(gameMaster.getGamePosition()*-1) + " points!");
+            }
             cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(e -> {
                 dispose();
