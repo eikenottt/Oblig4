@@ -673,7 +673,6 @@ public class GUI{
 
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 labelPanel.setRounds(gameMaster.getGameRounds()); //DONE <-- prøver å legge update rounds her
-                restrictor(gameButtonsSingleplayer);
                 if(player.getCurrentEnergy() > 0) {
                     player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
                     player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), player1.getCurrentEnergy());
@@ -685,6 +684,7 @@ public class GUI{
                     }
                 }
                 makeClickable();
+                restrictor(gameButtonsSingleplayer);
                 updateGamePanel(player, player2);
             }
             else {

@@ -204,8 +204,6 @@ public class GameMaster {
 
         gameRounds++; // Increase the number of rounds played
 
-        setGameOver(isGameOver());
-
         if(!gameOver) {
 
 
