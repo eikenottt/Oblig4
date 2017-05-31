@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.TreeMap;
 
 /**
- * Created by runeeikemo on 24.05.2017.
+ * Query class handles all the queries requested by a GameMaster.
  */
 public final class Queries {
 
@@ -48,6 +48,12 @@ public final class Queries {
         return tableUpdated;
     }
 
+    /**
+     * Updates a row in the openGames table, by inserting values to the player2 related columns.
+     * @param p1_random - String, used to indentify the game to join
+     * @param player2 - Player, the player who wants to join.
+     * @return True - if the table is updated with values from the player-parameter
+     */
     public static boolean joinGame(String p1_random, Player player2) {
 
         boolean tableUpdated = false;
@@ -74,7 +80,10 @@ public final class Queries {
         return tableUpdated;
     }
 
-
+    /**
+     * Updates the game_in_progress table, by inserting new values where the game_id corresponds.
+     * @param gameMaster - GameMaster, which holds the information about the game
+     */
     public static void createGame(GameMaster gameMaster) {
 
         Connection conn = null;
@@ -114,7 +123,8 @@ public final class Queries {
 
 
     /**
-     * Handles the SQL-queries and manipulations in the database
+     * Updates the ranking table, with new information, adds the score if the name is already existing,
+     * and insert it if it doesn't already exist.
      * @param player the player to be updated
      * @param score player score
      */
@@ -281,7 +291,7 @@ public final class Queries {
      * Get the open multiplayergames from server
      *
      * @param playersMap
-     * @return
+     * @return - A populated TreeMap
      */
     public static TreeMap<String, ArrayList<String>> getMultiplayerMap(TreeMap<String, ArrayList<String>> playersMap){
         try {
@@ -383,11 +393,15 @@ public final class Queries {
 
     }
 
+    /**
+     * Returns the scores of the players
+     * @return String[] with scores
+     */
     public static String[] getPlayerValues() {
         return playerValues;
     }
 
-    public static String getPlayerRandom(String playerName){
+    public static String getPlayerRandom(String playerName){ //TODO Denne kan kanskje fjernes
 
         String pRandom = "";
 
@@ -411,6 +425,10 @@ public final class Queries {
 
     }
 
+    /**
+     * Checks if there is a connection to the server
+     * @return true - if there is a connection
+     */
     public static boolean hasConnection() {
         boolean hasConnection = false;
         try {
@@ -425,6 +443,12 @@ public final class Queries {
     }
 
 
+    /**
+     * Collects the information of the player1 and player2 moves, and stores them in an array.
+     * player_1_move is stored in [0], player_2_move is stored in [1]
+     * @param gameID - fetch information from the game
+     * @return String[] playerMoves - array containing the player moves
+     */
     public static String[] getPlayerMove(String gameID) {
 
         String[] playerMoves = new String[2];
@@ -459,6 +483,11 @@ public final class Queries {
         return playerMoves;
     }
 
+    /**
+     * Checks a game has been created, if you filled the space in the open_games table
+     * @param hostID - the game you tried to join
+     * @return true - if the table has been filled
+     */
     public static boolean hasJoined(String hostID){
 
         boolean hasJoined = false;
@@ -497,6 +526,12 @@ public final class Queries {
 
     }
 
+    /**
+     * Updates the game_in_progress table with player information, updates columns player_x_move and player_x_energy
+     * based on the input.
+     * @param gameMaster - The GameMaster you are connected to.
+     * @param player - The Player containing the information to be updated.
+     */
     public static void updateMove(GameMaster gameMaster, Player player) {
         try {
             Connection conn = Connector.getConnection();
@@ -527,7 +562,11 @@ public final class Queries {
     }
 
 
-
+    /**
+     * Removes a game from the open_games table
+     * @param player1Random - id of the player who created the game
+     * @return true - if the game was removed
+     */
     public static boolean removeOpenGame(String player1Random) {
         boolean removed = false;
         try {
@@ -546,6 +585,11 @@ public final class Queries {
         return removed;
     }
 
+    /**
+     * Updates a Game in progress, in the game_in_progress table
+     * @param gameID - Id of the game
+     * @param gameMaster - the GameMaster containing the information that should be updated
+     */
     public static void updateGameInProgress(String gameID, GameMaster gameMaster) {
         try {
             Connection conn = Connector.getConnection();
@@ -563,6 +607,10 @@ public final class Queries {
         }
     }
 
+    /**
+     * Sets the columns player_x_move to null
+     * @param gameID - ID of the game you want to set moves to null
+     */
     public static void resetMoves(String gameID) {
         try {
             Connection conn = Connector.getConnection();
@@ -576,6 +624,11 @@ public final class Queries {
         }
     }
 
+    /**
+     * Checks if both player move columns contain information
+     * @param gameID - ID of the game to check
+     * @return true if both players have made a move/ none of the columns are null
+     */
     public static boolean hasMoved(String gameID) {
         boolean hasMoved = false;
         try {
@@ -604,6 +657,11 @@ public final class Queries {
         return hasMoved;
     }
 
+    /**
+     * fetches a game from the game_in_progress table
+     * @param gameId - Id of the game you want to retrieve
+     * @return GameMaster - GameMaster with updated information
+     */
     public static GameMaster getGameInProgress(String gameId){
 
         GameMaster gameMaster = new GameMaster();
@@ -672,6 +730,11 @@ public final class Queries {
         }
     }
 
+    /**
+     * Checks if a game exist in the game_in_progress
+     * @param gameID - ID of the you want to check
+     * @return true if the game exists
+     */
     public static boolean gameExists(String gameID){
 
         boolean exist = false;
@@ -708,6 +771,11 @@ public final class Queries {
         return exist;
     }
 
+    /**
+     * Checks if a row was sucessfully deleted in open_games table
+     * @param p1Random - Id of the player host
+     * @return true if the game was deleted
+     */
     public static boolean rowDeleted(String p1Random) {
 
         boolean exist = false;
@@ -741,6 +809,11 @@ public final class Queries {
     }
 
 
+    /**
+     * Fetches the game position for the give game in game_in_progress
+     * @param gameID - ID of the game
+     * @return int gamePosition, a value between -3 and 3
+     */
     public static int getGamePosition(String gameID) {
         int gamePosition = 0;
         try {
