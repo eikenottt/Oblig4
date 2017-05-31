@@ -36,7 +36,7 @@ public final class Debugger {
     }
 
     public static void printError(String error){
-        debugFrame.debugOut("Error: " + error);
+        debugFrame.debugOut("Error: " + error + "\n");
     }
 
 

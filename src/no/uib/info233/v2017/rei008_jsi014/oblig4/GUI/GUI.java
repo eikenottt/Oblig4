@@ -683,7 +683,7 @@ public class GUI{
                 makeClickable();
             }
             else {
-//                restrictor(gameButtonsMultiplayer);
+                restrictor(gameButtonsMultiplayer);
                 waitForPlayer(energyUsed); //if its a multiplayer game, send it to the waitForPlayer
             }
 
@@ -715,7 +715,17 @@ public class GUI{
     }
 
 
-    private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
+    private void waitForPlayer(int energyUsed) {
+        gameMaster.gameProcessor(player, energyUsed);
+
+        SwingUtilities.invokeLater(() -> {
+            if(gameMaster.isUpdated()) {
+                gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
+            }
+        });
+    }
+
+    /*private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
 
         gameMaster.updateMove(player);
         String[] s = Queries.getPlayerMove(gameMaster.getGameID());
@@ -773,7 +783,7 @@ public class GUI{
 
         });
         timer.start();
-    }
+    }*/
 
     private class ListPanel extends JPanel {
         private ArrayList<ArrayList<JComponent>> array = new ArrayList<>();

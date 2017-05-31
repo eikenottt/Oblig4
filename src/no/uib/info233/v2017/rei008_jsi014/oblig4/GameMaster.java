@@ -133,7 +133,7 @@ public class GameMaster {
      * @param player - The player loading the game
      * @return - Updated GameMaster from the game_in_progress table.
      */
-    public GameMaster gameProcessor(Player player){
+    /*public GameMaster gameProcessor(Player player){
         String[] playerMoves = Queries.getPlayerMove(gameID);
         GameMaster nextRound = this.getGameInProgress(gameID);
         if (hasMoved(gameID) ) {
@@ -163,6 +163,22 @@ public class GameMaster {
 
         return nextRound;
 
+    }*/
+
+    public void gameProcessor(Player player, int energyUsed) {
+        player.makeNextMove(gamePosition, energyUsed, 0);
+
+        isUpdated = false;
+
+        Timer timer = new Timer(2000, e -> {
+            if(hasMoved(gameID)){
+                ((Timer) e.getSource()).stop();
+                isUpdated = true;
+                updateGameInProgress(gameID);
+            }
+        });
+
+        timer.start();
     }
 
 
