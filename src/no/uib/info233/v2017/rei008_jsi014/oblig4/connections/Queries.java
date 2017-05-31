@@ -372,6 +372,7 @@ public final class Queries {
             score = resultSet.getFloat(2);
 
             conn.close(); // Close connection
+            System.out.println("The Player score is: " + score);
 
         } catch (Exception e) {
             score = 0f; // If the player doesn't exist in table
@@ -414,10 +415,12 @@ public final class Queries {
         try {
             Connection conn = Connector.getConnection();
             hasConnection = Connector.hasConnection();
+            System.out.println("I'm connected");
             conn.close();
         } catch (Exception e) {
             for(StackTraceElement ste : e.getStackTrace()) {
                 Debugger.printError(ste.toString());
+                System.out.println("I have no connection");
             }
         }
         return hasConnection;
@@ -444,7 +447,9 @@ public final class Queries {
 
                  playerMoves[0] = player1Move;
                  playerMoves[1] = player2Move;
+                System.out.println("Player 1 moved: " + player1Move + "\nPlayer 2 moved: " + player2Move);
             }
+
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -478,7 +483,7 @@ public final class Queries {
                     playerValues[1] = player2ID;
                     hasJoined = true;
                 }
-                System.out.println(player2);//SOUT
+                System.out.println(player2 + " - Joined");//SOUT
             }
             conn.close();
         } catch (SQLException e) {
@@ -552,6 +557,8 @@ public final class Queries {
             statement.setInt(2, gameMaster.getGameRounds());
             statement.setString(3, gameID);
             statement.executeUpdate();
+            Debugger.print("Game Updated in database");
+            System.out.println("Game is updated in database");
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -589,6 +596,8 @@ public final class Queries {
                     hasMoved = true;
                 }
             }
+
+            System.out.println("The players moved: " + hasMoved);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -629,7 +638,8 @@ public final class Queries {
                 gameMaster.setGameRound(round);
                 gameMaster.setPlayers(player1,player2);
 
-
+                Debugger.print("Game is fetched from database");
+                System.out.println("Game is fetched");//SOUT
             }
 
             conn.close();
@@ -650,6 +660,8 @@ public final class Queries {
             statement = conn.prepareStatement("DELETE FROM oblig4.game_in_progress WHERE game_id = ?");
             statement.setString(1, gameID);
             statement.executeUpdate();
+
+            System.out.println("The game is removed from database");
 
             conn.close();
         }
@@ -681,6 +693,9 @@ public final class Queries {
                     exist = true;
                 }
             }
+
+            System.out.println("The game " + gameID + " exists: " + exist);
+
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -710,6 +725,8 @@ public final class Queries {
             if (!resultSet.next()) {
                 exist = true;
             }
+
+            System.out.println("Row was deleted: " + exist);
 
             conn.close();
         } catch (SQLException e) {
