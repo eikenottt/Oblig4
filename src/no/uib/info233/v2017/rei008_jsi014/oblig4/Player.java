@@ -20,6 +20,7 @@ public abstract class Player {
     Random rand = new Random();
     boolean hasPulse;
     int playerMove;
+    boolean isHost;
 
     private GameMaster gameMaster;
 
@@ -35,6 +36,7 @@ public abstract class Player {
         makePlayerID();
         hasPulse = false;
         playerMove = 0;
+        isHost = false;
     }
 
     /**
@@ -61,6 +63,7 @@ public abstract class Player {
      * @param value - adds value to the currentEnergy
      */
     void updateEnergy(int value) {
+        this.playerMove = value * -1;
         this.currentEnergy += value;
         if (currentEnergy < 0) {
             currentEnergy = 0;
@@ -131,6 +134,14 @@ public abstract class Player {
         return playerMove;
     }
 
+    public void setHost(boolean isHost){
+        this.isHost = isHost;
+    }
+
+    public boolean getHost(){
+        return this.isHost;
+    }
+
 
 
     // ------------ Attacks ----------- //
@@ -175,6 +186,7 @@ public abstract class Player {
             energyUsage = 5;
         }
         updateEnergy(-energyUsage);
+
         Debugger.print(this.getName() + " used stab, with the force of " + energyUsage + " energy.\n"
                 +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
 
@@ -205,7 +217,7 @@ public abstract class Player {
         boolean available = false;
         if (currentEnergy > 15){
             available = true;
-            playerMove++;
+
         }
         if (!available){
             Debugger.print("You don't have enough energy to use overhead swing!");
@@ -218,7 +230,7 @@ public abstract class Player {
         boolean available = false;
         if (currentEnergy >= 1){
             available = true;
-            playerMove++;
+
         }
         if (!available){
             Debugger.print("You don't have enough energy to use stab!");
@@ -231,7 +243,6 @@ public abstract class Player {
         boolean available = false;
         if(currentEnergy>5){
             available = true;
-            playerMove++;
         }
         if (!available){
             Debugger.print("You don't have enough energy to use slash!");

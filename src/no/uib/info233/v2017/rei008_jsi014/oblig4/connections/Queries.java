@@ -180,6 +180,8 @@ public final class Queries {
             statement.setInt(2, gameMaster.getGamePosition());
             statement.executeUpdate();
 
+            gameMaster.updateGameID(gameMaster.getGameRounds());
+
             // Insert new
             statement = conn.prepareStatement( "REPLACE INTO oblig4.saved_games (game_id, player_1, player_2, game_position, player_1_energy, player_2_energy) VALUES (?, ?, ?, ?, ?, ?)");
             statement.setString(1,gameMaster.getGameID());
@@ -215,7 +217,7 @@ public final class Queries {
      * @param gameID ID of the game
      * @return A GameMaster containing the information needed to play
      */
-    public static GameMaster loadSaved(String gameID) {
+    public static GameMaster loadSaved(String gameID, Player player) {
 
         GameMaster gameMaster = null;
         try {
@@ -227,41 +229,40 @@ public final class Queries {
             ResultSet rs = statement.executeQuery();
 
             // Gather information into local variables
-            rs.next();
-            String id = rs.getString("game_id");
+            while (rs.next()) {
+                String id = rs.getString("game_id");
 
-            String p1 = rs.getString("player_1");
-            String p2 = rs.getString("player_2");
+                String p1 = rs.getString("player_1");
+                String p2 = rs.getString("player_2");
 
-            int gamePos = rs.getInt("game_position");
+                int gamePos = rs.getInt("game_position");
 
-            int p1Energy = rs.getInt("player_1_energy");
-            int p2Energy = rs.getInt("player_2_energy");
+                int p1Energy = rs.getInt("player_1_energy");
+                int p2Energy = rs.getInt("player_2_energy");
 
-            conn.close(); // Close connection
 
-            // Set players based on information from saved_games table
-            Player player1 = new HumanPlayer(p1);
-            Player player2;
+                // Set players based on information from saved_games table
+                Player player2;
 
-            if(id.substring(id.length()).equals('1')) {
-                player2 = new PassivePlayer(p2);
+                if (id.substring(id.length()).equals('1')) {
+                    player2 = new PassivePlayer(p2);
+                } else {
+                    player2 = new AggressivePlayer(p2);
+                }
+
+                player.setCurrentEnergy(p1Energy);
+                player2.setCurrentEnergy(p2Energy);
+
+                // Prepare gameMaster for battle
+                gameMaster = new GameMaster();
+                gameMaster.setGameID(id);
+                gameMaster.setGamePosition(gamePos);
+                gameMaster.setGameRound(gameMaster.fetchIntInString(id));
+
+                gameMaster.setPlayers(player, player2);
+
+                Debugger.print("Success: The game has been successfully loaded!");
             }
-            else {
-                player2 = new AggressivePlayer(p2);
-            }
-
-            player1.setCurrentEnergy(p1Energy);
-            player2.setCurrentEnergy(p2Energy);
-
-            // Prepare gameMaster for battle
-            gameMaster = new GameMaster();
-            gameMaster.setGameID(id);
-            gameMaster.setGamePosition(gamePos);
-
-            gameMaster.setPlayers(player1, player2);
-
-            Debugger.print("Success: The game has been successfully loaded!");
 
             conn.close();
         } catch (Exception e) {
@@ -269,7 +270,7 @@ public final class Queries {
         }
 
         if(gameMaster == null) {
-            Debugger.print("Error:  gameMater == null - The game was not loaded.");
+            Debugger.printError("gameMater == null - The game was not loaded.");
         }
         return gameMaster;
 
@@ -500,7 +501,7 @@ public final class Queries {
             String playerMove;
             String playerEnergy;
 
-            if(player.equals(gameMaster.getSpecificPlayer(1))) {
+            if(player.getHost()) {
                 playerMove = "player_1_move";
                 playerEnergy = "player_1_energy";
             }
@@ -509,6 +510,7 @@ public final class Queries {
                 playerEnergy = "player_2_energy";
             }
 
+            System.out.println("Player Move : " + player.getPlayerMove()); //SOUT
             statement = conn.prepareStatement("UPDATE game_in_progress SET "+ playerMove +" = ? , "+playerEnergy+"= ? WHERE game_id = ? ");
             statement.setInt(1, player.getPlayerMove());
             statement.setInt(2, player.getCurrentEnergy());
@@ -545,7 +547,7 @@ public final class Queries {
         try {
             Connection conn = Connector.getConnection();
 
-            statement = conn.prepareStatement("UPDATE game_in_progress SET game_position = ?,  move_number = ? WHERE game_id = ?");
+            statement = conn.prepareStatement("UPDATE game_in_progress SET game_position = ?,  move_number = ?, player_1_move = NULL, player_2_move = NULL WHERE game_id = ?");
             statement.setInt(1, gameMaster.getGamePosition());
             statement.setInt(2, gameMaster.getGameRounds());
             statement.setString(3, gameID);
@@ -567,7 +569,10 @@ public final class Queries {
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                if(Integer.toString(rs.getInt(1)) != null || Integer.toString(rs.getInt(2)) != null) {
+                String p1_move = rs.getString(1);
+                String p2_move = rs.getString(2);
+                System.out.println(p1_move + " - - - " + p2_move); //sout
+                if(p1_move != null && p2_move != null) {
                     hasMoved = true;
                 }
             }
@@ -581,6 +586,7 @@ public final class Queries {
 
     public static GameMaster getGameInProgress(String gameId){
 
+        GameMaster gameMaster = new GameMaster();
         try {
             Connection conn = Connector.getConnection(); // Make connection
 
@@ -600,17 +606,16 @@ public final class Queries {
 
                 Player player1 = new HumanPlayer(player1Name);
                 Player player2 = new HumanPlayer(player2Name);
+
                 player1.setPlayerID(gameId.substring(0,10));
-                player2.setPlayerID(gameId.substring(10,20));
+                player2.setPlayerID(gameId.substring(10, gameId.length()));
                 player1.setCurrentEnergy(p1Energy);
                 player2.setCurrentEnergy(p2Energy);
 
-                GameMaster gameMaster = new GameMaster();
                 gameMaster.setGamePosition(gamePos);
                 gameMaster.setGameRound(round);
                 gameMaster.setPlayers(player1,player2);
 
-                return gameMaster;
 
             }
 
@@ -622,7 +627,7 @@ public final class Queries {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
         }
-        return null;
+        return gameMaster;
     }
 
     public static void removeGameInProgress(String gameID) {

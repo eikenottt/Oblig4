@@ -1,5 +1,6 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Connector;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
@@ -39,6 +40,7 @@ public class GameMaster {
     // Determines the state of the game
     private boolean gameOver;
     private int gameRounds;
+    private boolean isUpdated = false;
 
 
     /**
@@ -108,35 +110,59 @@ public class GameMaster {
 
                 Queries.updateMove(this, player);
 
-                String[] playerMoves = Queries.getPlayerMove(gameID);
-                String player1Move = playerMoves[0], player2Move = playerMoves[1];
-                if (player1Move != null && player2Move == null) {  // Only player2 has made move
-                    //TODO Lock screen of player 1
-                }
-                if (player1Move == null && player2Move != null) { // Only player1 has made move
-                    //TODO Lock screen of player 2
-                }
-                if (player1Move != null && player2Move != null) {  //Both players has made move
-                    //TODO Run Evaluate turn, Both have mad a move, remember to set playermoves back to null
-                } else {
-                    //TODO both players should be able to make a move
-                }
 
+            }
+            if (player.equals(player1)) {
+                this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
+                System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
             } else {
-                if (player.equals(player1)) {
-                    this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
-                    System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
-                } else {
-                    this.p2_energyUse = energyUse;
-                    System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
-                }
+                this.p2_energyUse = energyUse;
+                System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
             }
 
-            if (this.p1_energyUse > -1 && this.p2_energyUse > -1) { // if both players has made a move
+            if ((this.p1_energyUse > -1 && this.p2_energyUse > -1 ) || (hasMoved(gameID)) ) { // if both players has made a move
                 evaluateTurn();
             }
 
         }
+    }
+
+    /**
+     * Refreshes the game, by retrieving from the game_in_progress table, and determines whether the player is the host or not.
+     * and returns the GameMaster needed accordingly.
+     * @param player - The player loading the game
+     * @return - Updated GameMaster from the game_in_progress table.
+     */
+    public GameMaster gameProcessor(Player player){
+        String[] playerMoves = Queries.getPlayerMove(gameID);
+        GameMaster nextRound = this.getGameInProgress(gameID);
+        if (hasMoved(gameID) ) {
+            int player1Move = Integer.valueOf(playerMoves[0]);
+            int player2Move = Integer.valueOf(playerMoves[1]);
+
+            isUpdated = false;
+
+
+            nextRound.listenToPlayerMove(player1, player1Move);
+            nextRound.listenToPlayerMove(player2, player2Move);
+        }
+
+//        if(player.getHost()){
+//            listenToPlayerMove(player, player1Move);
+//
+//            Player player2 = nextRound.getSpecificPlayer(2);
+//            nextRound.setPlayers(player, player2);
+//        }else{
+//            listenToPlayerMove(player, player2Move);
+//            Player player1 = nextRound.getSpecificPlayer(1);
+//            nextRound.setPlayers(player1, player);
+//        }
+//
+//        nextRound = getGameInProgress(gameID);
+//        updateGameInProgress(gameID);
+
+        return nextRound;
+
     }
 
 
@@ -169,23 +195,25 @@ public class GameMaster {
             this.p1_energyUse = -1;
             this.p2_energyUse = -1;
 
-            /*if(!isGameOver()) {
-                // Players makes their next move
-                *//*player1.makeNextMove(gamePosition, player1.getCurrentEnergy(), player2.getCurrentEnergy());
-                player2.makeNextMove(gamePosition, player2.getCurrentEnergy(), player1.getCurrentEnergy());*//*
+            if(player1.getPulse() && player2.getPulse()) {
+                updateGameInProgress(gameID); // Updates game_position, move_number
+                isUpdated = true;
+
             }
-            else {
-                updateRanking();
-            }*/
-            if(player1.getPulse() && player2.getPulse())
-                updateGameInProgress(gameID); //TODO game_position, move_number
+            if(isGameOver()) {
+                if(player1.getPulse()) {
+                    updateRanking();
+                }
+            }
         }
         else {
-            if(player2.getPulse() && player1.getPulse())
+            if(player1.getPulse())
                 updateRanking(); // Update the database
         }
 
     }
+
+
 
 
     public boolean isGameOver() {
@@ -193,7 +221,7 @@ public class GameMaster {
         return (GOAL.contains(gamePosition) || (player1.getCurrentEnergy() == 0 && player2.getCurrentEnergy() == 0));
     }
 
-    private int fetchIntInString(String string) {
+    public int fetchIntInString(String string) {
         //TODO feilmelding på fetchIntInString  - StringIndexOutOfBoundsException
         //TODO return -1 if gameID don't contain ¿ and |
         String d = string.substring(string.indexOf("¿")+1, string.indexOf("|"));
@@ -206,26 +234,9 @@ public class GameMaster {
      * Loads the state of the saved game into the gameMaster
      * @param gameID the id of the game
      */
-    public void loadGame(String gameID){
+    public GameMaster loadGame(String gameID, Player player){
 
-        GameMaster loadedGameMaster = Queries.loadSaved(gameID);
-
-        boolean gameLoaded = false;
-
-        if(loadedGameMaster != null) {
-
-            this.gameID = loadedGameMaster.gameID;
-            this.gameRounds = fetchIntInString(gameID);
-            this.player1 = loadedGameMaster.player1;
-            this.player2 = loadedGameMaster.player2;
-            this.gamePosition = loadedGameMaster.gamePosition;
-
-            gameLoaded = true;
-            Debugger.print("Loaded:  \n ID: " + gameID + " \n Player 1: " + player1.getName() + " With " +player1.getCurrentEnergy()+ " Energy." +"\n Player 2: " +player2.getName()+ " With " + player2.getCurrentEnergy() + " Energy. Game Position is " + gamePosition + "\n Round: " + gameRounds);
-        }
-        if(!gameLoaded){
-            Debugger.print("There was an error loading the game.");
-        }
+        return Queries.loadSaved(gameID, player);
     }
 
     public void startMultiplayerGame(Player player1, String player2Name, String player2ID){
@@ -304,6 +315,10 @@ public class GameMaster {
                 ((Timer) e.getSource()).stop();
                 String[] p2 = Queries.getPlayerValues();
                 this.startMultiplayerGame(player1, p2[0], p2[1]);
+                System.out.println(this);
+
+                this.player1.setHost(true);
+                System.out.println("You are the host: " + player1.getHost());
             }
             if(rowDeleted[0]) {
                 ((Timer) e.getSource()).stop();
@@ -405,6 +420,10 @@ public class GameMaster {
         }
     }
 
+    public boolean isUpdated(){
+        return isUpdated;
+    }
+
     private int getP1_energyUse() {
         return p1_energyUse;
     }
@@ -447,6 +466,10 @@ public class GameMaster {
         } else {
             gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
         }
+    }
+
+    public void updateGameID(int gameRounds) {
+        gameID = player1.getRandom() + "¿" + gameRounds + "|" + player2.getRandom();
     }
 
     public void setGameID(String gameID) {
@@ -539,5 +562,8 @@ public class GameMaster {
                 ", gameOver=" + gameOver +
                 ", gameRounds=" + gameRounds +
                 '}';
+    }
+
+    public void setIsUpdated(boolean isUpdated) {
     }
 }

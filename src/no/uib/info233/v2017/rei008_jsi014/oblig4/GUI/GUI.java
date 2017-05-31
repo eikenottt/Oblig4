@@ -64,9 +64,6 @@ public class GUI{
         player = new HumanPlayer(player1Name);
         menuPanel.setPlayerName(player.getName());
 
-        /*for (int i = 0; i < 500; i++) {
-            Debugger.print("This is a test, to check if it prints out a number:  " + i + "\n");
-        }*/
     }
 
     private void exitProgram() {
@@ -251,12 +248,17 @@ public class GUI{
         JProgressBar player1EnergyBar, player2EnergyBar;
         JLabel numRoundsLabel;
 
+        Float score;
+
         GameMaster gameMaster;
 
         public LabelPanel(String playerName, Float score) {
+
+            this.score = score;
+
             setLayout(new GridBagLayout());
             JLabel playerNameLabel = new JLabel(playerName, JLabel.CENTER);
-            JLabel scoreLabel = new JLabel("Score: "+score);
+            JLabel scoreLabel = new JLabel("Score: "+this.score);
 
             gbc.weightx = 0.5;
             gbc.weighty = 10;
@@ -346,6 +348,10 @@ public class GUI{
 
         public void setGameMaster(GameMaster gameMaster) {
             this.gameMaster = gameMaster;
+        }
+
+        public void updateScore(Float score) {
+            this.score = score;
         }
 
     }
@@ -451,6 +457,8 @@ public class GUI{
     private class ButtonPanel extends JPanel {
 
         JButton[] buttons;
+        ImageIcon singleplayerIcon = new ImageIcon(getClass().getResource("/img/Singleplayer.png")),
+                multiplayerIcon = new ImageIcon(getClass().getResource("/img/Multiplayer.png"));
 
         ButtonPanel(String... buttonNames) {
             buttons = new JButton[buttonNames.length];
@@ -468,7 +476,19 @@ public class GUI{
 
             for(int i = 0; i < buttonNames.length; i++) {
 
-                JButton button1 = new JButton(buttonNames[i]);
+                JButton button1;
+                switch (buttonNames[i]){
+                    case "Singleplayer":
+                        button1 = new JButton(buttonNames[i], singleplayerIcon);
+                        break;
+                    case"Multiplayer":
+                        button1 = new JButton(buttonNames[i], multiplayerIcon);
+                        break;
+                    default:
+                        button1 = new JButton(buttonNames[i]);
+                        break;
+                }
+
                 button1.addActionListener(new ButtonListener());
                 buttons[i] = button1;
 
@@ -486,6 +506,16 @@ public class GUI{
         void makeUnclickable(String buttonName) {
             for (JButton button : buttons) {
                 if (button.getText().equals(buttonName)) {
+                    button.setEnabled(false);
+                }
+            }
+        }
+
+        void makeAttacksUnclickable() {
+            String buttonName;
+            for(JButton button : buttons){
+                buttonName = button.getText();
+                if(!buttonName.equals("Resign") && !buttonName.equals("Quit To Menu") && !buttonName.equals("Save Game")) {
                     button.setEnabled(false);
                 }
             }
@@ -554,18 +584,21 @@ public class GUI{
                         timer = new Timer(2000, evt -> {
                             if(!gameMaster.hasJoined(player.getRandom())){
                                 waitingPanel.setVisible(true);
-                                System.out.println("Waiting");
+                                System.out.println("Waiting"); //SOUT
                             }
                             else {
-                                System.out.println("Starting GamePanel"); //SOUT
-                                waitingPanel.dispose();
-                                mainFrame.remove(menuPanel);
-                                System.out.println(gameMaster);
-                                mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
-                                mainFrame.setVisible(true);
-                                gameMaster.removeOpenGame(player.getRandom());
-                                gameMaster.startGame();
-                                ((Timer) evt.getSource()).stop();
+                                SwingUtilities.invokeLater(() -> {
+                                    System.out.println("Starting GamePanel"); //SOUT
+                                    waitingPanel.dispose();
+                                    mainFrame.remove(menuPanel);
+                                    System.out.println("Hosting GameMaster: " + gameMaster); //SOUT
+                                    mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
+                                    mainFrame.setVisible(true);
+                                    gameMaster.removeOpenGame(player.getRandom());
+                                    gameMaster.startGame();
+                                    ((Timer) evt.getSource()).stop();
+                                });
+
                             }
                         });
                         timer.start();
@@ -609,6 +642,7 @@ public class GUI{
                     case "Resign":
                         if(quitToMenu(ButtonPanel.this)) {
                             gameMaster.resign(player);
+                            timer.stop();
                         }
                         break;
                     case "Cancel":
@@ -626,33 +660,34 @@ public class GUI{
             }
 
         }
-        private void doRound(int energyUsed) {
+        private void doRound(int energyUsed) { //int energy used represents the Attack, directly gathered from the button stab/slash/overhead swing
+            makeAttacksUnclickable();
 
             player2 = gameMaster.getSpecificPlayer(2);
 
-            int currentEnergy = player.getCurrentEnergy();
+            Player player1 = gameMaster.getSpecificPlayer(1);
 
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 labelPanel.setRounds(gameMaster.getGameRounds()); //DONE <-- prøver å legge update rounds her
                 restrictor(gameButtonsSingleplayer);
                 if(player.getCurrentEnergy() > 0) {
                     player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
-                    player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
+                    player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), player1.getCurrentEnergy());
                 }
                 else {
                     while (!gameMaster.isGameOver()) {
                         player.makeNextMove(gameMaster.getGamePosition(), 0, player2.getCurrentEnergy());
-                        player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), currentEnergy);
+                        player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), player1.getCurrentEnergy());
                     }
                 }
+                makeClickable();
             }
             else {
-                restrictor(gameButtonsMultiplayer);
-                waitForPlayer(energyUsed);
-                gameMaster.updateGameInProgress(gameMaster.getGameID());
+//                restrictor(gameButtonsMultiplayer);
+                waitForPlayer(energyUsed); //if its a multiplayer game, send it to the waitForPlayer
             }
 
-            labelPanel.setProgressbarEnergy(currentEnergy, player2.getCurrentEnergy());
+            labelPanel.setProgressbarEnergy(player1.getCurrentEnergy(), player2.getCurrentEnergy());
             labelPanel.setRounds(gameMaster.getGameRounds());
             imagePanel.addImage(gameMaster.getGamePosition());
             mainFrame.validate();
@@ -680,13 +715,64 @@ public class GUI{
     }
 
 
-    private void waitForPlayer(int energyUsed) {
-        timer = new Timer(2000, e -> {
-            if (gameMaster.hasMoved(gameMaster.getGameID())) {
-                player.makeNextMove(gameMaster.getGamePosition(), player.getCurrentEnergy(), player2.getCurrentEnergy());
-                ((Timer)e.getSource()).stop();
+    private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
+
+        gameMaster.updateMove(player);
+        String[] s = Queries.getPlayerMove(gameMaster.getGameID());
+        if(player.getHost() && gameMaster.hasMoved(gameMaster.getGameID())){
+
+            int p2Move = Integer.valueOf(s[1]);
+            Debugger.print("Player 2 used: " + p2Move);
+            gameMaster.listenToPlayerMove(gameMaster.getSpecificPlayer(2),p2Move);
+            gameMaster.listenToPlayerMove(player, energyUsed);
+
+        }
+
+
+        System.out.println("I used this much energy: " + energyUsed); //SOUT
+        if (player.getHost()){
+            if (s[0] == null){
+                gameButtonsMultiplayer.makeClickable();
+            }else {
+                if (s[1] == null ){
+                    gameButtonsMultiplayer.makeClickable();
+                }
             }
+        }
+
+        if (!player.getHost()){
+            gameMaster.updateMove(player);
+        }
+       gameButtonsMultiplayer.makeClickable();
+//        if (player.getHost()) {
+//            gameMaster.listenToPlayerMove(player,energyUsed);
+//            gameMaster = gameMaster.gameProcessor(player);
+//
+//        } else{
+//            gameMaster.updateMove(player);
+//            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
+//        }
+
+        timer = new Timer(2000, e -> {
+            Debugger.print("Waiting for the other player to make a move");
+            if(!player.getHost()){
+
+                gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
+            }
+
+            if (gameMaster.hasMoved(gameMaster.getGameID())) {
+                System.out.println("Has both players moved?: " + gameMaster.hasMoved(gameMaster.getGameID())); // SOUT
+                player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
+                gameButtonsMultiplayer.makeClickable();
+                ((Timer)e.getSource()).stop();
+
+                gameMaster.setIsUpdated(false);
+
+                }
+                Debugger.print("Your turn");
+
         });
+        timer.start();
     }
 
     private class ListPanel extends JPanel {
@@ -787,13 +873,19 @@ public class GUI{
                             timer = new Timer(2000, evt -> {
                                 hasJoined[0] = gameMaster.gameExists(gameId); //FIXME gameMaster.hasJoined
                                 if(hasJoined[0]) {
-                                    gameMaster = gameMaster.getGameInProgress(gameId);
-                                    mainFrame.remove(menuPanel);
-                                    mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
-                                    waitingPanel.dispose();
-                                    mainFrame.setVisible(true);
-                                    ((Timer)evt.getSource()).stop();
-                                    Debugger.print("Success");
+                                    SwingUtilities.invokeLater(() -> {
+                                        gameMaster = gameMaster.getGameInProgress(gameId);
+                                        Player p2 = gameMaster.getSpecificPlayer(1);
+                                        gameMaster.setPlayers(p2, player);
+                                        System.out.println(gameMaster.toString());
+
+                                        mainFrame.remove(menuPanel);
+                                        mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsMultiplayer));
+                                        waitingPanel.dispose();
+                                        mainFrame.setVisible(true);
+                                        ((Timer)evt.getSource()).stop();
+                                        Debugger.print("Success");
+                                    });
                                 }
                                 else {
                                     waitingPanel.setVisible(true);
@@ -805,11 +897,14 @@ public class GUI{
                         }
                         else {
                             gameMaster = new GameMaster();
-                            gameMaster.loadGame(id);
-                            gamePanel.setGame(gameMaster, gameButtonsSingleplayer);
+                            gameMaster = gameMaster.loadGame(id, player);
+                            System.out.println(gameMaster);//SOUT
+                            imagePanel.removeImage();
+                            mainFrame.remove(menuPanel);
+                            menuPanel.updateSection(imagePanel, 2);
+                            mainFrame.changePanel(gamePanel.setGame(gameMaster, gameButtonsSingleplayer));
                             restrictor(gameButtonsSingleplayer);
-                            mainFrame.remove(listPanel);
-                            mainFrame.changePanel(gamePanel);
+                            //gameMaster.startGame();
                             }
                         }
                 }));
@@ -901,8 +996,11 @@ public class GUI{
             cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(e -> {
                 dispose();
-                imagePanel.removeImage();
                 mainFrame.remove(gamePanel);
+                labelPanel = new LabelPanel(player.getName(), Queries.getScore(player.getName()));
+                imagePanel.removeImage();
+                menuPanel.updateSection(imagePanel, 2);
+                menuPanel.updateSection(labelPanel, 0);
                 menuPanel.updateSection(menuButtons, 1);
                 mainFrame.changePanel(menuPanel);
             });
@@ -935,7 +1033,8 @@ public class GUI{
             gbc.anchor = GridBagConstraints.NORTH;
             panel.add(pointsLabel, gbc);
             gbc.gridy = 5;
-            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.weighty = 3;
             panel.add(cancelButton, gbc);
             add(panel);
             setVisible(true);

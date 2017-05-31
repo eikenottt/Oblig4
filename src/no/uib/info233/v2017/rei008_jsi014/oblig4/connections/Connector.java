@@ -23,7 +23,7 @@ public final class Connector {
             String url = "jdbc:mysql://wildboy.uib.no/oblig4?useSSL=false";
             String usr = "Syuty";
             String pwr = "(+DDq2sSyk(3P)}8";
-            DriverManager.setLoginTimeout(1);
+            DriverManager.setLoginTimeout(3);
             Connection conn = DriverManager.getConnection(url, usr, pwr);
             hasConnection = true;
 
