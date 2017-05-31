@@ -547,7 +547,7 @@ public final class Queries {
         try {
             Connection conn = Connector.getConnection();
 
-            statement = conn.prepareStatement("UPDATE game_in_progress SET game_position = ?,  move_number = ?, WHERE game_id = ?");
+            statement = conn.prepareStatement("UPDATE game_in_progress SET game_position = ?,  move_number = ? WHERE game_id = ?");
             statement.setInt(1, gameMaster.getGamePosition());
             statement.setInt(2, gameMaster.getGameRounds());
             statement.setString(3, gameID);
