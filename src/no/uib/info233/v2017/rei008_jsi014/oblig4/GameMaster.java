@@ -40,6 +40,7 @@ public class GameMaster {
     // Determines the state of the game
     private boolean gameOver;
     private int gameRounds;
+    private boolean isUpdated = false;
 
 
     /**
@@ -134,18 +135,24 @@ public class GameMaster {
      */
     public GameMaster gameProcessor(Player player){
         String[] playerMoves = Queries.getPlayerMove(gameID);
-        String player1Move = playerMoves[0], player2Move = playerMoves[1];
+        int player1Move = Integer.valueOf(playerMoves[0]), player2Move = Integer.valueOf(playerMoves[1]);
+        isUpdated = false;
 
-        updateGameInProgress(gameID);
-        GameMaster nextRound = getGameInProgress(gameID);
+        GameMaster nextRound = this.getGameInProgress(gameID);
 
         if(player.getHost()){
+            listenToPlayerMove(player, player1Move);
+
             Player player2 = nextRound.getSpecificPlayer(2);
             nextRound.setPlayers(player, player2);
         }else{
+            listenToPlayerMove(player, player2Move);
             Player player1 = nextRound.getSpecificPlayer(1);
             nextRound.setPlayers(player1, player);
         }
+
+        nextRound = getGameInProgress(gameID);
+        updateGameInProgress(gameID);
 
         return nextRound;
 
@@ -400,6 +407,10 @@ public class GameMaster {
         else {
             return player2.getName();
         }
+    }
+
+    public boolean isUpdated(){
+        return isUpdated;
     }
 
     private int getP1_energyUse() {

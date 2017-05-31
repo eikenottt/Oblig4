@@ -667,10 +667,6 @@ public class GUI{
 
             Player player1 = gameMaster.getSpecificPlayer(1);
 
-            if(player1.equals(player)) {
-
-            }
-
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 labelPanel.setRounds(gameMaster.getGameRounds()); //DONE <-- prøver å legge update rounds her
                 restrictor(gameButtonsSingleplayer);
@@ -688,7 +684,6 @@ public class GUI{
             }
             else {
                 restrictor(gameButtonsMultiplayer);
-                player1.getPlayerMove();
                 waitForPlayer(energyUsed);
             }
 
@@ -721,15 +716,22 @@ public class GUI{
 
 
     private void waitForPlayer(int energyUsed) {
-        player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
+
+        if (player.getHost()) {
+            gameMaster = gameMaster.gameProcessor(player);
+
+        }
+
         timer = new Timer(2000, e -> {
             Debugger.print("Waiting for the other player to make a move");
             if (gameMaster.hasMoved(gameMaster.getGameID())) {
+                player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
                 gameButtonsMultiplayer.makeClickable();
                 ((Timer)e.getSource()).stop();
 
-                gameMaster = gameMaster.gameProcessor(player);
+                if (gameMaster.isUpdated()){
 
+                }
                 Debugger.print("Your turn");
             }
         });
