@@ -225,7 +225,7 @@ public abstract class Player {
 
     public boolean useOverheadSwing(){
         boolean available = false;
-        if (currentEnergy > 15){
+        if (currentEnergy >= 15){
             available = true;
 
         }
@@ -251,7 +251,7 @@ public abstract class Player {
 
     public boolean useSlash(){
         boolean available = false;
-        if(currentEnergy>5){
+        if(currentEnergy>=5){
             available = true;
         }
         if (!available){
