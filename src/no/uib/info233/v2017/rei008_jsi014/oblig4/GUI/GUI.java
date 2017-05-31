@@ -722,7 +722,9 @@ public class GUI{
         SwingUtilities.invokeLater(() -> {
             timer = new Timer(2000, ev -> {
                 if (gameMaster.isUpdated()) {
+                    String[] playerMoves = new String[2];
                     gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
+                    gameMaster.evaluateTurn();
                     ((Timer)ev.getSource()).stop();
                 }
             });
