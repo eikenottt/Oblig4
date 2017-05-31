@@ -396,7 +396,9 @@ public class GameMaster {
 
     public void resign(Player player1) {
         int gamePos;
-        timer.stop();
+        if(timer != null)
+            timer.stop();
+
         if(player1.equals(this.player1)){
             gamePos = -3;
         }
