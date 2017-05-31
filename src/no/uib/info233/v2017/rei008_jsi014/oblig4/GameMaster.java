@@ -214,6 +214,8 @@ public class GameMaster {
     }
 
 
+
+
     public boolean isGameOver() {
         // if the current gamePosition lays in the GOAL array or both players energy is at zero
         return (GOAL.contains(gamePosition) || (player1.getCurrentEnergy() == 0 && player2.getCurrentEnergy() == 0));

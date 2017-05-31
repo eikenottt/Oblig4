@@ -717,8 +717,19 @@ public class GUI{
 
     private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
 
-        System.out.println("I used this much energy: " + energyUsed); //SOUT
+        gameMaster.updateMove(player);
         String[] s = Queries.getPlayerMove(gameMaster.getGameID());
+        if(player.getHost() && gameMaster.hasMoved(gameMaster.getGameID())){
+
+            int p2Move = Integer.valueOf(s[1]);
+            Debugger.print("Player 2 used: " + p2Move);
+            gameMaster.listenToPlayerMove(gameMaster.getSpecificPlayer(2),p2Move);
+            gameMaster.listenToPlayerMove(player, energyUsed);
+
+        }
+
+
+        System.out.println("I used this much energy: " + energyUsed); //SOUT
         if (player.getHost()){
             if (s[0] == null){
                 gameButtonsMultiplayer.makeClickable();
@@ -729,20 +740,27 @@ public class GUI{
             }
         }
 
-//        gameButtonsMultiplayer.makeClickable();
-        if (player.getHost()) {
-            gameMaster.listenToPlayerMove(player,energyUsed);
-            gameMaster = gameMaster.gameProcessor(player);
-
-        } else{
+        if (!player.getHost()){
             gameMaster.updateMove(player);
-            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
         }
+       gameButtonsMultiplayer.makeClickable();
+//        if (player.getHost()) {
+//            gameMaster.listenToPlayerMove(player,energyUsed);
+//            gameMaster = gameMaster.gameProcessor(player);
+//
+//        } else{
+//            gameMaster.updateMove(player);
+//            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
+//        }
 
         timer = new Timer(2000, e -> {
             Debugger.print("Waiting for the other player to make a move");
+            if(!player.getHost()){
 
-            if (s[0] == null && s[1] == null) {
+                gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
+            }
+
+            if (gameMaster.hasMoved(gameMaster.getGameID())) {
                 System.out.println("Has both players moved?: " + gameMaster.hasMoved(gameMaster.getGameID())); // SOUT
                 player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
                 gameButtonsMultiplayer.makeClickable();
