@@ -380,7 +380,7 @@ public class GUI{
                 gbc.weightx = 2;
                 gbc.gridx = i;
                 gbc.gridy = 0;
-                layeredPane.add(imageIconLabel, gbc, 3);
+                layeredPane.add(imageIconLabel, gbc, 5);
 
 
                 i++;
@@ -414,7 +414,7 @@ public class GUI{
             }
             gbc.gridx = location;
             layeredPane.remove(playerLabel);
-            layeredPane.add(playerLabel, gbc, 1);
+            layeredPane.add(playerLabel, gbc, 0);
             layeredPane.validate();
             layeredPane.repaint();
             add(layeredPane);
@@ -673,7 +673,7 @@ public class GUI{
 
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 labelPanel.setRounds(gameMaster.getGameRounds()); //DONE <-- prøver å legge update rounds her
-                if(player.getCurrentEnergy() > 0) {
+                if((player.getCurrentEnergy()+energyUsed) > 0) {
                     player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
                     player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), player1.getCurrentEnergy());
                 }
