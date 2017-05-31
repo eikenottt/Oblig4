@@ -1024,7 +1024,9 @@ public class GUI{
             GridBagConstraints gbc = new GridBagConstraints();
 
             setTitle("Game Over");
-            gameMaster.stopTimer();
+            if(gameMaster.getTimer() != null) {
+                gameMaster.stopTimer();
+            }
 
             JPanel panel = new JPanel(new GridBagLayout());
             gameOverLabel = new JLabel("Game Over", JLabel.CENTER);
