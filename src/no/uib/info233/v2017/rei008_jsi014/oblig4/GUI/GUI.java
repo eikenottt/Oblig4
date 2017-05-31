@@ -728,17 +728,22 @@ public class GUI{
         timer = new Timer(2000, ev -> {
             if (gameMaster.isUpdated()) {
                 String[] playerMoves = Queries.getPlayerMove(gameMaster.getGameID());
+                int p1_energyUse = Integer.valueOf(playerMoves[0]);
+                int p2_energyUse = Integer.valueOf(playerMoves[1]);
                 if (playerMoves[0] != null && playerMoves[1] != null) {
                     gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
                     if(player.getHost()) {
-                        int p1_energyUse = Integer.valueOf(playerMoves[0]);
-                        int p2_energyUse = Integer.valueOf(playerMoves[1]);
-                        Debugger.print("Enemy used: " + p2_energyUse + " Energy");
                         gameMaster.setP1_energyUse(p1_energyUse);
                         gameMaster.setP2_energyUse(p2_energyUse);
-                        gameMaster.evaluateTurn();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         gameMaster.resetMoves();
                     }
+                    gameMaster.evaluateTurn();
+                    Debugger.print("Enemy used: " + p2_energyUse + " Energy");
                     gameButtonsMultiplayer.makeClickable();
                     updateGamePanel(player, player2);
                     ((Timer)ev.getSource()).stop();
