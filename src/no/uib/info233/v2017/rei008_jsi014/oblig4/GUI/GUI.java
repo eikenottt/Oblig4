@@ -986,9 +986,12 @@ public class GUI{
             cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(e -> {
                 dispose();
-                timer.stop();
                 if(isHost) {
                     gameMaster.removeOpenGame(player.getRandom());
+                    timer.stop();
+                }
+                else {
+                    timerJoin.stop();
                 }
             });
 
