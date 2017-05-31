@@ -273,6 +273,9 @@ public class GameMaster {
         player2.setPlayerID(player2ID);
         setPlayers(player1, player2);
 
+        player1.setCurrentEnergy(100);
+        player2.setCurrentEnergy(100);
+
         //reset the GameMaster
         gamePosition = 0;
         gameOver = false;
@@ -434,6 +437,14 @@ public class GameMaster {
             Debugger.print("There is no such player");
             return null;
         }
+    }
+
+    public void setP1_energyUse(int p1_energyUse) {
+        this.p1_energyUse = p1_energyUse;
+    }
+
+    public void setP2_energyUse(int p2_energyUse) {
+        this.p2_energyUse = p2_energyUse;
     }
 
     public String getPlayerName(Player player) {
