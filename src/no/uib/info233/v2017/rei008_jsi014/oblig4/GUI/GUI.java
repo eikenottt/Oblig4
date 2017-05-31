@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.sql.Time;
 import java.util.*;
 
 
@@ -719,9 +720,14 @@ public class GUI{
         gameMaster.gameProcessor(player, energyUsed);
 
         SwingUtilities.invokeLater(() -> {
-            if(gameMaster.isUpdated()) {
-                gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
-            }
+            timer = new Timer(2000, ev -> {
+                if (gameMaster.isUpdated()) {
+                    gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
+                    ((Timer)ev.getSource()).stop();
+                }
+            });
+            timer.start();
+
         });
     }
 

@@ -170,11 +170,21 @@ public class GameMaster {
 
         isUpdated = false;
 
+        GameMaster oldGame = getGameInProgress(getGameID());
+
         Timer timer = new Timer(2000, e -> {
             if(hasMoved(gameID)){
                 ((Timer) e.getSource()).stop();
-                isUpdated = true;
-                updateGameInProgress(gameID);
+                GameMaster newGame = getGameInProgress(gameID);
+                if(player.getHost()) {
+                    updateGameInProgress(gameID);
+                    isUpdated = true;
+                }
+                else {
+                    if(oldGame.equals(newGame)) {
+                        isUpdated = true;
+                    }
+                }
             }
         });
 
@@ -581,5 +591,39 @@ public class GameMaster {
     }
 
     public void setIsUpdated(boolean isUpdated) {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GameMaster)) return false;
+
+        GameMaster that = (GameMaster) o;
+
+        if (gamePosition != that.gamePosition) return false;
+        if (p1_energyUse != that.p1_energyUse) return false;
+        if (p2_energyUse != that.p2_energyUse) return false;
+        if (gameOver != that.gameOver) return false;
+        if (gameRounds != that.gameRounds) return false;
+        if (gameID != null ? !gameID.equals(that.gameID) : that.gameID != null) return false;
+        if (player1 != null ? !player1.equals(that.player1) : that.player1 != null) return false;
+        if (player2 != null ? !player2.equals(that.player2) : that.player2 != null) return false;
+        if (player1Name != null ? !player1Name.equals(that.player1Name) : that.player1Name != null) return false;
+        return player2Name != null ? player2Name.equals(that.player2Name) : that.player2Name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = gameID != null ? gameID.hashCode() : 0;
+        result = 31 * result + (player1 != null ? player1.hashCode() : 0);
+        result = 31 * result + (player2 != null ? player2.hashCode() : 0);
+        result = 31 * result + gamePosition;
+        result = 31 * result + p1_energyUse;
+        result = 31 * result + p2_energyUse;
+        result = 31 * result + (player1Name != null ? player1Name.hashCode() : 0);
+        result = 31 * result + (player2Name != null ? player2Name.hashCode() : 0);
+        result = 31 * result + (gameOver ? 1 : 0);
+        result = 31 * result + gameRounds;
+        return result;
     }
 }
