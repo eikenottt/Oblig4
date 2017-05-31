@@ -229,6 +229,7 @@ public class GameMaster {
 
             }
             if(isGameOver()) {
+                gameOver = true;
                 if(player1.getPulse()) {
                     updateRanking();
                 }
