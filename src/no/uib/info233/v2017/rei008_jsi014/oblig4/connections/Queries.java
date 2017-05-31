@@ -243,6 +243,7 @@ public final class Queries {
 
                 // Set players based on information from saved_games table
                 Player player2;
+                player.setPlayerName(p1);
 
                 if (id.substring(id.length()).equals('1')) {
                     player2 = new PassivePlayer(p2);

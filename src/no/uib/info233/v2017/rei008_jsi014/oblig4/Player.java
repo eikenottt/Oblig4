@@ -106,6 +106,10 @@ public abstract class Player {
         return name;
     }
 
+    public void setPlayerName(String playerName) {
+        this.name = playerName;
+    }
+
     public String getRandom() {
         return playerID;
     }
@@ -134,15 +138,19 @@ public abstract class Player {
         return playerMove;
     }
 
+    public void setPlayerMove(int playerMove) {
+        this.playerMove = playerMove;
+    }
+
     public void setHost(boolean isHost){
         this.isHost = isHost;
     }
 
+
+
     public boolean getHost(){
         return this.isHost;
     }
-
-
 
     // ------------ Attacks ----------- //
 
@@ -240,6 +248,7 @@ public abstract class Player {
         return available;
     }
 
+
     public boolean useSlash(){
         boolean available = false;
         if(currentEnergy>5){
@@ -251,7 +260,6 @@ public abstract class Player {
 
         return available;
     }
-
 
     // --------- Generated Code --------- //
 
@@ -278,9 +286,5 @@ public abstract class Player {
         } else if (!name.equals(other.name))
             return false;
         return true;
-    }
-
-    public void setPlayerMove(int playerMove) {
-        this.playerMove = playerMove;
     }
 }

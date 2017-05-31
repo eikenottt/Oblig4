@@ -735,9 +735,9 @@ public class GUI{
                 if (playerMoves[0] != null && playerMoves[1] != null) {
                     int p1_energyUse = Integer.valueOf(playerMoves[0]);
                     int p2_energyUse = Integer.valueOf(playerMoves[1]);
+                    gameMaster.setP1_energyUse(p1_energyUse);
+                    gameMaster.setP2_energyUse(p2_energyUse);
                     if(player.getHost()) {
-                        gameMaster.setP1_energyUse(p1_energyUse);
-                        gameMaster.setP2_energyUse(p2_energyUse);
                         try {
                             System.out.println("Her skal du sova");
                             Thread.sleep(2000);
@@ -930,6 +930,7 @@ public class GUI{
                                         mainFrame.setVisible(true);
                                         ((Timer)evt.getSource()).stop();
                                         Debugger.print("Success");
+                                        timerJoin = null;
                                     });
                                 }
                                 else {
