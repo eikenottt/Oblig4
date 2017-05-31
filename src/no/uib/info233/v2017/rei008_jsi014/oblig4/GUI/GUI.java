@@ -696,21 +696,7 @@ public class GUI{
 
 
             System.out.println(gameMaster.isGameOver());//SOUT denne hadde du glemt
-            if(gameMaster.isGameOver()){
-                gameButtonsSingleplayer.makeClickable();
-                gameButtonsMultiplayer.makeClickable();
-
-                if(player.equals(gameMaster.determineWinner())){
-                    new GameOverPanel("Winner");
-                }
-                else if(gameMaster.determineWinner() == null) {
-                    new GameOverPanel("Nice Tie");
-                }
-                else {
-                    new GameOverPanel("Loser");
-                }
-
-            }
+            gameOver();
 
         }
 
@@ -722,6 +708,24 @@ public class GUI{
         imagePanel.addImage(gameMaster.getGamePosition());
         mainFrame.validate();
         mainFrame.repaint();
+    }
+
+    private void gameOver() {
+        if(gameMaster.isGameOver()){
+            gameButtonsSingleplayer.makeClickable();
+            gameButtonsMultiplayer.makeClickable();
+
+            if(player.equals(gameMaster.determineWinner())){
+                new GameOverPanel("Winner");
+            }
+            else if(gameMaster.determineWinner() == null) {
+                new GameOverPanel("Nice Tie");
+            }
+            else {
+                new GameOverPanel("Loser");
+            }
+
+        }
     }
 
 
@@ -755,6 +759,7 @@ public class GUI{
                     playerMoves[1] = "0";
                 }
                 gameButtonsMultiplayer.makeClickable();
+                gameOver();
             }
         });
         timer.start();
