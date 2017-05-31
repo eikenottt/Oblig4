@@ -639,6 +639,7 @@ public final class Queries {
                 gameMaster.setGameRound(round);
                 gameMaster.setPlayers(player1,player2);
 
+                gameMaster.isGameOver();
                 Debugger.print("Game is fetched from database");
                 System.out.println("Game is fetched");//SOUT
             }

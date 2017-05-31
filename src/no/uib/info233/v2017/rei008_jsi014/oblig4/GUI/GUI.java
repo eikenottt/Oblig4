@@ -673,14 +673,14 @@ public class GUI{
 
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 labelPanel.setRounds(gameMaster.getGameRounds()); //DONE <-- prøver å legge update rounds her
-                if((player.getCurrentEnergy()+energyUsed) > 0) {
+                if(player.getCurrentEnergy()+energyUsed > 0) {
                     player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
                     player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), player1.getCurrentEnergy());
-                }
-                else {
-                    while (!gameMaster.isGameOver()) {
-                        player.makeNextMove(gameMaster.getGamePosition(), 0, player2.getCurrentEnergy());
-                        player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), player1.getCurrentEnergy());
+                    if(player.getCurrentEnergy() <= 0){
+                        while (!gameMaster.isGameOver()) {
+                            player.makeNextMove(gameMaster.getGamePosition(), 0, player2.getCurrentEnergy());
+                            player2.makeNextMove(gameMaster.getGamePosition(), player2.getCurrentEnergy(), player1.getCurrentEnergy());
+                        }
                     }
                 }
                 makeClickable();
@@ -759,7 +759,6 @@ public class GUI{
                     playerMoves[1] = "0";
                 }
                 gameButtonsMultiplayer.makeClickable();
-                gameOver();
             }
         });
         timer.start();

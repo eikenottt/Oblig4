@@ -20,7 +20,8 @@ public class HumanPlayer extends Player {
     @Override
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
         //updateEnergy(-yourEnergy);
-        registerGameMaster(Queries.getGameInProgress(getGameMaster().getGameID()));
+        if(getGameMaster().getSpecificPlayer(2).getPulse())
+            registerGameMaster(Queries.getGameInProgress(getGameMaster().getGameID()));
         System.out.println("gameMaster player2: " + getGameMaster()); //SOUT
         getGameMaster().listenToPlayerMove(this, yourEnergy);
 
