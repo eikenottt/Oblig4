@@ -729,18 +729,20 @@ public class GUI{
             }
         }
 
-        gameButtonsMultiplayer.makeClickable();
+//        gameButtonsMultiplayer.makeClickable();
         if (player.getHost()) {
             gameMaster.listenToPlayerMove(player,energyUsed);
             gameMaster = gameMaster.gameProcessor(player);
 
         } else{
             gameMaster.updateMove(player);
+            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
         }
 
         timer = new Timer(2000, e -> {
             Debugger.print("Waiting for the other player to make a move");
-            if (gameMaster.isUpdated()) {
+
+            if (s[0] == null && s[1] == null) {
                 System.out.println("Has both players moved?: " + gameMaster.hasMoved(gameMaster.getGameID())); // SOUT
                 player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
                 gameButtonsMultiplayer.makeClickable();
