@@ -437,10 +437,7 @@ public final class Queries {
             System.out.println("I'm connected");
             conn.close();
         } catch (Exception e) {
-            for(StackTraceElement ste : e.getStackTrace()) {
-                Debugger.printError(ste.toString());
-                System.out.println("I have no connection");
-            }
+            Debugger.printException("No connection to the Server");
         }
         return hasConnection;
     }
