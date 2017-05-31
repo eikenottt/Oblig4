@@ -730,6 +730,7 @@ public class GUI{
                     gameMaster.setP1_energyUse(p1_energyUse);
                     gameMaster.setP2_energyUse(p2_energyUse);
                     gameMaster.evaluateTurn();
+                    gameMaster.resetMoves();
                     ((Timer)ev.getSource()).stop();
                 }
             });

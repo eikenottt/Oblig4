@@ -486,6 +486,10 @@ public class GameMaster {
         return Queries.gameExists(gameID);
     }
 
+    public void resetMoves(){
+        Queries.resetMoves(gameID);
+    }
+
 
 
     public void setGameOver(boolean gameOver) {
