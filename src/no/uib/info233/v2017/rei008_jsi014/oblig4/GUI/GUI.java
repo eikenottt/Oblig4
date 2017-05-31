@@ -687,8 +687,7 @@ public class GUI{
             else {
                 restrictor(gameButtonsMultiplayer);
                 waitForPlayer(energyUsed); //if its a multiplayer game, send it to the waitForPlayer
-                if(gameMaster.isUpdated())
-                    updateGamePanel(player1, player2);
+
             }
 
 
@@ -739,6 +738,7 @@ public class GUI{
                     gameMaster.resetMoves();
                 }
                 gameButtonsMultiplayer.makeClickable();
+                updateGamePanel(player, player2);
                 ((Timer)ev.getSource()).stop();
             }
         });

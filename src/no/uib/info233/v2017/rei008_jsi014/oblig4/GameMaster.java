@@ -119,7 +119,7 @@ public class GameMaster {
                     System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
                 }
 
-                if ((this.p1_energyUse > -1 && this.p2_energyUse > -1) || (hasMoved(gameID))) { // if both players has made a move
+                if ((this.p1_energyUse > -1 && this.p2_energyUse > -1) ){//(hasMoved(gameID))) { // if both players has made a move
                     evaluateTurn();
                 }
             }
