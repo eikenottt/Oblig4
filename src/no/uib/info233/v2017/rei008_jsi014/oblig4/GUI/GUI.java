@@ -43,7 +43,7 @@ public class GUI{
 
     private LabelPanel labelPanel;
 
-    private static Timer timer;
+    private static Timer timer, timerJoin;
 
     private ImagePanel imagePanel = new ImagePanel("icon");
 
@@ -648,7 +648,11 @@ public class GUI{
                     case "Cancel":
                         System.out.println(this); //SOUT
                         waitingPanel.dispose();
-                        timer.stop();
+                        if(player.getHost()) {
+                            timer.stop();
+                        }else {
+                            timerJoin.stop();
+                        }
                         Debugger.printError("The loading screen is Null");
                         break;
                     case "Quit Game":
@@ -911,7 +915,7 @@ public class GUI{
                             final boolean[] hasJoined = new boolean[1];
                             gameMaster.joinGame(id, player);
                             String gameId = id + player.getRandom();
-                            Timer timer = new Timer(2000, evt -> {
+                            timerJoin = new Timer(2000, evt -> {
                                 hasJoined[0] = gameMaster.gameExists(gameId); //FIXME gameMaster.hasJoined
                                 if(hasJoined[0]) {
                                     SwingUtilities.invokeLater(() -> {
@@ -933,7 +937,7 @@ public class GUI{
                                     Debugger.print("Trying To Connect");
                                 }
                             });
-                            timer.start();
+                            timerJoin.start();
 
                         }
                         else {
@@ -1024,7 +1028,9 @@ public class GUI{
             GridBagConstraints gbc = new GridBagConstraints();
 
             setTitle("Game Over");
-            gameMaster.stopTimer();
+            if(gameMaster.getTimer() != null) {
+                gameMaster.stopTimer();
+            }
 
             JPanel panel = new JPanel(new GridBagLayout());
             gameOverLabel = new JLabel("Game Over", JLabel.CENTER);
@@ -1034,7 +1040,7 @@ public class GUI{
             roundLabel = new JLabel("Game ended in Round: " + gameMaster.getGameRounds());
             roundLabel.setFont(new Font("Calibri", Font.ITALIC, 25));
             roundLabel.setForeground(new Color(160,160,160));
-            if(player.getHost()) {
+            if(player.equals(gameMaster.getSpecificPlayer(1))) {
                 pointsLabel = new JLabel("You earned " + gameMaster.getPointsFromPosition(gameMaster.getGamePosition()) + " points!");
             }else {
                 pointsLabel = new JLabel("You earned " + gameMaster.getPointsFromPosition(gameMaster.getGamePosition()*-1) + " points!");

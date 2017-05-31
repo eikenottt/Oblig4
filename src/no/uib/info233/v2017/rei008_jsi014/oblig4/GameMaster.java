@@ -649,4 +649,7 @@ public class GameMaster {
     public void stopTimer() {
         timer.stop();
     }
+    public Timer getTimer() {
+        return timer;
+    }
 }
