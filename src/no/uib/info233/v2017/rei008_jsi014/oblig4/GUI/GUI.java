@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.sql.Time;
 import java.util.*;
 
 
@@ -54,10 +53,6 @@ public class GUI{
         mainFrame.add(menuPanel);
         System.out.println(System.currentTimeMillis() - time);
 
-        ButtonPanel buttonPanell = new ButtonPanel("Continue", "Quit Game");
-
-        JButton[] buttons = buttonPanell.getButtons();
-
         JOptionPane optionPane = new JOptionPane();
 
         player1Name = optionPane.showInputDialog("Player Name:");
@@ -87,7 +82,7 @@ public class GUI{
         }
     }
 
-    private boolean quitToMenu(ButtonPanel buttonPanel) {
+    private boolean quitToMenu(ButtonPanel buttonPanel){
         boolean quit = false;
         int choice = JOptionPane.showOptionDialog(mainFrame, "Are you sure you want to quit the current game?", "Quit Current Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         if(choice == JOptionPane.YES_OPTION) {
@@ -95,7 +90,6 @@ public class GUI{
             menuPanel.updateSection(menuButtons, 1);
             mainFrame.remove(gamePanel);
             mainFrame.changePanel(menuPanel);
-            //player.setCurrentEnergy(100);
             buttonPanel.makeClickable();
             quit = true;
         }
@@ -461,13 +455,13 @@ public class GUI{
 
             add(buttonPanel);
 
-            Timer timer = new Timer(2000, e -> {
+            /*Timer timer = new Timer(2000, e -> {
                 if(gameMaster.getGameOverFromDataBase()){
                     ((Timer)e.getSource()).stop();
                     gameOver();
                 }
             });
-            timer.start();
+            timer.start();*/
 
             return this;
         }
@@ -505,6 +499,18 @@ public class GUI{
                         break;
                     case"Multiplayer":
                         button1 = new JButton(buttonNames[i], multiplayerIcon);
+                        break;
+                    case "Stab":
+                        button1 = new JButton(buttonNames[i]);
+                        button1.setToolTipText("minimum 1 Energy");
+                        break;
+                    case "Slash":
+                        button1 = new JButton(buttonNames[i]);
+                        button1.setToolTipText("minimum 5 Energy");
+                        break;
+                    case "Overhead Swing":
+                        button1 = new JButton(buttonNames[i]);
+                        button1.setToolTipText("minimum 15 Energy");
                         break;
                     default:
                         button1 = new JButton(buttonNames[i]);
