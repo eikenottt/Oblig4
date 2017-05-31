@@ -197,6 +197,8 @@ public class GameMaster {
 
             if(player1.getPulse() && player2.getPulse()) {
                 updateGameInProgress(gameID); // Updates game_position, move_number
+                isUpdated = true;
+
             }
             if(isGameOver()) {
                 if(player1.getPulse()) {
@@ -558,5 +560,8 @@ public class GameMaster {
                 ", gameOver=" + gameOver +
                 ", gameRounds=" + gameRounds +
                 '}';
+    }
+
+    public void setIsUpdated(boolean isUpdated) {
     }
 }

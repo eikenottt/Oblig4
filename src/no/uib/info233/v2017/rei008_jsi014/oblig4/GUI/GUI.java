@@ -718,8 +718,19 @@ public class GUI{
     private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
 
         System.out.println("I used this much energy: " + energyUsed); //SOUT
+        String[] s = Queries.getPlayerMove(gameMaster.getGameID());
+        if (player.getHost()){
+            if (s[0] == null){
+                gameButtonsMultiplayer.makeClickable();
+            }else {
+                if (s[1] == null ){
+                    gameButtonsMultiplayer.makeClickable();
+                }
+            }
+        }
 
         if (player.getHost()) {
+            gameMaster.updateMove(player);
             gameMaster = gameMaster.gameProcessor(player);
 
         } else{
@@ -729,11 +740,15 @@ public class GUI{
         timer = new Timer(2000, e -> {
             Debugger.print("Waiting for the other player to make a move");
             if (gameMaster.hasMoved(gameMaster.getGameID())) {
+                System.out.println("Has both playeyers moved?: " + gameMaster.hasMoved(gameMaster.getGameID())); // SOUT
                 player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
                 gameButtonsMultiplayer.makeClickable();
                 ((Timer)e.getSource()).stop();
 
                 if (gameMaster.isUpdated()){
+
+                    gameButtonsMultiplayer.makeClickable();
+                    gameMaster.setIsUpdated(false);
 
                 }
                 Debugger.print("Your turn");
