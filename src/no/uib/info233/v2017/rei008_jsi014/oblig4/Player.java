@@ -208,6 +208,7 @@ public abstract class Player {
         if (yourEnergy >= 20) {
             energyUsage = energyUsage + randNumber;
         }
+        if (yourEnergy<=0){energyUsage = 0;}
         updateEnergy(-energyUsage);
         Debugger.print(this.getName() + " used slash, with the force of " + energyUsage + " energy.\n"
                 +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
