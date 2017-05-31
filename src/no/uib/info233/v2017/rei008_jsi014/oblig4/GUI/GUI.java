@@ -726,17 +726,17 @@ public class GUI{
 
         timer = new Timer(2000, ev -> {
             if (gameMaster.isUpdated()) {
+                gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
                 String[] playerMoves = Queries.getPlayerMove(gameMaster.getGameID());
                 if (playerMoves[0] != null && playerMoves[1] != null) {
                     int p1_energyUse = Integer.valueOf(playerMoves[0]);
                     int p2_energyUse = Integer.valueOf(playerMoves[1]);
-                    gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
                     if(player.getHost()) {
                         gameMaster.setP1_energyUse(p1_energyUse);
                         gameMaster.setP2_energyUse(p2_energyUse);
                         try {
                             System.out.println("Her skal du sova");
-                            Thread.sleep(1000);
+                            Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -747,6 +747,8 @@ public class GUI{
                     gameMaster.evaluateTurn();
                     updateGamePanel(player, player2);
                     ((Timer)ev.getSource()).stop();
+                    playerMoves[0] = "0";
+                    playerMoves[1] = "0";
                 }
                 gameButtonsMultiplayer.makeClickable();
             }
