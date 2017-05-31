@@ -105,18 +105,20 @@ public class GameMaster {
     public void listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
 
         if (!gameOver) { // Game Not Over
-
+            String[] playerMoves = new String[2];
             if (player1.getPulse() && player2.getPulse()) { // Both players are human -> MultiplayerGame
-
                 Queries.updateMove(this, player);
+                playerMoves = Queries.getPlayerMove(gameID);
 
 
             }
             if (player.equals(player1)) {
                 this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
+                this.p2_energyUse = Integer.valueOf(playerMoves[1]);
                 System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
             } else {
                 this.p2_energyUse = energyUse;
+                this.p1_energyUse = Integer.valueOf(playerMoves[0]);
                 System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
             }
 
