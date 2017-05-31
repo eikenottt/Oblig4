@@ -682,17 +682,16 @@ public class GUI{
                     }
                 }
                 makeClickable();
+                updateGamePanel(player, player2);
             }
             else {
                 restrictor(gameButtonsMultiplayer);
                 waitForPlayer(energyUsed); //if its a multiplayer game, send it to the waitForPlayer
+                if(gameMaster.isUpdated())
+                    updateGamePanel(player1, player2);
             }
 
-            labelPanel.setProgressbarEnergy(player1.getCurrentEnergy(), player2.getCurrentEnergy());
-            labelPanel.setRounds(gameMaster.getGameRounds());
-            imagePanel.addImage(gameMaster.getGamePosition());
-            mainFrame.validate();
-            mainFrame.repaint();
+
 
             System.out.println(gameMaster.isGameOver());//SOUT denne hadde du glemt
             if(gameMaster.isGameOver()){
@@ -713,6 +712,14 @@ public class GUI{
 
         }
 
+    }
+
+    private void updateGamePanel(Player player1, Player player2) {
+        labelPanel.setProgressbarEnergy(player1.getCurrentEnergy(), player2.getCurrentEnergy());
+        labelPanel.setRounds(gameMaster.getGameRounds());
+        imagePanel.addImage(gameMaster.getGamePosition());
+        mainFrame.validate();
+        mainFrame.repaint();
     }
 
 
