@@ -719,25 +719,23 @@ public class GUI{
     private void waitForPlayer(int energyUsed) {
         gameMaster.gameProcessor(player, energyUsed);
 
-        SwingUtilities.invokeLater(() -> {
-            timer = new Timer(2000, ev -> {
-                if (gameMaster.isUpdated()) {
-                    gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
-                    if(player.getHost()) {
-                        String[] playerMoves = Queries.getPlayerMove(gameMaster.getGameID());
-                        int p1_energyUse = Integer.valueOf(playerMoves[0]);
-                        int p2_energyUse = Integer.valueOf(playerMoves[1]);
-                        gameMaster.setP1_energyUse(p1_energyUse);
-                        gameMaster.setP2_energyUse(p2_energyUse);
-                        gameMaster.evaluateTurn();
-                        gameMaster.resetMoves();
-                    }
-                    ((Timer)ev.getSource()).stop();
+        timer = new Timer(2000, ev -> {
+            if (gameMaster.isUpdated()) {
+                gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
+                if(player.getHost()) {
+                    String[] playerMoves = Queries.getPlayerMove(gameMaster.getGameID());
+                    int p1_energyUse = Integer.valueOf(playerMoves[0]);
+                    int p2_energyUse = Integer.valueOf(playerMoves[1]);
+                    gameMaster.setP1_energyUse(p1_energyUse);
+                    gameMaster.setP2_energyUse(p2_energyUse);
+                    gameMaster.evaluateTurn();
+                    gameMaster.resetMoves();
+                    gameButtonsMultiplayer.makeClickable();
                 }
-            });
-            timer.start();
-
+                ((Timer)ev.getSource()).stop();
+            }
         });
+        timer.start();
     }
 
     /*private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
