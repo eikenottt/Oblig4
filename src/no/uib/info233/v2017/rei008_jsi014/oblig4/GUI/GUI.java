@@ -736,18 +736,20 @@ public class GUI{
                         gameMaster.setP1_energyUse(p1_energyUse);
                         gameMaster.setP2_energyUse(p2_energyUse);
                         try {
+                            System.out.println("Her skal du sova");
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        System.out.println("Sov du godt?");
                         gameMaster.resetMoves();
                     }
                     gameMaster.evaluateTurn();
                     Debugger.print("Enemy used: " + p2_energyUse + " Energy");
-                    gameButtonsMultiplayer.makeClickable();
                     updateGamePanel(player, player2);
                     ((Timer)ev.getSource()).stop();
                 }
+                gameButtonsMultiplayer.makeClickable();
             }
         });
         timer.start();
