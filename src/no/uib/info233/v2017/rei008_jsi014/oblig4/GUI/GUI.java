@@ -728,9 +728,9 @@ public class GUI{
         timer = new Timer(2000, ev -> {
             if (gameMaster.isUpdated()) {
                 String[] playerMoves = Queries.getPlayerMove(gameMaster.getGameID());
-                int p1_energyUse = Integer.valueOf(playerMoves[0]);
-                int p2_energyUse = Integer.valueOf(playerMoves[1]);
                 if (playerMoves[0] != null && playerMoves[1] != null) {
+                    int p1_energyUse = Integer.valueOf(playerMoves[0]);
+                    int p2_energyUse = Integer.valueOf(playerMoves[1]);
                     gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
                     if(player.getHost()) {
                         gameMaster.setP1_energyUse(p1_energyUse);
