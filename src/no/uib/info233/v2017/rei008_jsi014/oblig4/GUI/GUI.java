@@ -70,6 +70,8 @@ public class GUI{
     private void exitProgram() {
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Exit Game", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
+            if(gameMaster != null)
+                gameMaster.resign(player);
             System.exit(0);
         }
     }
@@ -750,8 +752,11 @@ public class GUI{
                         }
                         System.out.println("Sov du godt?");
                         gameMaster.resetMoves();
+                        Debugger.print("Enemy used: " + p2_energyUse + " Energy");
                     }
-                    Debugger.print("Enemy used: " + p2_energyUse + " Energy");
+                    else {
+                        Debugger.print("Enemy used: " + p1_energyUse + " Energy");
+                    }
                     gameMaster.evaluateTurn();
                     updateGamePanel(player, player2);
                     ((Timer)ev.getSource()).stop();
