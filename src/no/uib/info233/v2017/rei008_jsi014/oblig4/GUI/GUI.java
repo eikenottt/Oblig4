@@ -722,15 +722,16 @@ public class GUI{
         SwingUtilities.invokeLater(() -> {
             timer = new Timer(2000, ev -> {
                 if (gameMaster.isUpdated()) {
-                    String[] playerMoves;
                     gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
-                    playerMoves = Queries.getPlayerMove(gameMaster.getGameID());
-                    int p1_energyUse = Integer.valueOf(playerMoves[0]);
-                    int p2_energyUse = Integer.valueOf(playerMoves[1]);
-                    gameMaster.setP1_energyUse(p1_energyUse);
-                    gameMaster.setP2_energyUse(p2_energyUse);
-                    gameMaster.evaluateTurn();
-                    gameMaster.resetMoves();
+                    if(player.getHost()) {
+                        String[] playerMoves = Queries.getPlayerMove(gameMaster.getGameID());
+                        int p1_energyUse = Integer.valueOf(playerMoves[0]);
+                        int p2_energyUse = Integer.valueOf(playerMoves[1]);
+                        gameMaster.setP1_energyUse(p1_energyUse);
+                        gameMaster.setP2_energyUse(p2_energyUse);
+                        gameMaster.evaluateTurn();
+                        gameMaster.resetMoves();
+                    }
                     ((Timer)ev.getSource()).stop();
                 }
             });
