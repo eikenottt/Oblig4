@@ -790,7 +790,10 @@ public class GUI{
                     playerMoves[1] = "0";
                 }
                 gameButtonsMultiplayer.makeClickable();
-                restrictor(gameButtonsMultiplayer);
+                if(player.getCurrentEnergy() > 0){
+                    restrictor(gameButtonsMultiplayer);
+                }
+                gameOver();
             }
         });
         timer.start();
