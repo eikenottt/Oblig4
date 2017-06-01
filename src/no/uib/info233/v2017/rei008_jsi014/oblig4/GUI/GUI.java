@@ -77,6 +77,8 @@ public class GUI{
                 }
                 gameMaster.setGamePosition(gamePos);
                 gameMaster.setGameOver(true);
+                gameMaster.getSpecificPlayer(1).setCurrentEnergy(100);
+                gameMaster.getSpecificPlayer(2).setCurrentEnergy(100);
             }
             System.exit(0);
         }
@@ -715,8 +717,8 @@ public class GUI{
                 updateGamePanel(player1, player2);
             }
             else {
-                restrictor(gameButtonsMultiplayer);
                 waitForPlayer(energyUsed); //if its a multiplayer game, send it to the waitForPlayer
+                restrictor(gameButtonsMultiplayer);
 
             }
 

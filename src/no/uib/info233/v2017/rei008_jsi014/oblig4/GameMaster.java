@@ -397,12 +397,12 @@ public class GameMaster {
         Queries.updateMove(this, player);
     }
 
-    public void resign(Player player1) {
+    public void resign(Player player) {
         int gamePos;
         if(timer != null)
             timer.stop();
 
-        if(player1.equals(this.player1)){
+        if(player.equals(this.player1)){
             gamePos = -3;
         }
         else {
@@ -412,6 +412,8 @@ public class GameMaster {
         setGameOver(true);
         updateGameInProgress(gameID);
         updateRanking();
+        player1.setCurrentEnergy(100);
+        player2.setCurrentEnergy(100);
         Debugger.print("Player Resigned");
     }
 
