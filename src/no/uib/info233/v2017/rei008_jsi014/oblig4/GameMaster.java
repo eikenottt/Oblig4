@@ -1,12 +1,7 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Connector;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
-import java.security.cert.PolicyQualifierInfo;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.Timer;
 
@@ -345,13 +340,8 @@ public class GameMaster {
      * @param player2
      * @return
      */
-    public boolean joinGame(String player1_random, Player player2){
-        if(!Queries.joinGame(player1_random, player2)){
-
-            Debugger.print("Could not join game");
-            return true;
-        }
-        return false;
+    public void joinGame(String player1_random, Player player2){
+        Queries.joinGame(player1_random, player2);
     }
 
 
