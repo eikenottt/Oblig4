@@ -110,7 +110,7 @@ public class GameMaster {
                 }
 
                 if ((this.p1_energyUse > -1 && this.p2_energyUse > -1) ){//(hasMoved(gameID))) { // if both players has made a move
-                    evaluateTurn();
+                    evaluateTurn(player);
                 }
             }
 
@@ -155,7 +155,7 @@ public class GameMaster {
      * listenToPlayerMove() to figure out who won the round.
      * When game is over, it runs the updateRanking method
      */
-    public void evaluateTurn() {
+    public void evaluateTurn(Player player) {
 
         gameRounds++; // Increase the number of rounds played
 
@@ -184,15 +184,15 @@ public class GameMaster {
             if(isGameOver()) {
                 gameOver = true;
                 if(hasConnection()) {
-                    if (player1.getPulse()) {
-                        updateRanking();
+                    if (player2.getPulse()) {
+                        updateRanking(player);
                     }
                 }
             }
         }
         else {
-            if(player1.getPulse())
-                updateRanking(); // Update the database
+            if(player2.getPulse())
+                updateRanking(player); // Update the database
         }
 
     }
@@ -268,7 +268,7 @@ public class GameMaster {
     /**
      * Runs when the game is over and updates the database
      */
-    private void updateRanking() {
+    private void updateRanking(Player player) {
 
         float pointsPlayer1 = getPointsFromPosition(gamePosition);
         float pointsPlayer2 = getPointsFromPosition(gamePosition*-1);
@@ -287,8 +287,10 @@ public class GameMaster {
         }
 
         // Update the ranking tables
-        Queries.updateRanking(player1, pointsPlayer1);
-        Queries.updateRanking(player2, pointsPlayer2);
+        if(player.equals(player1)) {
+            Queries.updateRanking(player1, pointsPlayer1);
+            Queries.updateRanking(player2, pointsPlayer2);
+        }
 
     }
 
@@ -394,7 +396,7 @@ public class GameMaster {
         setGamePosition(gamePos);
         setGameOver(true);
         updateGameInProgress(gameID);
-        updateRanking();
+        updateRanking(player);
         player1.setCurrentEnergy(100);
         player2.setCurrentEnergy(100);
         Debugger.print("Player Resigned");
