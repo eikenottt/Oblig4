@@ -84,17 +84,16 @@ public class GUI{
         }
     }
 
-    private boolean quitToMenu(ButtonPanel buttonPanel){
+    private boolean quitToMenu(ButtonPanel buttonPanel, boolean question){
         boolean quit = false;
-        int choice = JOptionPane.showOptionDialog(mainFrame, "Are you sure you want to quit the current game?", "Quit Current Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-        if(choice == JOptionPane.YES_OPTION) {
-            imagePanel.removeImage();
-            menuPanel.updateSection(menuButtons, 1);
-            mainFrame.remove(gamePanel);
-            mainFrame.changePanel(menuPanel);
-            buttonPanel.makeClickable();
-            quit = true;
+        if(question) {
+            int choice = JOptionPane.showOptionDialog(mainFrame, "Are you sure you want to quit the current game?", "Quit Current Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (choice == JOptionPane.YES_OPTION) {
+                updatingPanelsToMenu(buttonPanel);
+                quit = true;
+            }
         }
+        updatingPanelsToMenu(buttonPanel);
         return quit;
     }
 
@@ -116,6 +115,17 @@ public class GUI{
             notConnected();
         }
         return null;
+    }
+
+    private void updatingPanelsToMenu(ButtonPanel buttonPanel) {
+        mainFrame.remove(gamePanel);
+        labelPanel = new LabelPanel(player.getName(), Queries.getScore(player.getName()));
+        imagePanel.removeImage();
+        menuPanel.updateSection(imagePanel, 2);
+        menuPanel.updateSection(labelPanel, 0);
+        menuPanel.updateSection(menuButtons, 1);
+        mainFrame.changePanel(menuPanel);
+        buttonPanel.makeClickable();
     }
 
     private void notConnected() {
@@ -667,10 +677,10 @@ public class GUI{
                         doRound(player.overheadSwing(player.getCurrentEnergy()));
                         break;
                     case "Quit To Menu":
-                        quitToMenu(ButtonPanel.this);
+                        quitToMenu(ButtonPanel.this, true);
                         break;
                     case "Resign":
-                        if(quitToMenu(ButtonPanel.this)) {
+                        if(quitToMenu(ButtonPanel.this, true)) {
                             gameMaster.resign(player);
                         }
                         break;
@@ -772,7 +782,7 @@ public class GUI{
                     if(player.getHost()) {
                         try {
                             System.out.println("Her skal du sova");
-                            Thread.sleep(1200);
+                            Thread.sleep(1600);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -1091,13 +1101,7 @@ public class GUI{
             cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(e -> {
                 dispose();
-                mainFrame.remove(gamePanel);
-                labelPanel = new LabelPanel(player.getName(), Queries.getScore(player.getName()));
-                imagePanel.removeImage();
-                menuPanel.updateSection(imagePanel, 2);
-                menuPanel.updateSection(labelPanel, 0);
-                menuPanel.updateSection(menuButtons, 1);
-                mainFrame.changePanel(menuPanel);
+                quitToMenu(gameButtonsMultiplayer, false);
             });
 
             setModal(true);
