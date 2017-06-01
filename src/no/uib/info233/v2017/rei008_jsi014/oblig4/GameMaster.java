@@ -334,6 +334,16 @@ public class GameMaster {
         t.start();
     }
 
+    /**
+     * Method used when a player joins a game
+     * @param player1_random
+     * @param player2
+     * @return
+     */
+    public void joinGame(String player1_random, Player player2){
+        Queries.joinGame(player1_random, player2);
+    }
+
 
     /**
      * Checks if someone has joined and filled the open spaces in the open_games table
