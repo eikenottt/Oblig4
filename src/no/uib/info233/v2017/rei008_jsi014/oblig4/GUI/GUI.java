@@ -772,7 +772,7 @@ public class GUI{
                     if(player.getHost()) {
                         try {
                             System.out.println("Her skal du sova");
-                            Thread.sleep(2000);
+                            Thread.sleep(1200);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
