@@ -820,6 +820,7 @@ public class GUI{
                 makeClickable();
                 restrictor(gameButtonsSingleplayer);
                 updateGamePanel(player1, player2);
+                gameOver();
             }
 
             // --------- Multiplayer ---------- //
@@ -828,7 +829,6 @@ public class GUI{
 
             }
 
-            gameOver();
 
         }
 
