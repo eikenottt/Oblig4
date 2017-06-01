@@ -63,8 +63,10 @@ public class DebugFrame extends JFrame {
     // Imported from Main-Frame, might have to make a couple of changes
 
 
-
-
+    /**
+     * Constructor DebugFrame
+     * @return DebugFrame instance
+     */
     public DebugFrame getFrame() {
         return this;
     }

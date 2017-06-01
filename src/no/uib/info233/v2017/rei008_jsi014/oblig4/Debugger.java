@@ -31,15 +31,18 @@ public final class Debugger {
 
     }
 
+    //For reDirecting exception messages
     public static void printException(String exceptionMessage){
         debugFrame.debugOut("EXCEPTION: " + exceptionMessage + "\n");
     }
 
+    //general error print
     public static void printError(String error){
         debugFrame.debugOut("Error: " + error + "\n");
     }
 
 
+    //returns the debugging frame
     public static DebugFrame getDebugFrame() {
         return debugFrame;
     }

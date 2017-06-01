@@ -39,7 +39,7 @@ public class AggressivePlayer extends Player {
                     useEnergy = overheadSwing(yourEnergy);
                 }
                 break;
-            case 2:
+            case 2: // 25% Slash(), 25% Stab() and 50% Whirlwind()
                 if (randMove == 0) {
                     useEnergy = slash(yourEnergy);
                 } else if (randMove == 1) {
