@@ -434,8 +434,8 @@ public final class Queries {
         try {
             Connection conn = Connector.getConnection();
             hasConnection = Connector.hasConnection();
-            System.out.println("I'm connected");
             conn.close();
+            System.out.println("I'm connected");
         } catch (Exception e) {
             Debugger.printException("No connection to the Server");
         }

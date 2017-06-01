@@ -712,7 +712,7 @@ public class GUI{
                 }
                 makeClickable();
                 restrictor(gameButtonsSingleplayer);
-                updateGamePanel(player, player2);
+                updateGamePanel(player1, player2);
             }
             else {
                 restrictor(gameButtonsMultiplayer);
@@ -783,7 +783,7 @@ public class GUI{
                         Debugger.print("Enemy used: " + p1_energyUse + " Energy");
                     }
                     gameMaster.evaluateTurn();
-                    updateGamePanel(player, player2);
+                    updateGamePanel(gameMaster.getSpecificPlayer(1), gameMaster.getSpecificPlayer(2));
                     ((Timer)ev.getSource()).stop();
                     playerMoves[0] = "0";
                     playerMoves[1] = "0";
