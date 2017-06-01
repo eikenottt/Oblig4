@@ -15,18 +15,26 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.*;
 
-
+/**
+ * Provides the user interface for this specific program.
+ * This class contains multiple inner classes.
+ * @author rei008
+ * @author jsi014
+ * @version 0.2
+ */
 public class GUI{
-    private long time = System.currentTimeMillis();
 
-    private String player1Name = "Player 1";
+    private long time = System.currentTimeMillis(); //Start time
+
+    private String player1Name = "Player 1"; //Default player name
 
     private GameMaster gameMaster;
 
     private Player player, player2;
 
-    private MainFrame mainFrame = new MainFrame("Game");
+    private MainFrame mainFrame = new MainFrame("Sword Fighter"); // Title of the game
 
+    // Buttonpanels used in the program are made here
     private ButtonPanel menuButtons = new ButtonPanel("Singleplayer", "Multiplayer", "Quit Game"),
                 singleplayerButtons = new ButtonPanel("New Game", "Load Game", "Back To Menu"),
                 loadButtons = new ButtonPanel("Back To Menu"),
@@ -35,8 +43,6 @@ public class GUI{
                 multiplayerButtons = new ButtonPanel("Host Game", "Back To Menu", "Refresh");
 
     private GamePanel gamePanel = new GamePanel();
-
-    private ListPanel listPanel;
 
     private LoadingPanel waitingPanel;
 
@@ -51,17 +57,20 @@ public class GUI{
     public GUI() {
 
         mainFrame.add(menuPanel);
-        System.out.println(System.currentTimeMillis() - time);
+        System.out.println("The startup of the program was " + (System.currentTimeMillis() - time) + " milliseconds");
 
+        // Input of the players name
         JOptionPane optionPane = new JOptionPane();
-
         player1Name = optionPane.showInputDialog("Player Name:");
-        player1Name = (player1Name != null && !player1Name.equals("")) ? player1Name : "Player 1";
-        player = new HumanPlayer(player1Name);
+        player1Name = (player1Name != null && !player1Name.equals("")) ? player1Name : "Player 1"; // set player name to "Player 1" if the input is empty or null
+        player = new HumanPlayer(player1Name); // Make a player instance
         menuPanel.setPlayerName(player.getName());
 
     }
 
+    /**
+     * Updates the table if in game, and closes the program
+     */
     private void exitProgram() {
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Exit Game", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
@@ -70,20 +79,25 @@ public class GUI{
                 if (timer != null)
                     timer.stop();
 
-                if (player.equals(this.player)) {
+                if (player.equals(gameMaster.getSpecificPlayer(1))) {
                     gamePos = -3;
                 } else {
                     gamePos = 3;
                 }
                 gameMaster.setGamePosition(gamePos);
                 gameMaster.setGameOver(true);
-                gameMaster.getSpecificPlayer(1).setCurrentEnergy(100);
-                gameMaster.getSpecificPlayer(2).setCurrentEnergy(100);
+
             }
             System.exit(0);
         }
     }
 
+    /**
+     * Exits to menu from the current screen
+     * @param buttonPanel - the new button panel
+     * @param question - true: shows a question about leaving the screen, false: no questions asked
+     * @return - true if the user pressed yes.
+     */
     private boolean quitToMenu(ButtonPanel buttonPanel, boolean question){
         boolean quit = false;
         if(question) {
@@ -97,9 +111,14 @@ public class GUI{
         return quit;
     }
 
+    /**
+     * Loads a list from the database. Load Game if the input is "Singleplayer", else "Multiplayer"
+     * @param playerType - "Singleplayer" or "Multiplayer"
+     * @return - The ListPanel as a JPanel
+     */
     private JPanel loadList(String playerType) {
         if (GameMaster.hasConnection()) { //Fixme gameMaster .hasConnection
-            listPanel = new ListPanel(playerType);
+            ListPanel listPanel = new ListPanel(playerType);
             listPanel.populateGameTable(playerType);
             JPanel panel;
             if(playerType.equals("Singleplayer")){
@@ -117,6 +136,9 @@ public class GUI{
         return null;
     }
 
+    /**
+     * Removes the gamePanel from the frame and shows the menu screen. This method also makes the buttons clickable.
+     */
     private void updatingPanelsToMenu(ButtonPanel buttonPanel) {
         mainFrame.remove(gamePanel);
         labelPanel = new LabelPanel(player.getName(), Queries.getScore(player.getName()));
@@ -128,11 +150,18 @@ public class GUI{
         buttonPanel.makeClickable();
     }
 
+    /**
+     * Shows a dialog if the program cant communicate with the database
+     */
     private void notConnected() {
         JOptionPane.showMessageDialog(mainFrame, "You are not connected to Wildboy", "Connection error", JOptionPane.ERROR_MESSAGE);
         Debugger.print("There was a problem connecting to the server");
     }
 
+    /**
+     * Checks if the user has enough energy to press the attack buttons
+     * @param buttonPanel - the buttonpanel to check
+     */
     private void restrictor(ButtonPanel buttonPanel) {
         if(!player.useStab()){
             buttonPanel.makeUnclickable("Stab");
@@ -145,12 +174,12 @@ public class GUI{
         }
     }
 
+    /**
+     * This inner class makes the main frame for the program
+     */
     private class MainFrame extends JFrame {
-        String playerName, fstBtn, sndBtn, trdBtn;
 
-        Float score;
-
-        public MainFrame(String title) {
+        MainFrame(String title) {
             super(title);
             setUI();
             setResizable(false);
@@ -206,7 +235,10 @@ public class GUI{
 
         }
 
-
+        /**
+         * A method to change the panel shown in the Main frame
+         * @param newPanel - the new panel
+         */
         void changePanel(JPanel newPanel) {
             add(newPanel);
             revalidate();
@@ -214,23 +246,23 @@ public class GUI{
             setVisible(true);
         }
 
+        /**
+         * updates the frame when needed
+         */
         void updateFrame() {
             revalidate();
             repaint();
         }
-        public MainFrame getFrame() {
-            return this;
-        }
-
     }
 
+    /**
+     * This inner class makes the application's menu screens
+     */
     private class MenuPanel extends JPanel {
         String playerName;
         Float score;
 
-        ButtonPanel buttonPanel;
-
-        public MenuPanel(String playerName, Float score, ButtonPanel buttonPanel) {
+        MenuPanel(String playerName, Float score, ButtonPanel buttonPanel) {
 
             this.playerName = playerName;
             this.score = score;
@@ -246,12 +278,12 @@ public class GUI{
 
 
 
-        public void updateSection(JPanel panel, int sectionNr) {
+        void updateSection(JPanel panel, int sectionNr) {
             remove(sectionNr);
             add(panel, sectionNr);
         }
 
-        public void setPlayerName(String playerName) {
+        void setPlayerName(String playerName) {
             this.playerName = playerName;
             this.score = Queries.getScore(playerName);
 
