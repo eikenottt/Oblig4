@@ -5,9 +5,7 @@ import no.uib.info233.v2017.rei008_jsi014.oblig4.Debugger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-/**
- * Created by runeeikemo on 24.05.2017.
- */
+
 public final class Connector {
 
     private static boolean hasConnection;

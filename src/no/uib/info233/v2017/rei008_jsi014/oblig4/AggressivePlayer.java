@@ -1,5 +1,12 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
+/**
+ * Defines a BOT with a more agressive playing style
+ *
+ * @author rei008
+ * @author jsi014
+ * @version 0.2
+ */
 
 public class AggressivePlayer extends Player {
 
@@ -7,7 +14,6 @@ public class AggressivePlayer extends Player {
      * Constructor for player
      * sets currentPosition as 0 by default
      * sets currentEnergy as 100 by default
-     *
      * @param name name
      */
     public AggressivePlayer(String name) {
@@ -56,14 +62,6 @@ public class AggressivePlayer extends Player {
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 
-    @Override
-    protected String makePlayerID() {
-        String aggID = super.makePlayerID();
-        char last = aggID.charAt(aggID.length()-1);
-        aggID = aggID.replace(last, '0');
-        return aggID;
-    }
-
     /**
      * Special attack for the AggressivePlayer
      * High output, with relative high amount of randomness
@@ -78,5 +76,15 @@ public class AggressivePlayer extends Player {
             return randNumber;
         }else
             return yourEnergy;
+    }
+
+    // --------- Generated Code --------- //
+
+    @Override
+    protected String makePlayerID() {
+        String aggID = super.makePlayerID();
+        char last = aggID.charAt(aggID.length()-1);
+        aggID = aggID.replace(last, '0');
+        return aggID;
     }
 }

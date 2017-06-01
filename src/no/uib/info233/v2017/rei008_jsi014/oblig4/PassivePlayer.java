@@ -56,14 +56,6 @@ public class PassivePlayer extends Player{
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 
-    @Override
-    protected String makePlayerID() {
-        String pasID = super.makePlayerID();
-        char last = pasID.charAt(pasID.length()-1);
-        pasID = pasID.replace(last, '1');
-        return pasID;
-    }
-
     /**
      * Special attack for the PassivePlayer
      * Low output, with small amount of randomness
@@ -78,5 +70,15 @@ public class PassivePlayer extends Player{
             return randNumber;
         }else
             return yourEnergy;
+    }
+
+    // --------- Generated Code --------- //
+
+    @Override
+    protected String makePlayerID() {
+        String pasID = super.makePlayerID();
+        char last = pasID.charAt(pasID.length()-1);
+        pasID = pasID.replace(last, '1');
+        return pasID;
     }
 }

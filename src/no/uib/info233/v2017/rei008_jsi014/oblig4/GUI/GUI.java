@@ -277,12 +277,20 @@ public class GUI{
         }
 
 
-
+        /**
+         * To update the section within the MenuPanel
+         * @param panel - the panel to add to MenuPanel
+         * @param sectionNr - in witch position to remove from and add to
+         */
         void updateSection(JPanel panel, int sectionNr) {
             remove(sectionNr);
             add(panel, sectionNr);
         }
 
+        /**
+         * Update the playername in the gui
+         * @param playerName - The new player name
+         */
         void setPlayerName(String playerName) {
             this.playerName = playerName;
             this.score = Queries.getScore(playerName);
@@ -295,6 +303,9 @@ public class GUI{
 
     }
 
+    /**
+     * This class places the information about the players in the gui
+     */
     private class LabelPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         JProgressBar player1EnergyBar, player2EnergyBar;
@@ -304,6 +315,11 @@ public class GUI{
 
         GameMaster gameMaster;
 
+        /**
+         * This Constructor is for making the score and name panel used in the MenuPanel
+         * @param playerName - name of the player
+         * @param score - the player's score
+         */
         public LabelPanel(String playerName, Float score) {
 
             this.score = score;
@@ -328,6 +344,10 @@ public class GUI{
 
         }
 
+        /**
+         * This Constructor makes the heading for the GamePanel. With the player names, energy bars and round count
+         * @param gameMaster - the GameMaster that holds the information about the game
+         */
         public LabelPanel(GameMaster gameMaster) {
 
             Player player1 = gameMaster.getSpecificPlayer(1);
@@ -387,6 +407,11 @@ public class GUI{
 
         }
 
+        /**
+         * Sets the energy bars to the given numbers
+         * @param player1energy - the energy of player 2
+         * @param player2energy - the energy of player 2
+         */
         public void setProgressbarEnergy(int player1energy, int player2energy) {
             player1EnergyBar.setValue(player1energy);
             player1EnergyBar.setString(player1energy+"");
@@ -394,20 +419,19 @@ public class GUI{
             player2EnergyBar.setString(player2energy+"");
         }
 
+        /**
+         * Sets the game round
+         * @param rounds - the new round number
+         */
         public void setRounds(int rounds){
             numRoundsLabel.setText("Round " + rounds);
         }
 
-        public void setGameMaster(GameMaster gameMaster) {
-            this.gameMaster = gameMaster;
-        }
-
-        public void updateScore(Float score) {
-            this.score = score;
-        }
-
     }
 
+    /**
+     * This inner class holds the images
+     */
     private class ImagePanel extends JPanel {
         GridBagConstraints gbc;
 
@@ -417,14 +441,18 @@ public class GUI{
         private JLabel playerLabel = new JLabel(players);
         private JLabel iconLabel = new JLabel(icon);
 
-        public ImagePanel(String... imgPath) {
+        /**
+         * This constructor makes as many images as needed, by providing with the imagename. (this constructor only supports png files).
+         * @param imgName - The name of the image
+         */
+        public ImagePanel(String... imgName) {
             gbc = new GridBagConstraints();
 
             layeredPane.setLayout(new GridBagLayout());
             setLayout(new GridBagLayout());
             int i = 0;
 
-            for(String img  : imgPath) {
+            for(String img  : imgName) {
                 JLabel imageIconLabel = new JLabel(new ImageIcon(getClass().getResource("/img/"+img+".png")));
 
                 gbc.weighty = 10;
@@ -439,6 +467,11 @@ public class GUI{
             add(layeredPane);
 
         }
+
+        /**
+         * This method adds a image on top of one of the other images
+         * @param location - where to put the image
+         */
         public void addImage(int location) {
             switch (location) {
                 case -3:
@@ -474,6 +507,9 @@ public class GUI{
 
         }
 
+        /**
+         * this removes the game panel images, and replaces it with the menu image
+         */
         public void removeImage() {
             layeredPane.removeAll();
             layeredPane.add(iconLabel, gbc, 1);
@@ -482,13 +518,25 @@ public class GUI{
 
     }
 
+    /**
+     * This inner class contains a LabelPanel, ImagePanel and ButtonPanel used when playing in singleplayer mode or multiplayermode
+     */
     private class GamePanel extends JPanel{
 
+        /**
+         * The constructor sets the layout to BoxLayout
+         */
         public GamePanel() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         }
 
+        /**
+         * This is where the game panel gui is made
+         * @param gameMaster - the information about the game
+         * @param buttonPanel - the specific buttons to use, singleplayer or multiplayer
+         * @return - the JPanel (GamePanel) to use in the MainFrame
+         */
         public JPanel setGame(GameMaster gameMaster, ButtonPanel buttonPanel) {
             removeAll();
             labelPanel = new LabelPanel(gameMaster);
@@ -499,14 +547,6 @@ public class GUI{
 
             add(buttonPanel);
 
-            /*Timer timer = new Timer(2000, e -> {
-                if(gameMaster.getGameOverFromDataBase()){
-                    ((Timer)e.getSource()).stop();
-                    gameOver();
-                }
-            });
-            timer.start();*/
-
             return this;
         }
 
@@ -514,12 +554,19 @@ public class GUI{
 
     }
 
+    /**
+     * This inner class makes the buttons used in the gui
+     */
     private class ButtonPanel extends JPanel {
 
         JButton[] buttons;
         ImageIcon singleplayerIcon = new ImageIcon(getClass().getResource("/img/Singleplayer.png")),
                 multiplayerIcon = new ImageIcon(getClass().getResource("/img/Multiplayer.png"));
 
+        /**
+         * Makes as many buttons as needed based on the amount of parameters
+         * @param buttonNames - the names of the buttons
+         */
         ButtonPanel(String... buttonNames) {
             buttons = new JButton[buttonNames.length];
             GridBagConstraints gbc = new GridBagConstraints();
@@ -539,10 +586,10 @@ public class GUI{
                 JButton button1;
                 switch (buttonNames[i]){
                     case "Singleplayer":
-                        button1 = new JButton(buttonNames[i], singleplayerIcon);
+                        button1 = new JButton(buttonNames[i], singleplayerIcon); // Sets icons on singleplayer button
                         break;
                     case"Multiplayer":
-                        button1 = new JButton(buttonNames[i], multiplayerIcon);
+                        button1 = new JButton(buttonNames[i], multiplayerIcon); // Sets icons on multiplayer button
                         break;
                     case "Stab":
                         button1 = new JButton(buttonNames[i]);
@@ -575,6 +622,11 @@ public class GUI{
                 x++;
             }
         }
+
+        /**
+         * Makes the buttons unclickable
+         * @param buttonName - the name of the button
+         */
         void makeUnclickable(String buttonName) {
             for (JButton button : buttons) {
                 if (button.getText().equals(buttonName)) {
@@ -583,6 +635,9 @@ public class GUI{
             }
         }
 
+        /**
+         * Makes the attack buttons unclickable
+         */
         void makeAttacksUnclickable() {
             String buttonName;
             for(JButton button : buttons){
@@ -593,16 +648,18 @@ public class GUI{
             }
         }
 
-
+        /**
+         * Makes every button clickable
+         */
         void makeClickable() {
             for (JButton button : buttons) {
                 button.setEnabled(true);
             }
         }
 
-        JButton[] getButtons() {
-            return buttons;
-        }
+        /**
+         * This inner class is listens for a button click.
+         */
         private class ButtonListener extends Component implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -735,13 +792,19 @@ public class GUI{
             }
 
         }
-        private void doRound(int energyUsed) { //int energy used represents the Attack, directly gathered from the button stab/slash/overhead swing
+
+        /**
+         * Runs when a user presses an attack button
+         * @param energyUsed - int energy used represents the Attack, directly gathered from the button stab/slash/overhead swing
+         */
+        private void doRound(int energyUsed) {
             makeAttacksUnclickable();
 
             player2 = gameMaster.getSpecificPlayer(2);
 
             Player player1 = gameMaster.getSpecificPlayer(1);
 
+            // ------- Singleplayer -------- //
             if(!gameMaster.getSpecificPlayer(2).getPulse()){
                 labelPanel.setRounds(gameMaster.getGameRounds()); //DONE <-- prøver å legge update rounds her
                 if(player.getCurrentEnergy()+energyUsed > 0) {
@@ -758,20 +821,24 @@ public class GUI{
                 restrictor(gameButtonsSingleplayer);
                 updateGamePanel(player1, player2);
             }
+
+            // --------- Multiplayer ---------- //
             else {
                 waitForPlayer(energyUsed); //if its a multiplayer game, send it to the waitForPlayer
 
             }
 
-
-
-            System.out.println(gameMaster.isGameOver());//SOUT denne hadde du glemt
             gameOver();
 
         }
 
     }
 
+    /**
+     * Updates the game panel
+     * @param player1 - the Player object of player 1
+     * @param player2 - the Player object of player 2
+     */
     private void updateGamePanel(Player player1, Player player2) {
         labelPanel.setProgressbarEnergy(player1.getCurrentEnergy(), player2.getCurrentEnergy());
         labelPanel.setRounds(gameMaster.getGameRounds());
@@ -780,6 +847,9 @@ public class GUI{
         mainFrame.repaint();
     }
 
+    /**
+     * Checks if game is over, if true then makes the game over frame
+     */
     private void gameOver() {
         if(gameMaster.isGameOver()){
             gameButtonsSingleplayer.makeClickable();
@@ -799,6 +869,10 @@ public class GUI{
     }
 
 
+    /**
+     * This method runs the logic behind the multiplayer section. This has a timer that checks if both players made a move.
+     * @param energyUsed - the energy from the player
+     */
     private void waitForPlayer(int energyUsed) {
         gameMaster.gameProcessor(player, energyUsed);
 
@@ -841,66 +915,9 @@ public class GUI{
         timer.start();
     }
 
-    /*private void waitForPlayer(int energyUsed) { //indirectly comming from attacks stab/slash/overhead swing
-
-        gameMaster.updateMove(player);
-        String[] s = Queries.getPlayerMove(gameMaster.getGameID());
-        if(player.getHost() && gameMaster.hasMoved(gameMaster.getGameID())){
-
-            int p2Move = Integer.valueOf(s[1]);
-            Debugger.print("Player 2 used: " + p2Move);
-            gameMaster.listenToPlayerMove(gameMaster.getSpecificPlayer(2),p2Move);
-            gameMaster.listenToPlayerMove(player, energyUsed);
-
-        }
-
-
-        System.out.println("I used this much energy: " + energyUsed); //SOUT
-        if (player.getHost()){
-            if (s[0] == null){
-                gameButtonsMultiplayer.makeClickable();
-            }else {
-                if (s[1] == null ){
-                    gameButtonsMultiplayer.makeClickable();
-                }
-            }
-        }
-
-        if (!player.getHost()){
-            gameMaster.updateMove(player);
-        }
-       gameButtonsMultiplayer.makeClickable();
-//        if (player.getHost()) {
-//            gameMaster.listenToPlayerMove(player,energyUsed);
-//            gameMaster = gameMaster.gameProcessor(player);
-//
-//        } else{
-//            gameMaster.updateMove(player);
-//            gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
-//        }
-
-        timer = new Timer(2000, e -> {
-            Debugger.print("Waiting for the other player to make a move");
-            if(!player.getHost()){
-
-                gameMaster = gameMaster.getGameInProgress(gameMaster.getGameID());
-            }
-
-            if (gameMaster.hasMoved(gameMaster.getGameID())) {
-                System.out.println("Has both players moved?: " + gameMaster.hasMoved(gameMaster.getGameID())); // SOUT
-                player.makeNextMove(gameMaster.getGamePosition(), energyUsed, player2.getCurrentEnergy());
-                gameButtonsMultiplayer.makeClickable();
-                ((Timer)e.getSource()).stop();
-
-                gameMaster.setIsUpdated(false);
-
-                }
-                Debugger.print("Your turn");
-
-        });
-        timer.start();
-    }*/
-
+    /**
+     * ListPanel makes a visual representation of the database lists from saved_games and open_games
+     */
     private class ListPanel extends JPanel {
         private ArrayList<ArrayList<JComponent>> array = new ArrayList<>();
         private TreeMap<String, ArrayList<String>> playerMap = new TreeMap<>();
@@ -916,8 +933,14 @@ public class GUI{
             JPanel m = new JPanel();
             ArrayList<JComponent> arr = new ArrayList<>();
 
-            arr.add(new JLabel("Playername"));
-            arr.add(new JLabel("Highscore", JLabel.CENTER));
+            if(join.equals("Join")) {
+                arr.add(new JLabel("Hostname"));
+                arr.add(new JLabel("Highscore", JLabel.CENTER));
+            }
+            else {
+                arr.add(new JLabel("Player 2 name"));
+                arr.add(new JLabel("Player 1 name", JLabel.CENTER));
+            }
             arr.add(new JLabel(join +" Game"));
             ArrayList<ArrayList<JComponent>> arrayList = new ArrayList<>();
             arrayList.add(arr);
@@ -933,7 +956,7 @@ public class GUI{
             JPanel k = new JPanel(new BorderLayout());
             k.setPreferredSize(new Dimension(1000, 50));
             amount(k, arrayList);
-            getFromStuff(join);
+            getListReady(join);
 
             m.setLayout(new BoxLayout(m, BoxLayout.Y_AXIS));
             amount(m, array);
@@ -946,6 +969,11 @@ public class GUI{
             return this;
         }
 
+        /**
+         * Makes every other row a different color.
+         * @param pan - the panel to add to
+         * @param num - an ArrayList with the conponents from the database
+         */
         private void amount(JPanel pan, ArrayList<ArrayList<JComponent>> num) {
 
             for (int i = 0; i < num.size(); i++) {
@@ -980,7 +1008,11 @@ public class GUI{
             }
         }
 
-        void getFromStuff(String join) {
+        /**
+         * Makes labels and buttons based on the information from the database
+         * @param join
+         */
+        void getListReady(String join) {
             for (String id : playerMap.keySet()) {
                 String hostName = playerMap.get(id).get(1);
                 ArrayList<JComponent> array2 = new ArrayList<>();
@@ -1039,6 +1071,10 @@ public class GUI{
             }
         }
 
+        /**
+         * Gets the information from the database
+         * @param gameType
+         */
         void populateGameTable(String gameType) {
             if(playerMap.size() > 0) {
                 playerMap.clear();
@@ -1053,12 +1089,20 @@ public class GUI{
 
     }
 
+    /**
+     * LoadingPanel is a frame that shows when the user is waiting for an action to take place
+     */
     private class LoadingPanel extends JFrame {
         private ImageIcon waitingIcon = new ImageIcon(getClass().getResource("/img/loading.gif"));
 
         private JLabel messageLabel, imageLabel;
         private JButton cancelButton;
 
+        /**
+         * The constructor shows a text and a gif to indicate that something is happening
+         * @param message
+         * @param isHost
+         */
         public LoadingPanel(String message, boolean isHost) {
             setUI();
             GridBagConstraints gbc = new GridBagConstraints();
@@ -1103,11 +1147,19 @@ public class GUI{
         }
 
     }
+
+    /**
+     * GameOverPanel shows the message when a game is over. There is 3 possible outcomes: Winner, Tie and Loser
+     */
     private class GameOverPanel extends JDialog {
 
         private JLabel messageLabel, imageLabel, gameOverLabel, pointsLabel, roundLabel;
         private JButton cancelButton;
 
+        /**
+         * Creates the Dialog box
+         * @param message
+         */
         public GameOverPanel(String message) {
             setUI();
             GridBagConstraints gbc = new GridBagConstraints();
@@ -1171,10 +1223,20 @@ public class GUI{
             setVisible(true);
         }
 
+        /**
+         * Changes the text in the label
+         * @param message - the new text
+         * @return - The new JLabel with the text
+         */
         public JLabel changeText(String message) {
             return new JLabel(message, JLabel.CENTER);
         }
 
+        /**
+         * Changes the image shown with the message
+         * @param message - the message
+         * @return - A JLabel with the updated image
+         */
         public JLabel changeImage(String message) {
             ImageIcon waitingIcon;
             if(message.equals("Winner")) {
@@ -1192,6 +1254,9 @@ public class GUI{
 
     }
 
+    /**
+     * Changes the UI of the Java and Metal LookAndFeel
+     */
     static void setUI() {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -1243,6 +1308,9 @@ public class GUI{
         }
     }
 
+    /**
+     * Changes the text of the energybar, and TextArea when selecting text
+     */
     private class EnergyBarUI extends BasicProgressBarUI {
         @Override
         protected Color getSelectionForeground() {

@@ -1,12 +1,7 @@
 package no.uib.info233.v2017.rei008_jsi014.oblig4;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Connector;
 import no.uib.info233.v2017.rei008_jsi014.oblig4.connections.Queries;
 
-import java.security.cert.PolicyQualifierInfo;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.Timer;
 
@@ -72,12 +67,6 @@ public class GameMaster {
 
         player1.setPlayerMove(0);
         player2.setPlayerMove(0);
-        //TODO change makeNextMove with listenToPlayerMove ?
-        /*while (!gameOver){
-            //TODO refresh every 2 seconds
-            //TODO run listenToPlayerMove
-            //TODO Update Table after every move
-        }*/
     }
 
     /**
@@ -105,7 +94,7 @@ public class GameMaster {
      * @param player player
      * @param energyUse energyUse
      */
-    public void listenToPlayerMove(Player player, int energyUse) { //TODO Listen for player move every 2 seconds
+    public void listenToPlayerMove(Player player, int energyUse) {
 
         if (!gameOver) { // Game Not Over
             if (player1.getPulse() && player2.getPulse()) { // Both players are human -> MultiplayerGame
@@ -115,11 +104,9 @@ public class GameMaster {
             }
             else {
                 if (player.equals(player1)) {
-                    this.p1_energyUse = energyUse;  //TODO viska ut for at singleplayer skal fungere(player 1 ikke skal bli trukket 2x energy)
-                    System.out.println(player.getName() + " Used " + p1_energyUse + " -----------########");
+                    this.p1_energyUse = energyUse;
                 } else {
                     this.p2_energyUse = energyUse;
-                    System.out.println(player.getName() + " Used " + p2_energyUse + " -----------########");
                 }
 
                 if ((this.p1_energyUse > -1 && this.p2_energyUse > -1) ){//(hasMoved(gameID))) { // if both players has made a move
@@ -131,43 +118,10 @@ public class GameMaster {
     }
 
     /**
-     * Refreshes the game, by retrieving from the game_in_progress table, and determines whether the player is the host or not.
-     * and returns the GameMaster needed accordingly.
-     * @param player - The player loading the game
-     * @return - Updated GameMaster from the game_in_progress table.
+     * Processes a game in progress, using a timer to update the game every 2 seconds
+     * @param player
+     * @param energyUsed
      */
-    /*public GameMaster gameProcessor(Player player){
-        String[] playerMoves = Queries.getPlayerMove(gameID);
-        GameMaster nextRound = this.getGameInProgress(gameID);
-        if (hasMoved(gameID) ) {
-            int player1Move = Integer.valueOf(playerMoves[0]);
-            int player2Move = Integer.valueOf(playerMoves[1]);
-
-            isUpdated = false;
-
-
-            nextRound.listenToPlayerMove(player1, player1Move);
-            nextRound.listenToPlayerMove(player2, player2Move);
-        }
-
-//        if(player.getHost()){
-//            listenToPlayerMove(player, player1Move);
-//
-//            Player player2 = nextRound.getSpecificPlayer(2);
-//            nextRound.setPlayers(player, player2);
-//        }else{
-//            listenToPlayerMove(player, player2Move);
-//            Player player1 = nextRound.getSpecificPlayer(1);
-//            nextRound.setPlayers(player1, player);
-//        }
-//
-//        nextRound = getGameInProgress(gameID);
-//        updateGameInProgress(gameID);
-
-        return nextRound;
-
-    }*/
-
     public void gameProcessor(Player player, int energyUsed) {
         player.makeNextMove(gamePosition, energyUsed, 0);
 
@@ -243,20 +197,32 @@ public class GameMaster {
 
     }
 
-
-
-
+    /**
+     * A boolean check to check if the current game is over
+     * @return true if the game is over
+     */
     public boolean isGameOver() {
         // if the current gamePosition lays in the GOAL array or both players energy is at zero
         return (GOAL.contains(gamePosition) || (player1.getCurrentEnergy() == 0 && player2.getCurrentEnergy() == 0));
     }
 
-    public int fetchIntInString(String string) {
-        //TODO feilmelding på fetchIntInString  - StringIndexOutOfBoundsException
-        //TODO return -1 if gameID don't contain ¿ and |
-        String d = string.substring(string.indexOf("¿")+1, string.indexOf("|"));
-        return Integer.parseInt(d);
-    }
+    /**
+     * Idea of this method was to get information in the gameID that could be fetched out, like the gameRound.
+     * That is why our gameId is marked with ¿ and |, so we could store the round number in between.
+     * This also adds to the readability of the gameID so one can easily see which game was most recent, if you have
+     * more than one save of the same game.
+     * since this method caused trouble loading games that other people had created it was scrapped.
+     * @param string gameId
+     * @return int roundNumber
+     */
+//    public int fetchIntInString(String string) {
+//
+//        String d = string.substring(string.indexOf("¿")+1, string.indexOf("|"));
+//        return Integer.parseInt(d);
+//    }
+
+
+
 
     // ----------- Manipulate game data ---------- //
 
@@ -269,6 +235,12 @@ public class GameMaster {
         return Queries.loadSaved(gameID, player);
     }
 
+    /**
+     * Starts a new multiplayer game
+     * @param player1 Player player 1 - the host
+     * @param player2Name String player2 name
+     * @param player2ID String player2 ID
+     */
     public void startMultiplayerGame(Player player1, String player2Name, String player2ID){
 
 
@@ -301,58 +273,60 @@ public class GameMaster {
         float pointsPlayer1 = getPointsFromPosition(gamePosition);
         float pointsPlayer2 = getPointsFromPosition(gamePosition*-1);
 
-        System.out.println("There have been played " + gameRounds + " rounds!"); //SOUT
-
+        //Print a message to summarize the game
         Debugger.print("There have been played " + gameRounds + " rounds!");
 
         if(pointsPlayer1 > pointsPlayer2) {
-            System.out.println(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2); //SOUT
-            Debugger.print(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2);
+            Debugger.print(player1Name + " won the game by " + pointsPlayer1 + " to " + pointsPlayer2); //Player 1 winner message
         }
         else if(pointsPlayer2 > pointsPlayer1) {
-            System.out.println(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1); //SOUT
-            Debugger.print(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1);
+            Debugger.print(player2Name + " won the game by " + pointsPlayer2 + " to " + pointsPlayer1); //Player 2 winner message
         }
         else {
-            System.out.println("The game ended in a draw"); //SOUT
-            Debugger.print("Nice Tie - The game ended in a draw");
+            Debugger.print("Nice Tie - The game ended in a draw"); //Draw message
         }
 
-
+        // Update the ranking tables
         Queries.updateRanking(player1, pointsPlayer1);
         Queries.updateRanking(player2, pointsPlayer2);
 
     }
 
     /**
-     *
+     *  Saves a game
      */
     public void saveGame(){
         Queries.updateSavedGame(this);
     }
 
+
+    /**
+     * Creates an openGame, which can be joined by any other player, and when someone joins, proceeds to create
+     * a new game.
+     * @param player1 the host
+     */
     public void hostGame(Player player1){
 
-
-        //TODO When a HumanPlayer creates a new multiplayer game, he is "hosting" the game.
+        // Updates the table with a new row with player1 as host
         Queries.openGame(player1);
 
-
+        // boolean values to check if another player has joined the game, and if the openGame has been removed
         final boolean[] hasFoundOpponent = {false};
         final boolean[] rowDeleted = {false};
+
+        // Checks if someone has joined the game - refreshes every 2 seconds
         Timer t = new Timer(2000, e -> {
             hasFoundOpponent[0] = Queries.hasJoined(player1.getRandom());
             rowDeleted[0] = Queries.rowDeleted(player1.getRandom());
-            System.out.println("hasFoundOpponent - " + hasFoundOpponent[0]);//SOUT
+            Debugger.print("hasFoundOpponent - " + hasFoundOpponent[0]);
             if (hasFoundOpponent[0]){
                 ((Timer) e.getSource()).stop();
                 String[] p2 = Queries.getPlayerValues();
                 this.startMultiplayerGame(player1, p2[0], p2[1]);
-                System.out.println(this);
 
                 this.player1.setHost(true);
-                System.out.println("You are the host: " + player1.getHost());
             }
+            // The timer stops when the table is removed, which happens in the GUI - after creating the gameFrame for the game
             if(rowDeleted[0]) {
                 ((Timer) e.getSource()).stop();
             }
@@ -361,53 +335,52 @@ public class GameMaster {
     }
 
 
+    /**
+     * Checks if someone has joined and filled the open spaces in the open_games table
+     * @param hostId the player_1_random string
+     * @return true if the slot has been filled
+     */
     public boolean hasJoined(String hostId){
-
         return Queries.hasJoined(hostId);
     }
 
+    /**
+     * Removes a game from game_in_progress
+     * @param gameID - the id of the game to remove
+     */
     public void removeGameInProgress(String gameID){
         Queries.removeGameInProgress(gameID);
     }
 
+    /**
+     * Checks if there is a connection to wildboy
+     * @return true if there's a connection
+     */
     public static Boolean hasConnection(){
         return Queries.hasConnection();
-    }
-
-    public void listGames(){
-        //TODO displays the available games that players can join in the multiplayer section.
-    }
-
-    public boolean joinGame(String player1_random, Player player2){
-        //TODO Whe the player joins the game, a new game should start with the host as player one
-        if(!Queries.joinGame(player1_random, player2)){
-
-            Debugger.print("Could not join game");
-            return true;
-        }
-        return false;
     }
 
     public void removeOpenGame(String player1Random) {
         Queries.removeOpenGame(player1Random);
     }
 
-
-    public void updateMove(Player player) {
-        Queries.updateMove(this, player);
-    }
-
+    /**
+     * resign invokes that the player has resigned from a game and changes the state of the game accordingly
+     * @param player who resigned
+     */
     public void resign(Player player) {
         int gamePos;
         if(timer != null)
             timer.stop();
 
+        // Checks if the player who resigned is player 1 or player 2
         if(player.equals(this.player1)){
             gamePos = -3;
         }
         else {
             gamePos = 3;
         }
+        // Updates the state of the game
         setGamePosition(gamePos);
         setGameOver(true);
         updateGameInProgress(gameID);
@@ -518,7 +491,6 @@ public class GameMaster {
         return isOver;
     }
 
-    // TODO GameID må ikkje være lenger enn 20 på game_in_progress
     private void setGameID() {
         if(player1.hasPulse && player2.hasPulse) {
             gameID = player1.getRandom() + player2.getRandom();
@@ -580,26 +552,6 @@ public class GameMaster {
 
         return points;
     }
-
-    /**
-     * A Bolean test to check if both players has made a move in the current
-     * round of the game.
-     * @return True if both players have made move this round.
-     */
-//    public boolean moveChecker(){
-//
-//       int playerMoves[] = Queries.getPlayerMove(gameID); //Gather fresh info of the current moves
-//
-//       int player1Move = playerMoves[0];
-//       int player2Move = playerMoves[1];
-//
-//       boolean isNewRound = false;
-//       if (player1Move == player2Move){ // Checks if both players has made a move, this round.
-//           isNewRound = true;
-//       }
-//
-//       return isNewRound;
-//    }
 
     public void setGameRound(int gameRound) {
         this.gameRounds = gameRound;

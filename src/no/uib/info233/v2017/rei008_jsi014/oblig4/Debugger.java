@@ -4,7 +4,10 @@ import no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.DebugFrame;
 
 /**
  * Debugger class handles the communications between the program and the Debugging console.
- * Created by John Tore on 25.05.2017.
+ *
+ * @author rei008
+ * @author jsi014
+ * @version 0.2
  */
 public final class Debugger {
 
