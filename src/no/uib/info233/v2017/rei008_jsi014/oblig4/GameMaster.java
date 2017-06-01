@@ -287,10 +287,8 @@ public class GameMaster {
         }
 
         // Update the ranking tables
-        if(player.equals(player1)) {
-            Queries.updateRanking(player1, pointsPlayer1);
-            Queries.updateRanking(player2, pointsPlayer2);
-        }
+        Queries.updateRanking(player1, pointsPlayer1);
+        Queries.updateRanking(player2, pointsPlayer2);
 
     }
 
