@@ -223,6 +223,7 @@ public abstract class Player {
         return energyUsage;
     }
 
+    // Checker to see if the player has enough energy to perform a specific attack
     public boolean useOverheadSwing(){
         boolean available = false;
         if (currentEnergy >= 15){
@@ -236,6 +237,7 @@ public abstract class Player {
         return available;
     }
 
+    // Checker to see if the player has enough energy to perform a specific attack
     public boolean useStab(){
         boolean available = false;
         if (currentEnergy >= 1){
@@ -248,7 +250,7 @@ public abstract class Player {
         return available;
     }
 
-
+    // Checker to see if the player has enough energy to perform a specific attack
     public boolean useSlash(){
         boolean available = false;
         if(currentEnergy>=5){
