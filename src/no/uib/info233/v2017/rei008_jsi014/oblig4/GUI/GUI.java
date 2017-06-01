@@ -718,7 +718,6 @@ public class GUI{
             }
             else {
                 waitForPlayer(energyUsed); //if its a multiplayer game, send it to the waitForPlayer
-                restrictor(gameButtonsMultiplayer);
 
             }
 
@@ -791,6 +790,7 @@ public class GUI{
                     playerMoves[1] = "0";
                 }
                 gameButtonsMultiplayer.makeClickable();
+                restrictor(gameButtonsMultiplayer);
             }
         });
         timer.start();
