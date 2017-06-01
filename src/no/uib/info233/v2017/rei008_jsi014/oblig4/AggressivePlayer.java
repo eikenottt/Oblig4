@@ -62,14 +62,6 @@ public class AggressivePlayer extends Player {
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 
-    @Override
-    protected String makePlayerID() {
-        String aggID = super.makePlayerID();
-        char last = aggID.charAt(aggID.length()-1);
-        aggID = aggID.replace(last, '0');
-        return aggID;
-    }
-
     /**
      * Special attack for the AggressivePlayer
      * High output, with relative high amount of randomness
@@ -84,5 +76,15 @@ public class AggressivePlayer extends Player {
             return randNumber;
         }else
             return yourEnergy;
+    }
+
+    // --------- Generated Code --------- //
+
+    @Override
+    protected String makePlayerID() {
+        String aggID = super.makePlayerID();
+        char last = aggID.charAt(aggID.length()-1);
+        aggID = aggID.replace(last, '0');
+        return aggID;
     }
 }
