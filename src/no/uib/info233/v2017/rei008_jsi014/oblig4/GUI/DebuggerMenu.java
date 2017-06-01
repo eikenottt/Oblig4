@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * Created by Rune on 25.05.2017.
+ * Is the menubar in the MainFrame
  */
 public class DebuggerMenu extends JMenuBar implements ActionListener, KeyListener {
 

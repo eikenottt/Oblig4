@@ -11,7 +11,7 @@ import java.util.Enumeration;
 import static no.uib.info233.v2017.rei008_jsi014.oblig4.GUI.GUI.*;
 
 /**
- * Created by John Tore on 26.05.2017.
+ * Is the Debugger frame
  */
 public class DebugFrame extends JFrame {
 
