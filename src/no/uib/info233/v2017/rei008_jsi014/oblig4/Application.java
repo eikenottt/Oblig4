@@ -8,25 +8,18 @@ import java.awt.*;
 import java.util.Objects;
 
 /**
- * Created by Rune on 25.05.2017.
+ * Application runs the main method to start the application
+ *
+ * @author rei008
+ * @author jsi014
+ * @version 0.2
  */
 public class Application {
 
     public static void main(String[] args) {
 
+        SwingUtilities.invokeLater(GUI::new); // Runs the application
 
-        SwingUtilities.invokeLater(GUI::new);
-
-        /*GameMaster gameMaster = new GameMaster();
-        Player player1 = new AggressivePlayer("Finne");
-        Player player2 = new HumanPlayer("Svæla");
-        gameMaster.setPlayers(player1, player2);
-        gameMaster.startGame();*/
-
-        /*Player p2 = new HumanPlayer("TestJohn");
-        String gameToJoin = Queries.getPlayerRandom("TestRune");
-        System.out.println("no string? - " + gameToJoin);
-        Queries.joinGame(gameToJoin, p2);*/
 
     }
 

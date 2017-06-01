@@ -401,29 +401,7 @@ public final class Queries {
         return playerValues;
     }
 
-    public static String getPlayerRandom(String playerName){ //TODO Denne kan kanskje fjernes
 
-        String pRandom = "";
-
-        try {
-            Connection conn = Connector.getConnection(); // Make connection
-
-            statement = conn.prepareStatement("SELECT player_2,player_2_random FROM oblig4.open_games WHERE player_1 = ?");
-            statement.setString(1, playerName);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) ;
-            pRandom = resultSet.getString(1);
-
-            conn.close(); // Close connection
-
-        } catch (Exception e) {
-
-        }
-
-        return pRandom;
-
-    }
 
     /**
      * Checks if there is a connection to the server
@@ -435,7 +413,7 @@ public final class Queries {
             Connection conn = Connector.getConnection();
             hasConnection = Connector.hasConnection();
             conn.close();
-            System.out.println("I'm connected");
+            Debugger.print("I'm connected to wildboy");
         } catch (Exception e) {
             Debugger.printException("No connection to the Server");
         }
@@ -510,17 +488,15 @@ public final class Queries {
                     playerValues[1] = player2ID;
                     hasJoined = true;
                 }
-                System.out.println(player2 + " - Joined");//SOUT
+                Debugger.print(player2 + " - Joined");
             }
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
-            System.out.println(e.getMessage()); //SOUT
         }catch (Exception e) {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
-            System.out.println(e.getMessage());//SOUT
         }
         return hasJoined;
 
@@ -548,7 +524,8 @@ public final class Queries {
                 playerEnergy = "player_2_energy";
             }
 
-            System.out.println("Player Move : " + player.getPlayerMove()); //SOUT
+            Debugger.print("Player move updated: " + player.getPlayerMove() );
+
             statement = conn.prepareStatement("UPDATE game_in_progress SET "+ playerMove +" = ? , "+playerEnergy+"= ? WHERE game_id = ? ");
             statement.setInt(1, player.getPlayerMove());
             statement.setInt(2, player.getCurrentEnergy());
@@ -696,7 +673,6 @@ public final class Queries {
 
                 gameMaster.isGameOver();
                 Debugger.print("Game is fetched from database");
-                System.out.println("Game is fetched");//SOUT
             }
 
             conn.close();
@@ -762,11 +738,9 @@ public final class Queries {
         } catch (SQLException e) {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
-            System.out.println(e.getMessage()); //SOUT
         }catch (Exception e) {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
-            System.out.println(e.getMessage());//SOUT
         }
         return exist;
     }
@@ -799,11 +773,9 @@ public final class Queries {
         } catch (SQLException e) {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
-            System.out.println(e.getMessage()); //SOUT
         } catch (Exception e) {
             e.printStackTrace();
             Debugger.printException(e.getMessage());
-            System.out.println(e.getMessage());//SOUT
         }
         return exist;
     }

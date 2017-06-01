@@ -22,7 +22,6 @@ public class HumanPlayer extends Player {
         //updateEnergy(-yourEnergy);
         if(getGameMaster().getSpecificPlayer(2).getPulse())
             registerGameMaster(Queries.getGameInProgress(getGameMaster().getGameID()));
-        System.out.println("gameMaster player2: " + getGameMaster()); //SOUT
         getGameMaster().listenToPlayerMove(this, yourEnergy);
 
     }
