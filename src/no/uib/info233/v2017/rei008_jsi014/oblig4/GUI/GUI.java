@@ -899,7 +899,7 @@ public class GUI{
                     else {
                         Debugger.print("Enemy used: " + p1_energyUse + " Energy");
                     }
-                    gameMaster.evaluateTurn();
+                    gameMaster.evaluateTurn(player);
                     updateGamePanel(gameMaster.getSpecificPlayer(1), gameMaster.getSpecificPlayer(2));
                     ((Timer)ev.getSource()).stop();
                     playerMoves[0] = "0";
