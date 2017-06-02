@@ -30,7 +30,6 @@ public final class Queries {
 
         try {
             Connection conn = Connector.getConnection();
-            player.setHost(false);
             statement = conn.prepareStatement("INSERT INTO oblig4.open_games(player_1, player_1_random) VALUES (?, ?)");
             statement.setString(1, player.getName());
             statement.setString(2, player.getRandom());
@@ -59,7 +58,7 @@ public final class Queries {
 
         try {
             Connection conn = Connector.getConnection();
-
+            player2.setHost(false);
             statement = conn.prepareStatement("UPDATE oblig4.open_games SET player_2 = ?, player_2_random = ? WHERE  player_1_random = ?");
             statement.setString(1, player2.getName());
             statement.setString(2, player2.getRandom());
