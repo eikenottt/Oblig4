@@ -58,7 +58,7 @@ public class AggressivePlayer extends Player {
                 break;
 
         }
-        playerMove++;
+        playerMove = useEnergy;
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 
@@ -69,13 +69,17 @@ public class AggressivePlayer extends Player {
      * @return int energy to spend
      */
     private int whirlwind(int yourEnergy){
+        int energyUsage = 5;
         int randNumber = this.rand.nextInt(25);
         if (yourEnergy >=30){
-            return 5 + randNumber;
+            energyUsage += randNumber;
         } else if (yourEnergy > 25){
-            return randNumber;
+            energyUsage = randNumber;
         }else
-            return yourEnergy;
+            energyUsage =  yourEnergy;
+
+        updateEnergy(energyUsage);
+        return energyUsage;
     }
 
     // --------- Generated Code --------- //
