@@ -63,13 +63,17 @@ public class PassivePlayer extends Player{
      * @return int energy to spend
      */
     private int swordPoke(int yourEnergy){
+        int energyUsage = 5;
         int randNumber = this.rand.nextInt(10);
         if (yourEnergy >=15){
-            return 5 + randNumber;
+            energyUsage += randNumber;
         } else if (yourEnergy > 10){
-            return randNumber;
+            energyUsage = randNumber;
         }else
-            return yourEnergy;
+            energyUsage =  yourEnergy;
+
+        updateEnergy(-energyUsage);
+        return energyUsage;
     }
 
     // --------- Generated Code --------- //

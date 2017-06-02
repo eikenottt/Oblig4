@@ -78,7 +78,7 @@ public class AggressivePlayer extends Player {
         }else
             energyUsage =  yourEnergy;
 
-        updateEnergy(energyUsage);
+        updateEnergy(-energyUsage);
         return energyUsage;
     }
 
