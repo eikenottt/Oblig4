@@ -107,7 +107,9 @@ public class GUI{
                 quit = true;
             }
         }
-        updatingPanelsToMenu(buttonPanel);
+        else {
+            updatingPanelsToMenu(buttonPanel);
+        }
         return quit;
     }
 

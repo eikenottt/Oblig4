@@ -17,42 +17,53 @@ public class PassivePlayer extends Player{
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
         int randMove = rand.nextInt(4);
         int useEnergy;
+        System.out.println("Min posisjon er " + currentPosition);
         switch (currentPosition){
             case -3: case -2: case -1: // 50% overheadSwing() 50% stab() for position 0, 1 and 2
                 if ((randMove == 0 || randMove == 1)) {
+                    System.out.println("Eg kjører overhead i posisjon " + currentPosition + "Og bruker " + yourEnergy + " Energi");
                     useEnergy = overheadSwing(yourEnergy);
                 }else if (yourEnergy == 0){
+                    System.out.println("Eg kjører alt i posisjon " + currentPosition + "Og bruker " + yourEnergy + " Energi");
                     useEnergy = yourEnergy;
-                }else
+                }else {
+                    System.out.println("Eg kjører stab i posisjon " + currentPosition + "Og bruker " + yourEnergy + " Energi");
                     useEnergy = stab(yourEnergy);
+                }
                 break;
             case 0: // 25% stab() 75% slash in position 3
                 if (randMove == 0 ){
+                    System.out.println("Eg kjører stab i posisjon " + currentPosition + "Og bruker " + yourEnergy + " Energi");
                     useEnergy = stab(yourEnergy);
                 }else{
+                    System.out.println("Eg kjører slash i posisjon " + currentPosition + "Og bruker " + yourEnergy + " Energi");
                     useEnergy= slash(yourEnergy);
                 }
                 if(yourEnergy == 0){
+                    System.out.println("Eg kjører alt i posisjon " + currentPosition + "Og bruker " + yourEnergy + " Energi");
                     useEnergy = yourEnergy;}
                 break;
             case 1: case 2: case 3: // 25% slash 75% swordPoke in position 4, 5 and
                 if(randMove == 3){
+                    System.out.println("Eg kjører slash i posisjon " + currentPosition + "Og bruker " + yourEnergy + " Energi");
                     useEnergy = slash(yourEnergy);
                 }else{
+                    System.out.println("Eg kjører sword i posisjon " + currentPosition + "Og bruker " + yourEnergy + " Energi");
                     useEnergy = swordPoke(yourEnergy);
                 }
 
                 break;
             default:
                 if(getCurrentEnergy() > 0) {
-                useEnergy = overheadSwing(yourEnergy);
+                    System.out.println("Eg kjører overhead i posisjon " + currentPosition);
+                    useEnergy = overheadSwing(yourEnergy);
                 } else{
-                useEnergy = 0;}
+                    System.out.println("Eg kjører nothing i posisjon " + currentPosition);
+                    useEnergy = 0;}
                 break;
         }
 
-        playerMove++;
-        //this.updateEnergy(-useEnergy);
+        playerMove = useEnergy;
         this.getGameMaster().listenToPlayerMove(this, useEnergy);
     }
 

@@ -341,6 +341,7 @@ public class GameMaster {
      * @return
      */
     public void joinGame(String player1_random, Player player2){
+        player2.setCurrentEnergy(100);
         Queries.joinGame(player1_random, player2);
     }
 

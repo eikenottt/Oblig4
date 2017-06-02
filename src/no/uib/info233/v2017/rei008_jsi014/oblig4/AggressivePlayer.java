@@ -23,38 +23,51 @@ public class AggressivePlayer extends Player {
     public void makeNextMove(int currentPosition, int yourEnergy, int opponentEnergy) {
         int randMove = rand.nextInt(4);
         int useEnergy;
+        System.out.println("Min posisjon er " + currentPosition);
         switch (currentPosition) {
             case -3:
             case -2: //25% whirlwind(), 75% slash() for position 0 and 1
                 if (randMove == 0) {
+                    System.out.println("Eg kjører virvel i posisjon " + currentPosition);
                     useEnergy = whirlwind(yourEnergy);
                 } else
                     if (useSlash()){
-                    useEnergy = slash(yourEnergy);
-                 } else{ useEnergy = stab(yourEnergy);}
+                        System.out.println("Eg kjører slash i posisjon " + currentPosition);
+                        useEnergy = slash(yourEnergy);
+                    } else{
+                        System.out.println("Eg kjører stab i posisjon " + currentPosition);
+                        useEnergy = stab(yourEnergy);
+                    }
 
                 break;
             case -1:
+                System.out.println("Eg kjører overhead i posisjon " + currentPosition);
                 useEnergy = overheadSwing(yourEnergy);
                 break;
             case 0:
             case 1: // 50% chance of using stab(),50% of using overheadSwing in position 3 and 4
                 if (randMove == 0 || randMove == 1) {
+                    System.out.println("Eg kjører stab i posisjon " + currentPosition);
                     useEnergy = stab(yourEnergy);
                 } else {
+                    System.out.println("Eg kjører overhead i posisjon " + currentPosition);
                     useEnergy = overheadSwing(yourEnergy);
                 }
                 break;
             case 2: // 25% Slash(), 25% Stab() and 50% Whirlwind()
                 if (randMove == 0) {
+                    System.out.println("Eg kjører slash i posisjon 2");
                     useEnergy = slash(yourEnergy);
                 } else if (randMove == 1) {
+                    System.out.println("Eg kjører stab i posisjon 2");
                     useEnergy = stab(yourEnergy);
-                } else
+                } else {
+                    System.out.println("Eg kjører virvelvind i posisjon 2");
                     useEnergy = whirlwind(yourEnergy);
+                }
                 break;
             default:
-                useEnergy = 0;
+                useEnergy = 1;
                 break;
 
         }
