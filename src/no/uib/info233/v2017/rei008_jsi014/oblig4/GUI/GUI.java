@@ -897,9 +897,16 @@ public class GUI{
                         System.out.println("Sov du godt?");
                         gameMaster.resetMoves();
                         Debugger.print("Enemy used: " + p2_energyUse + " Energy");
+                        gameButtonsMultiplayer.makeClickable();
                     }
                     else {
                         Debugger.print("Enemy used: " + p1_energyUse + " Energy");
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        gameButtonsMultiplayer.makeClickable();
                     }
                     gameMaster.evaluateTurn(player);
                     updateGamePanel(gameMaster.getSpecificPlayer(1), gameMaster.getSpecificPlayer(2));
@@ -907,7 +914,6 @@ public class GUI{
                     playerMoves[0] = "0";
                     playerMoves[1] = "0";
                 }
-                gameButtonsMultiplayer.makeClickable();
                 if(player.getCurrentEnergy() > 0){
                     restrictor(gameButtonsMultiplayer);
                 }
