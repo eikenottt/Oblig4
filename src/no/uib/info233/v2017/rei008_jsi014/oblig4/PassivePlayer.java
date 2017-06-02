@@ -73,6 +73,8 @@ public class PassivePlayer extends Player{
             energyUsage =  yourEnergy;
 
         updateEnergy(-energyUsage);
+        Debugger.print(this.getName() + " used swordPoke, with the force of " + energyUsage + " energy.\n"
+                +this.getName()+" has "+this.getCurrentEnergy()+" energy left.");//message to debugger
         return energyUsage;
     }
 
